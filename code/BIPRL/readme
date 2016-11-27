@@ -1,0 +1,9 @@
+1. aub.edu.lb.bip.api: contains classes for code generation syntax configuration
+
+2. aub.edu.lb.bip.expression: contains class to model c-like code generation. To generate code, you build expression instance and then you may use TCodeGenerator to generate the corresponding code. This may be helpful to support multiple code generations and code transformations.
+
+3. aub.edu.lb.bip.model: contains classes to facilitate building expressions instances from BIP model. It supports generation of multiple expressions (e.g., normal, with rl finite, with rl infinite, etc.).
+4. aub.edu.lb.model: contains classes that construct a helper BIP model from a BIP file. 
+Note that aub.edu.lb.model and aub.edu.lb.bip.model can be merged. However, they are seperated for a better design.
+
+5. aub.edu.lb.bip.rl: contains classes related to reinforcement learning. 

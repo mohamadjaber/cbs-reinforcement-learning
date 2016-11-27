@@ -1,0 +1,226 @@
+#include<iostream>
+#include<stdlib.h>
+#include<time.h>
+using namespace std;
+#define wire
+#define boolean bool
+  int main() {
+  int __cycle_num__ = 0;
+  int __sed = time(NULL);
+  srand (__sed);
+  cout<< "The sed is " << __sed << endl;
+  int var_p_0_id;
+  const int var_p_0_n = 0;
+  int var_p_1_id;
+  const int var_p_1_n = 1;
+  int var_p_2_id;
+  const int var_p_2_n = 2;
+  int var_f_0_id;
+  const int var_f_0_n = 0;
+  int var_f_1_id;
+  const int var_f_1_n = 1;
+  int var_f_2_id;
+  const int var_f_2_n = 2;
+  wire int wire_selector;
+  int p_0_currentState;
+  int p_1_currentState;
+  int p_2_currentState;
+  int f_0_currentState;
+  int f_1_currentState;
+  int f_2_currentState;
+  wire boolean wire_port_loc_en_p_0_release;
+  wire boolean wire_port_en_p_0_release;
+  wire boolean wire_port_loc_en_p_0_take_left;
+  wire boolean wire_port_en_p_0_take_left;
+  wire boolean wire_port_loc_en_p_0_take_right;
+  wire boolean wire_port_en_p_0_take_right;
+  wire boolean wire_port_loc_en_p_1_release;
+  wire boolean wire_port_en_p_1_release;
+  wire boolean wire_port_loc_en_p_1_take_left;
+  wire boolean wire_port_en_p_1_take_left;
+  wire boolean wire_port_loc_en_p_1_take_right;
+  wire boolean wire_port_en_p_1_take_right;
+  wire boolean wire_port_loc_en_p_2_release;
+  wire boolean wire_port_en_p_2_release;
+  wire boolean wire_port_loc_en_p_2_take_left;
+  wire boolean wire_port_en_p_2_take_left;
+  wire boolean wire_port_loc_en_p_2_take_right;
+  wire boolean wire_port_en_p_2_take_right;
+  wire boolean wire_port_loc_en_f_0_take;
+  wire boolean wire_port_en_f_0_take;
+  wire boolean wire_port_loc_en_f_0_leave;
+  wire boolean wire_port_en_f_0_leave;
+  wire boolean wire_port_loc_en_f_1_take;
+  wire boolean wire_port_en_f_1_take;
+  wire boolean wire_port_loc_en_f_1_leave;
+  wire boolean wire_port_en_f_1_leave;
+  wire boolean wire_port_loc_en_f_2_take;
+  wire boolean wire_port_en_f_2_take;
+  wire boolean wire_port_loc_en_f_2_leave;
+  wire boolean wire_port_en_f_2_leave;
+  wire boolean[9] interactions_enablement;
+  wire boolean[9] interactions_first_enable;
+  const int state_p_0_s2 = 2;
+  const int state_p_0_s0 = 0;
+  const int state_p_0_s1 = 1;
+  const int state_p_1_s2 = 2;
+  const int state_p_1_s0 = 0;
+  const int state_p_1_s1 = 1;
+  const int state_p_2_s2 = 2;
+  const int state_p_2_s0 = 0;
+  const int state_p_2_s1 = 1;
+  const int state_f_0_unavailable = 1;
+  const int state_f_0_available = 0;
+  const int state_f_1_unavailable = 1;
+  const int state_f_1_available = 0;
+  const int state_f_2_unavailable = 1;
+  const int state_f_2_available = 0;
+  var_p_0_id = 0;
+  var_p_1_id = 0;
+  var_p_2_id = 0;
+  var_f_0_id = 0;
+  var_f_1_id = 0;
+  var_f_2_id = 0;
+  var_p_0_id = var_p_0_n; 
+  p_0_currentState = 0;
+  var_p_1_id = var_p_1_n; 
+  p_1_currentState = 0;
+  var_p_2_id = var_p_2_n; 
+  p_2_currentState = 0;
+  var_f_0_id = var_f_0_n; 
+  f_0_currentState = 0;
+  var_f_1_id = var_f_1_n; 
+  f_1_currentState = 0;
+  var_f_2_id = var_f_2_n; 
+  f_2_currentState = 0;
+  while(true)   {
+    wire_port_loc_en_p_0_release = (false || ((state_p_0_s2 == p_0_currentState) && true));
+    wire_port_loc_en_p_0_take_left = (false || ((state_p_0_s0 == p_0_currentState) && true));
+    wire_port_loc_en_p_0_take_right = (false || ((state_p_0_s1 == p_0_currentState) && true));
+    wire_port_loc_en_p_1_release = (false || ((state_p_1_s2 == p_1_currentState) && true));
+    wire_port_loc_en_p_1_take_left = (false || ((state_p_1_s0 == p_1_currentState) && true));
+    wire_port_loc_en_p_1_take_right = (false || ((state_p_1_s1 == p_1_currentState) && true));
+    wire_port_loc_en_p_2_release = (false || ((state_p_2_s2 == p_2_currentState) && true));
+    wire_port_loc_en_p_2_take_left = (false || ((state_p_2_s0 == p_2_currentState) && true));
+    wire_port_loc_en_p_2_take_right = (false || ((state_p_2_s1 == p_2_currentState) && true));
+    wire_port_loc_en_f_0_take = (false || ((state_f_0_available == f_0_currentState) && true));
+    wire_port_loc_en_f_0_leave = (false || ((state_f_0_unavailable == f_0_currentState) && true));
+    wire_port_loc_en_f_1_take = (false || ((state_f_1_available == f_1_currentState) && true));
+    wire_port_loc_en_f_1_leave = (false || ((state_f_1_unavailable == f_1_currentState) && true));
+    wire_port_loc_en_f_2_take = (false || ((state_f_2_available == f_2_currentState) && true));
+    wire_port_loc_en_f_2_leave = (false || ((state_f_2_unavailable == f_2_currentState) && true));
+    interactions_first_enable[7] = (((true && wire_port_loc_en_f_1_leave) && wire_port_loc_en_f_0_leave) && wire_port_loc_en_p_1_release);
+    interactions_first_enable[4] = ((true && wire_port_loc_en_p_2_take_left) && wire_port_loc_en_f_1_take);
+    interactions_first_enable[8] = (((true && wire_port_loc_en_p_2_release) && wire_port_loc_en_f_1_leave) && wire_port_loc_en_f_2_leave);
+    interactions_first_enable[3] = ((true && wire_port_loc_en_f_1_take) && wire_port_loc_en_p_1_take_right);
+    interactions_first_enable[5] = ((true && wire_port_loc_en_p_2_take_right) && wire_port_loc_en_f_2_take);
+    interactions_first_enable[6] = (((true && wire_port_loc_en_f_0_leave) && wire_port_loc_en_p_0_release) && wire_port_loc_en_f_2_leave);
+    interactions_first_enable[0] = ((true && wire_port_loc_en_p_0_take_left) && wire_port_loc_en_f_2_take);
+    interactions_first_enable[2] = ((true && wire_port_loc_en_f_0_take) && wire_port_loc_en_p_1_take_left);
+    interactions_first_enable[1] = ((true && wire_port_loc_en_f_0_take) && wire_port_loc_en_p_0_take_right);
+    interactions_enablement[0] = (interactions_first_enable[0] && ((wire_selector == 0) || (( ! interactions_first_enable[wire_selector])  && ((((((((true && ( ! interactions_first_enable[1]) ) && ( ! interactions_first_enable[2]) ) && ( ! interactions_first_enable[3]) ) && ( ! interactions_first_enable[4]) ) && ( ! interactions_first_enable[5]) ) && ( ! interactions_first_enable[6]) ) && ( ! interactions_first_enable[7]) ) && ( ! interactions_first_enable[8]) ))));
+    interactions_enablement[1] = (interactions_first_enable[1] && ((wire_selector == 1) || (( ! interactions_first_enable[wire_selector])  && (((((((true && ( ! interactions_first_enable[2]) ) && ( ! interactions_first_enable[3]) ) && ( ! interactions_first_enable[4]) ) && ( ! interactions_first_enable[5]) ) && ( ! interactions_first_enable[6]) ) && ( ! interactions_first_enable[7]) ) && ( ! interactions_first_enable[8]) ))));
+    interactions_enablement[2] = (interactions_first_enable[2] && ((wire_selector == 2) || (( ! interactions_first_enable[wire_selector])  && ((((((true && ( ! interactions_first_enable[3]) ) && ( ! interactions_first_enable[4]) ) && ( ! interactions_first_enable[5]) ) && ( ! interactions_first_enable[6]) ) && ( ! interactions_first_enable[7]) ) && ( ! interactions_first_enable[8]) ))));
+    interactions_enablement[3] = (interactions_first_enable[3] && ((wire_selector == 3) || (( ! interactions_first_enable[wire_selector])  && (((((true && ( ! interactions_first_enable[4]) ) && ( ! interactions_first_enable[5]) ) && ( ! interactions_first_enable[6]) ) && ( ! interactions_first_enable[7]) ) && ( ! interactions_first_enable[8]) ))));
+    interactions_enablement[4] = (interactions_first_enable[4] && ((wire_selector == 4) || (( ! interactions_first_enable[wire_selector])  && ((((true && ( ! interactions_first_enable[5]) ) && ( ! interactions_first_enable[6]) ) && ( ! interactions_first_enable[7]) ) && ( ! interactions_first_enable[8]) ))));
+    interactions_enablement[5] = (interactions_first_enable[5] && ((wire_selector == 5) || (( ! interactions_first_enable[wire_selector])  && (((true && ( ! interactions_first_enable[6]) ) && ( ! interactions_first_enable[7]) ) && ( ! interactions_first_enable[8]) ))));
+    interactions_enablement[6] = (interactions_first_enable[6] && ((wire_selector == 6) || (( ! interactions_first_enable[wire_selector])  && ((true && ( ! interactions_first_enable[7]) ) && ( ! interactions_first_enable[8]) ))));
+    interactions_enablement[7] = (interactions_first_enable[7] && ((wire_selector == 7) || (( ! interactions_first_enable[wire_selector])  && (true && ( ! interactions_first_enable[8]) ))));
+    interactions_enablement[8] = (interactions_first_enable[8] && ((wire_selector == 8) || (( ! interactions_first_enable[wire_selector])  && true)));
+    wire_port_en_p_0_release = (false || interactions_enablement[6]);
+    wire_port_en_p_0_take_left = (false || interactions_enablement[0]);
+    wire_port_en_p_0_take_right = (false || interactions_enablement[1]);
+    wire_port_en_p_1_release = (false || interactions_enablement[7]);
+    wire_port_en_p_1_take_left = (false || interactions_enablement[2]);
+    wire_port_en_p_1_take_right = (false || interactions_enablement[3]);
+    wire_port_en_p_2_release = (false || interactions_enablement[8]);
+    wire_port_en_p_2_take_left = (false || interactions_enablement[4]);
+    wire_port_en_p_2_take_right = (false || interactions_enablement[5]);
+    wire_port_en_f_0_take = ((false || interactions_enablement[1]) || interactions_enablement[2]);
+    wire_port_en_f_0_leave = ((false || interactions_enablement[6]) || interactions_enablement[7]);
+    wire_port_en_f_1_take = ((false || interactions_enablement[3]) || interactions_enablement[4]);
+    wire_port_en_f_1_leave = ((false || interactions_enablement[7]) || interactions_enablement[8]);
+    wire_port_en_f_2_take = ((false || interactions_enablement[0]) || interactions_enablement[5]);
+    wire_port_en_f_2_leave = ((false || interactions_enablement[6]) || interactions_enablement[8]);
+    if(((p_0_currentState == state_p_0_s2) && wire_port_en_p_0_release)) {
+      p_0_currentState = state_p_0_s0;
+    }
+    else {
+      if(((p_0_currentState == state_p_0_s0) && wire_port_en_p_0_take_left)) {
+        p_0_currentState = state_p_0_s1;
+      }
+      else {
+        if(((p_0_currentState == state_p_0_s1) && wire_port_en_p_0_take_right)) {
+          p_0_currentState = state_p_0_s2;
+        }
+        else {
+          p_0_currentState = p_0_currentState;
+        }
+      }
+    }
+    if(((p_1_currentState == state_p_1_s2) && wire_port_en_p_1_release)) {
+      p_1_currentState = state_p_1_s0;
+    }
+    else {
+      if(((p_1_currentState == state_p_1_s0) && wire_port_en_p_1_take_left)) {
+        p_1_currentState = state_p_1_s1;
+      }
+      else {
+        if(((p_1_currentState == state_p_1_s1) && wire_port_en_p_1_take_right)) {
+          p_1_currentState = state_p_1_s2;
+        }
+        else {
+          p_1_currentState = p_1_currentState;
+        }
+      }
+    }
+    if(((p_2_currentState == state_p_2_s2) && wire_port_en_p_2_release)) {
+      p_2_currentState = state_p_2_s0;
+    }
+    else {
+      if(((p_2_currentState == state_p_2_s0) && wire_port_en_p_2_take_left)) {
+        p_2_currentState = state_p_2_s1;
+      }
+      else {
+        if(((p_2_currentState == state_p_2_s1) && wire_port_en_p_2_take_right)) {
+          p_2_currentState = state_p_2_s2;
+        }
+        else {
+          p_2_currentState = p_2_currentState;
+        }
+      }
+    }
+    if(((f_0_currentState == state_f_0_unavailable) && wire_port_en_f_0_leave)) {
+      f_0_currentState = state_f_0_available;
+    }
+    else {
+      if(((f_0_currentState == state_f_0_available) && wire_port_en_f_0_take)) {
+        f_0_currentState = state_f_0_unavailable;
+      }
+      else {
+        f_0_currentState = f_0_currentState;
+      }
+    }
+    if(((f_1_currentState == state_f_1_unavailable) && wire_port_en_f_1_leave)) {
+      f_1_currentState = state_f_1_available;
+    }
+    else {
+      if(((f_1_currentState == state_f_1_available) && wire_port_en_f_1_take)) {
+        f_1_currentState = state_f_1_unavailable;
+      }
+      else {
+        f_1_currentState = f_1_currentState;
+      }
+    }
+    if(((f_2_currentState == state_f_2_unavailable) && wire_port_en_f_2_leave)) {
+      f_2_currentState = state_f_2_available;
+    }
+    else {
+      if(((f_2_currentState == state_f_2_available) && wire_port_en_f_2_take)) {
+        f_2_currentState = state_f_2_unavailable;
+      }
+      else {
+        f_2_currentState = f_2_currentState;
+      }
+    }
+  }
