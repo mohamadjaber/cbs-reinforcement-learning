@@ -36,6 +36,10 @@ public class Compound {
 		setComponents();
 		setInitialState();
 	}
+	
+	public int stateLength() {
+		return components.size();
+	}
 
 	/**
 	 *

@@ -66,6 +66,8 @@ public class Test1 {
 			epoch++;
 		} while (train.getError() > 0.001);
 		train.finishTraining();
+		
+		System.out.println("here" + network.getWeight(1, 0, 0));
 
 		// test the neural network
 		System.out.println("Neural Network Results:");
@@ -76,7 +78,7 @@ public class Test1 {
 		output[0][0] = 36;
 
 		trainingSet = new BasicMLDataSet(input, output);
-		
+		System.out.println(network.getLayerBiasActivation(0));
 		for (MLDataPair pair : trainingSet) {
 			final MLData output = network.compute(pair.getInput());
 			System.out.println(pair.getInput().getData(0) + "," + pair.getInput().getData(1) + ", actual="

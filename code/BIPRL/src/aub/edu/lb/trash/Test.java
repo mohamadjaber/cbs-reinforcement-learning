@@ -44,6 +44,7 @@ public class Test {
 
 		// create a neural network, without using a factory
 		BasicNetwork network = new BasicNetwork();
+
 		network.addLayer(new BasicLayer(null, true, 2));
 		network.addLayer(new BasicLayer(new ActivationSigmoid(), true, 3));
 		network.addLayer(new BasicLayer(new ActivationSigmoid(), false, 1));

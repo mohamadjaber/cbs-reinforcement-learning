@@ -17,7 +17,7 @@ import aub.edu.lb.kripke.Transition;
  * @author Jaber & Nassar
  *
  */
-public class ValueIterator implements ReinforcementLearning {
+public class ValueIterator {
 
 	private final static double EPS = 1E-50;
 	private final static int MAXITERATION = 10000000;
@@ -27,14 +27,31 @@ public class ValueIterator implements ReinforcementLearning {
 	protected int[] reward;
 	public Kripke transitionSystem;
 
-	public final int numberStates;
-	public final int numberActions;
+	public int numberStates;
+	public int numberActions;
 	
-	private Set<String> badStatesNames; 
+	private Set<String> badStatesNames;
+	
+	// default values
+	private double gamma = DefaultSettings.gamma;
+	private int badReward = DefaultSettings.badReward;
+	private int goodReward = DefaultSettings.goodReward;
+	private int initialUtility = DefaultSettings.initialUtility; 
 	
 	
-
 	public ValueIterator(Kripke transitionSystem, String fileBadStates) {
+		initialize(transitionSystem, fileBadStates);
+	}
+	
+	public ValueIterator(Kripke transitionSystem, String fileBadStates, double gamma, int badReward, int goodReward, int initialUtility) {
+		this.gamma = gamma;
+		this.badReward = badReward; 
+		this.goodReward = goodReward;
+		this.initialUtility = initialUtility;
+		initialize(transitionSystem, fileBadStates);
+	}
+	
+	private void initialize(Kripke transitionSystem, String fileBadStates) {
 		this.transitionSystem = transitionSystem;
 		this.numberStates = (int) transitionSystem.getNumberStates();
 		this.numberActions = transitionSystem.getCompound().getInteractions().size();
