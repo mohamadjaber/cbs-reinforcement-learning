@@ -37,8 +37,10 @@ public class DeepReinforcementLearning {
 	private int traceLengthIteration;
 	private int numberOfNeuronsHidden = DefaultSettings.defaultNumberOfNeuronsHidden;
 	private ActivationFunction activationFunction = DefaultSettings.defaultActivationFunction;
-	private int badReward = DefaultSettings.badReward;
-	private int goodReward = DefaultSettings.goodReward;
+	private ActivationFunction activationFunctionOuter = DefaultSettings.defaultActivationFunctionOuter;
+
+	private double badReward = DefaultSettings.badReward;
+	private double goodReward = DefaultSettings.goodReward;
 	private double gamma = DefaultSettings.gamma;
 	private int epoch = DefaultSettings.EPOCH; 
 
@@ -55,6 +57,7 @@ public class DeepReinforcementLearning {
 
 	private void trainEpisodes() {
 		for (int i = 1; i <= numberEpisodes; i++) {
+			System.out.println("episode " + i);
 			trainEpisode();
 		}
 	}
@@ -77,7 +80,7 @@ public class DeepReinforcementLearning {
 			 * <currentState, interaction, reward nextState, nextState>
 			 */
 			boolean isBadStateNext = badStates.contains(nextState.toString());
-			int reward = isBadStateNext ? badReward : goodReward;
+			double reward = isBadStateNext ? badReward : goodReward;
 			TransitionReplay transition = new TransitionReplay(currentState, interaction, nextState, reward);
 			
 			memoryReplay.add(transition);
@@ -117,24 +120,24 @@ public class DeepReinforcementLearning {
 	
 	private double[] generateTrainingPoint(TransitionReplay transition) {
 		boolean isBadState = badStates.contains(transition.getToState().toString()); 
-		double[] outputNetwork = EncogHelper.forwardPropagation(networkHistory, transition.getToState().getIds());
+		double[] outputNetworkCurrentState = EncogHelper.forwardPropagation(networkHistory, transition.getFromState().getIds());
 		List<BIPInteraction> enabledInteractions = compound.getEnabledInteractions(transition.getToState());
 
 		if(isBadState || enabledInteractions == null || enabledInteractions.size() == 0) {
-			outputNetwork[transition.getInteraction().getId()] = transition.getReward();
-		} else {			
+			outputNetworkCurrentState[transition.getInteraction().getId()] = transition.getReward();
+		} else {	
+			double[] outputNetworkNextState = EncogHelper.forwardPropagation(networkHistory, transition.getToState().getIds());
 			double maxOutput = Double.MIN_VALUE;
-			BIPInteraction maxInteraction = null;
 			for (BIPInteraction interaction : enabledInteractions) {
 				int id = interaction.getId();
-				if (outputNetwork[id] > maxOutput) {
-					maxOutput = outputNetwork[id];
-					maxInteraction = interaction; 
+				if (outputNetworkNextState[id] > maxOutput) {
+					maxOutput = outputNetworkNextState[id];
 				}
 			}
-			outputNetwork[maxInteraction.getId()] = transition.getReward() + gamma * maxOutput;
+		//	System.out.println("here --> " + maxOutput);
+			outputNetworkCurrentState[transition.getInteraction().getId()] = transition.getReward() + gamma * maxOutput;
 		}
-		return outputNetwork;
+		return outputNetworkCurrentState;
 	}
 	
 	private List<TransitionReplay> sampleMiniBatch() {
@@ -211,7 +214,7 @@ public class DeepReinforcementLearning {
 		networkCurrent = new BasicNetwork();
 		networkCurrent.addLayer(new BasicLayer(null, true, compound.stateLength()));
 		networkCurrent.addLayer(new BasicLayer(activationFunction, true, numberOfNeuronsHidden));
-		networkCurrent.addLayer(new BasicLayer(activationFunction, false, compound.getInteractions().size()));
+		networkCurrent.addLayer(new BasicLayer(activationFunctionOuter, false, compound.getInteractions().size()));
 		networkCurrent.getStructure().finalizeStructure();
 		networkCurrent.reset();
 		networkHistory = (BasicNetwork) networkCurrent.clone();

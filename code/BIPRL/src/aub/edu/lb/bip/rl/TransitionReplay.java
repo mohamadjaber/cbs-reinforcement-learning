@@ -7,9 +7,9 @@ public class TransitionReplay {
 	private GlobalState fromState;
 	private GlobalState toState;
 	private BIPInteraction action; 
-	private int reward; 
+	private double reward; 
 	
-	public TransitionReplay(GlobalState fromState, BIPInteraction action, GlobalState toState, int reward) {
+	public TransitionReplay(GlobalState fromState, BIPInteraction action, GlobalState toState, double reward) {
 		this.fromState = fromState;
 		this.toState = toState;
 		this.action = action; 
@@ -28,7 +28,7 @@ public class TransitionReplay {
 		return action;
 	}
 	
-	public int getReward() {
+	public double getReward() {
 		return reward;
 	}
 	

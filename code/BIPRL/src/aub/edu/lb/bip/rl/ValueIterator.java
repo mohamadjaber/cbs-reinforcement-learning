@@ -24,7 +24,7 @@ public class ValueIterator {
 
 	public double[][] qValue; // TODO hash map in case of sparse cases...
 	protected double[] utility;
-	protected int[] reward;
+	protected double[] reward;
 	public Kripke transitionSystem;
 
 	public int numberStates;
@@ -34,8 +34,8 @@ public class ValueIterator {
 	
 	// default values
 	private double gamma = DefaultSettings.gamma;
-	private int badReward = DefaultSettings.badReward;
-	private int goodReward = DefaultSettings.goodReward;
+	private double badReward = DefaultSettings.badReward;
+	private double goodReward = DefaultSettings.goodReward;
 	private int initialUtility = DefaultSettings.initialUtility; 
 	
 	
@@ -43,7 +43,7 @@ public class ValueIterator {
 		initialize(transitionSystem, fileBadStates);
 	}
 	
-	public ValueIterator(Kripke transitionSystem, String fileBadStates, double gamma, int badReward, int goodReward, int initialUtility) {
+	public ValueIterator(Kripke transitionSystem, String fileBadStates, double gamma, double badReward, double goodReward, int initialUtility) {
 		this.gamma = gamma;
 		this.badReward = badReward; 
 		this.goodReward = goodReward;
@@ -56,7 +56,7 @@ public class ValueIterator {
 		this.numberStates = (int) transitionSystem.getNumberStates();
 		this.numberActions = transitionSystem.getCompound().getInteractions().size();
 		this.utility = new double[numberStates];
-		this.reward = new int[numberStates];
+		this.reward = new double[numberStates];
 		this.badStatesNames = new HashSet<String>();
 		qValue = new double[numberStates][numberActions];
 		computeReward(fileBadStates);

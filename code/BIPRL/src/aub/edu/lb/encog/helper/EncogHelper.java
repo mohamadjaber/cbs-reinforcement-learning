@@ -37,6 +37,7 @@ public class EncogHelper {
 		int epoch = 1;
 		do {
 			train.iteration();
+			// System.out.println("after Epoch " + epoch + " --> " + train.getError());
 			epoch++;
 		} while (train.getError() > DefaultSettings.EPS && epoch < maxEpoch);
 		train.finishTraining();
