@@ -96,6 +96,15 @@ public class GlobalState {
 		}
 		return localIds;
 	}
+	
+	public double[] getIds() {
+		double[] state = new double[localStates.size()];
+		int i = 0; 
+		for (LocalState ls : localStates) {
+			 state[i++] = ls.getId();
+		}
+		return state;
+	}
 
 	public String toString() {
 		String globalStateName = "[";

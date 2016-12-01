@@ -7,8 +7,8 @@ public class DefaultSettings {
 	
 	// Default Settings for Value Iteration
 	final static double gamma = 0.9;
-	final static int badReward = -10;
-	final static int goodReward = 10;
+	final static int badReward = -1;
+	final static int goodReward = 1;
 	final static int initialUtility = 0; 
 	
 	// Default Settings for Deep Reinforcement Learning
@@ -16,7 +16,13 @@ public class DefaultSettings {
 	final static int defaultNumberEpisodes = 100;
 	final static double defaultProbabilityRandom = 0.1;
 	final static int defaultTraceLengthIteration = 100;
-	final static int defaultNumberOfNeuronsHidden = 10;
+	final static int defaultNumberOfNeuronsHidden = 100;
+	final static int defaultSampleCapacityPercentage = 40; 
+	final static int defaultResetHistoryTime = 10;
 	final static ActivationFunction defaultActivationFunction = new ActivationSigmoid();
+	
+	
+	final public static double EPS = 1E-2;
+	final public static int EPOCH = 100;
 
 }

@@ -12,6 +12,8 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 
+import aub.edu.lb.encog.helper.EncogHelper;
+
 /**
  * XOR: This example is essentially the "Hello World" of neural network
  * programming. This example shows how to construct an Encog neural network to
@@ -52,12 +54,14 @@ public class Test1 {
 		network.getStructure().finalizeStructure();
 		network.reset();
 
+	//	System.out.println(EncogHelper.dumpWeightsVerbose(network));
+		
 		// create training data
 		MLDataSet trainingSet = new BasicMLDataSet(input, output);
 
 		// train the neural network
 		final ResilientPropagation train = new ResilientPropagation(network, trainingSet);
-
+		
 		int epoch = 1;
 
 		do {
@@ -67,7 +71,6 @@ public class Test1 {
 		} while (train.getError() > 0.001);
 		train.finishTraining();
 		
-		System.out.println("here" + network.getWeight(1, 0, 0));
 
 		// test the neural network
 		System.out.println("Neural Network Results:");
@@ -79,12 +82,26 @@ public class Test1 {
 
 		trainingSet = new BasicMLDataSet(input, output);
 		System.out.println(network.getLayerBiasActivation(0));
+		
+		// create a neural network, without using a factory
+		BasicNetwork copyNetwork = new BasicNetwork();
+		copyNetwork.addLayer(new BasicLayer(null, true, 2));
+		copyNetwork.addLayer(new BasicLayer(new ActivationLinear(), true, 3));
+		copyNetwork.addLayer(new BasicLayer(new ActivationLinear(), false, 1));
+		copyNetwork.getStructure().finalizeStructure();
+		copyNetwork.reset();
+				
+		EncogHelper.copyWeights(network, copyNetwork);
 		for (MLDataPair pair : trainingSet) {
 			final MLData output = network.compute(pair.getInput());
 			System.out.println(pair.getInput().getData(0) + "," + pair.getInput().getData(1) + ", actual="
 					+ output.getData(0) + ",ideal=" + pair.getIdeal().getData(0));
 		}
-
+		for (MLDataPair pair : trainingSet) {
+			final MLData output = copyNetwork.compute(pair.getInput());
+			System.out.println(pair.getInput().getData(0) + "," + pair.getInput().getData(1) + ", actual="
+					+ output.getData(0) + ",ideal=" + pair.getIdeal().getData(0));
+		}
 		Encog.getInstance().shutdown();
 	}
 }
