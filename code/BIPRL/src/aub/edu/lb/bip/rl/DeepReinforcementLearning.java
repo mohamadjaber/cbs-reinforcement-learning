@@ -2,7 +2,9 @@ package aub.edu.lb.bip.rl;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,7 +22,7 @@ import aub.edu.lb.model.Compound;
 import aub.edu.lb.model.GlobalState;
 
 public class DeepReinforcementLearning {
-
+	PrintStream ps ; 
 	private Compound compound;
 	private BasicNetwork networkCurrent; // teta
 	private BasicNetwork networkHistory; // teta minus
@@ -44,8 +46,18 @@ public class DeepReinforcementLearning {
 	private double gamma = DefaultSettings.gamma;
 	private int epoch = DefaultSettings.EPOCH; 
 
+	private boolean debug = true; 
+	
+	double[][][] weights;
+	double[] bias;
 	
 	public DeepReinforcementLearning(Compound compound, String fileBadStates) {
+		try {
+			if(debug) ps = new PrintStream(new File("bench/outputHaitham.txt"));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		this.compound = compound;
 		this.badStates = new HashSet<String>();
 		fillBadStates(fileBadStates);
@@ -53,6 +65,7 @@ public class DeepReinforcementLearning {
 		initializeNeuralNetworks();
 		memoryReplay = new LinkedList<TransitionReplay>();
 		trainEpisodes();
+		if(debug) ps.close();
 	}
 
 	private void trainEpisodes() {
@@ -60,6 +73,8 @@ public class DeepReinforcementLearning {
 			System.out.println("episode " + i);
 			trainEpisode();
 		}
+		setWeights();
+		// printWeights(networkCurrent);
 	}
 
 	private void trainEpisode() {
@@ -109,13 +124,19 @@ public class DeepReinforcementLearning {
 		double[][] input = new double[miniBatch.size()][];
 		double[][] output = new double[miniBatch.size()][];
 		int i = 0;
-		
+		if(debug) ps.println("start batch size of " + miniBatch.size());
 		for(TransitionReplay t: miniBatch) {
 			output[i] = generateTrainingPoint(t);
 			input[i] = t.getFromState().getIds();
+			if(debug) {
+				ps.println(t);
+				ps.println(Arrays.toString(input[i]));
+				ps.println(Arrays.toString(output[i]) + "\n");
+			}	
 			i++;
 		}
-		EncogHelper.learning(networkCurrent, input, output, epoch);
+		if(debug) ps.println("end batch\n\n\n");
+		EncogHelper.learning(networkCurrent, input, output, epoch, DefaultSettings.EPS);
 	}
 	
 	private double[] generateTrainingPoint(TransitionReplay transition) {
@@ -127,14 +148,13 @@ public class DeepReinforcementLearning {
 			outputNetworkCurrentState[transition.getInteraction().getId()] = transition.getReward();
 		} else {	
 			double[] outputNetworkNextState = EncogHelper.forwardPropagation(networkHistory, transition.getToState().getIds());
-			double maxOutput = Double.MIN_VALUE;
+			double maxOutput = -Double.POSITIVE_INFINITY;
 			for (BIPInteraction interaction : enabledInteractions) {
 				int id = interaction.getId();
 				if (outputNetworkNextState[id] > maxOutput) {
 					maxOutput = outputNetworkNextState[id];
 				}
 			}
-		//	System.out.println("here --> " + maxOutput);
 			outputNetworkCurrentState[transition.getInteraction().getId()] = transition.getReward() + gamma * maxOutput;
 		}
 		return outputNetworkCurrentState;
@@ -144,8 +164,9 @@ public class DeepReinforcementLearning {
 		List<TransitionReplay> miniBatch = new ArrayList<TransitionReplay>();
 		int sizeMiniBatch = (int) Math.ceil((1.0 * memoryReplay.size() * sampleCapacityPercentage) / 100); 
 		int[] miniBatchIndices = Helper.generateRandomIndices(sizeMiniBatch, memoryReplay.size());
-		for(int i = 0; i < miniBatchIndices.length; i++) 
+		for(int i = 0; i < miniBatchIndices.length; i++) {
 			miniBatch.add(memoryReplay.get(miniBatchIndices[i]));
+		}
 		return miniBatch;
 		
 	}
@@ -182,10 +203,10 @@ public class DeepReinforcementLearning {
 		} else {
 			double[] outputNetwork = EncogHelper.forwardPropagation(networkCurrent, state.getIds());
 			BIPInteraction maxInteraction = null;
-			double maxOutput = Double.MIN_VALUE;
+			double maxOutput = -Double.POSITIVE_INFINITY;
 			for (BIPInteraction interaction : enabledInteractions) {
 				int id = interaction.getId();
-				if (outputNetwork[id] > maxOutput) {
+				if (outputNetwork[id] >= maxOutput) {
 					maxInteraction = interaction;
 					maxOutput = outputNetwork[id];
 				}
@@ -199,10 +220,7 @@ public class DeepReinforcementLearning {
 		return EncogHelper.forwardPropagation(networkCurrent, state);
 	}
 	
-
 	
-	
-
 	private boolean isExploit() {
 		return Math.random() > probabilityRandom;
 	}
@@ -223,11 +241,72 @@ public class DeepReinforcementLearning {
 	public Compound getCompound() {
 		return compound;
 	}
+	
+	public int getInputNetworkSize() {
+		return compound.stateLength() + 1; // one for bias
+	}
+	
+	public int getHiddenLayerNetworkSize() {
+		return numberOfNeuronsHidden + 1; // one for bias
+	}
+	
+	public int getOutputNetworkSize() {
+		return compound.getInteractions().size();
+	}
+	
 
 	/**
 	 * TODO: Tweak it w.r.t syntax Diameter or number of locations
 	 */
 	public void initializeTraceLengthIteration() {
 		traceLengthIteration = DefaultSettings.defaultTraceLengthIteration;
+	}
+	
+	public void setWeights() {
+		weights = new double[networkCurrent.getLayerCount() - 1][][];
+		bias = new double[networkCurrent.getLayerCount() - 1];
+
+		int numberLayers = networkCurrent.getLayerCount();
+		for (int i = 0; i < numberLayers - 1; i++) {
+			weights[i] = new double[networkCurrent.getLayerTotalNeuronCount(i)][networkCurrent.getLayerTotalNeuronCount(i + 1)];
+			bias[i] = networkCurrent.getLayerBiasActivation(i);
+			// from layer getLayerTotalNeuronCount
+			for (int neuronFrom = 0; neuronFrom < networkCurrent.getLayerTotalNeuronCount(i); neuronFrom++) {
+				// to layer getLayerNeuronCount (from is not connected to the
+				// bias neuron and,
+				// the bias weight is the last weight on each layer
+				for (int neuronTo = 0; neuronTo < networkCurrent.getLayerNeuronCount(i + 1); neuronTo++) {
+					weights[i][neuronFrom][neuronTo] = networkCurrent.getWeight(i, neuronFrom, neuronTo);
+				}
+			}
+		}
+	}
+	
+	public void printWeights(BasicNetwork fromNetwork) {
+		int numberLayers = fromNetwork.getLayerCount();
+		for (int i = 0; i < numberLayers - 1; i++) {
+			System.out.println("from layer " + i + " to layer " + (i + 1));
+			System.out.println("layer bias = " + fromNetwork.getLayerBiasActivation(i));
+			// from layer getLayerTotalNeuronCount
+			for (int neuronFrom = 0; neuronFrom < fromNetwork.getLayerTotalNeuronCount(i); neuronFrom++) {
+				// to layer getLayerNeuronCount (from is not connected to the
+				// bias neuron and,
+				// the bias weight is the last weight on each layer
+				for (int neuronTo = 0; neuronTo < fromNetwork.getLayerNeuronCount(i + 1); neuronTo++) {
+					System.out.println("from " + neuronFrom + " -- to " + neuronTo + " --> "
+							+ fromNetwork.getWeight(i, neuronFrom, neuronTo));
+				}
+			}
+			System.out.println("-------------------------------------");
+		}
+	}
+
+	
+	public double[][][] getWeights() {
+		return weights; 
+	}
+	
+	public double[] getBias() {
+		return bias; 
 	}
 }

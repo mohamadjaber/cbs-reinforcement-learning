@@ -15,7 +15,7 @@ import aub.edu.lb.bip.expression.TExpression;
 import aub.edu.lb.bip.expression.TNamedElement;
 import aub.edu.lb.bip.expression.TUnaryExpression;
 import aub.edu.lb.bip.expression.TVariable;
-
+import aub.edu.lb.bip.rl.DefaultSettings;
 import ujf.verimag.bip.Core.ActionLanguage.Expressions.BinaryOperator;
 import ujf.verimag.bip.Core.ActionLanguage.Expressions.UnaryOperator;
 import ujf.verimag.bip.Core.Behaviors.Port;
@@ -70,6 +70,58 @@ public class TInteraction extends TVariable {
 						new TNamedElement(TogetherSyntax.interactions_filtered_re + "[" + TogetherSyntax.current_state_identifier + " + \"_\" + to_string(" + nextId + ")]")
 					);
 				
+				
+				TBinaryExpression binaryExpression = new TBinaryExpression(BinaryOperator.LOGICAL_OR,
+						left, right);
+				expressionRL = new TBinaryExpression(BinaryOperator.LOGICAL_AND, expressionRL, binaryExpression);
+			}
+		}
+		return expressionRL;
+	}
+	
+	public TExpression getExpressionDeepReinforcementLearning() {
+		TExpression expressionRL = new TNamedElement(TogetherSyntax.interactions_first_enable + "[" + getId() +"]");
+		TInteractions tInteractions = tCompound.getTInteractions();
+		for(TInteraction tNextInteraction : tInteractions.getTInteractions()) {
+			if(!equals(tNextInteraction)) {
+				int nextId = tNextInteraction.getId();
+				TExpression left = new TUnaryExpression(UnaryOperator.LOGICAL_NOT, 
+						new TNamedElement(TogetherSyntax.interactions_first_enable + "[" + nextId +"]"));
+				
+				TExpression right = new TBinaryExpression(
+						BinaryOperator.GREATER_THAN_OR_EQUAL,
+						new TNamedElement(TogetherSyntax.interactions_filtered_re + "[" + getId() + "]"),
+						new TNamedElement(TogetherSyntax.interactions_filtered_re + "[" + nextId + "]")
+					);
+				
+				
+				TBinaryExpression binaryExpression = new TBinaryExpression(BinaryOperator.LOGICAL_OR,
+						left, right);
+				expressionRL = new TBinaryExpression(BinaryOperator.LOGICAL_AND, expressionRL, binaryExpression);
+			}
+		}
+		return expressionRL;
+	}
+	
+
+	public TExpression getExpressionFairDeepReinforcementLearning() {
+		TExpression expressionRL = new TNamedElement(TogetherSyntax.interactions_first_enable + "[" + getId() +"]");
+		TInteractions tInteractions = tCompound.getTInteractions();
+		for(TInteraction tNextInteraction : tInteractions.getTInteractions()) {
+			if(!equals(tNextInteraction)) {
+				int nextId = tNextInteraction.getId();
+				TExpression left = new TUnaryExpression(UnaryOperator.LOGICAL_NOT, 
+						new TNamedElement(TogetherSyntax.interactions_first_enable + "[" + nextId +"]"));
+				
+				TNamedElement right1 = new TNamedElement("abs(" + TogetherSyntax.interactions_filtered_re + "[" + getId() + "]" +
+						"-" + TogetherSyntax.interactions_filtered_re + "[" + nextId + "]) < " + DefaultSettings.goodReward); 
+						
+				TExpression right2 = new TBinaryExpression(
+						BinaryOperator.GREATER_THAN_OR_EQUAL,
+						new TNamedElement(TogetherSyntax.interactions_filtered_re + "[" + getId() + "]"),
+						new TNamedElement(TogetherSyntax.interactions_filtered_re + "[" + nextId + "]")
+					);
+				TBinaryExpression right = new TBinaryExpression(BinaryOperator.LOGICAL_OR, right1, right2);
 				
 				TBinaryExpression binaryExpression = new TBinaryExpression(BinaryOperator.LOGICAL_OR,
 						left, right);

@@ -6,7 +6,6 @@ import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 
-import aub.edu.lb.bip.rl.DefaultSettings;
 
 public class EncogHelper {
 
@@ -31,7 +30,7 @@ public class EncogHelper {
 		}
 	}
 
-	public static void learning(BasicNetwork network, double[][] input, double[][] output, int maxEpoch) {
+	public static void learning(BasicNetwork network, double[][] input, double[][] output, int maxEpoch, double eps) {
 		MLDataSet trainingSet = new BasicMLDataSet(input, output);
 		final ResilientPropagation train = new ResilientPropagation(network, trainingSet);
 		int epoch = 1;
@@ -39,7 +38,7 @@ public class EncogHelper {
 			train.iteration();
 			// System.out.println("after Epoch " + epoch + " --> " + train.getError());
 			epoch++;
-		} while (train.getError() > DefaultSettings.EPS && epoch < maxEpoch);
+		} while (train.getError() > eps && epoch < maxEpoch);
 		train.finishTraining();
 	}
 

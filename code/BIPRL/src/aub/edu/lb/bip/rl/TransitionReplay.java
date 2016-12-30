@@ -32,4 +32,9 @@ public class TransitionReplay {
 		return reward;
 	}
 	
+	@Override
+	public String toString() {
+		return fromState.toString() + " -- " + action.toString() + " --> " + toState.toString();
+	}
+	
 }

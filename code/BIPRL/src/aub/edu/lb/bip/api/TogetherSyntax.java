@@ -11,9 +11,15 @@ public class TogetherSyntax {
 	public final static String interactions_filtered_priority = "interactions_filtered_priority";
 	public final static String interactions_filtered_re = "interactions_filtered_re";
 	public final static String current_state_identifier = "current_state_id";
-	
-	
-	
+	public final static String weightsMatrixInput = "weights1";
+	public final static String weightsMatrixOutput = "weights2";
+	public final static String bias0 = "bias0";
+	public final static String bias1 = "bias1";
+	public final static String layer0 = "layer0";
+	public final static String layer1 = "layer1";
+	public final static String layer2 = "layer2";
+	public final static String forwardProp = "forwardProp";
+
 	public final static String priority = "priority";
 	public final static String filter_Interaction = "filter_Interaction";
 	public final static String selecter = "selector";

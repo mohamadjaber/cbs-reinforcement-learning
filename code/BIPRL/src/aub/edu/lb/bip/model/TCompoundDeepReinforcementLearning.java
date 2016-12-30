@@ -2,17 +2,12 @@ package aub.edu.lb.bip.model;
 
 
 
-import aub.edu.lb.bip.api.TEnumType;
 import aub.edu.lb.bip.api.TogetherSyntax;
 import aub.edu.lb.bip.expression.TCompositeAction;
 import aub.edu.lb.bip.expression.TDoTogetherAction;
 import aub.edu.lb.bip.expression.TNamedElement;
-import aub.edu.lb.bip.expression.TVariable;
 import aub.edu.lb.bip.expression.TWhileAction;
-import aub.edu.lb.bip.rl.ValueIterator;
-import aub.edu.lb.kripke.Kripke;
-import aub.edu.lb.kripke.KripkeState;
-import aub.edu.lb.kripke.Transition;
+import aub.edu.lb.bip.rl.DeepReinforcementLearning;
 import ujf.verimag.bip.Core.Interactions.CompoundType;
 
 /**
@@ -35,16 +30,17 @@ import ujf.verimag.bip.Core.Interactions.CompoundType;
  * Note that, in most of the bip models this is the case. 
  *
  */
-public class TCompoundReinforcementLearning extends TCompound {
+public class TCompoundDeepReinforcementLearning extends TCompound {
 
-	ValueIterator valueIterator;
-
-	public TCompoundReinforcementLearning(String bipFile, boolean defaultInitializeVariables, String preCondition, String postCondition, String badStateFile) {
-		super(bipFile, true, defaultInitializeVariables, preCondition, postCondition, badStateFile, false);
+	DeepReinforcementLearning deepRL;
+	
+	public TCompoundDeepReinforcementLearning(String bipFile, boolean defaultInitializeVariables, String preCondition, String postCondition, String badStateFile,
+			boolean fair) {
+		super(bipFile, true, defaultInitializeVariables, preCondition, postCondition, badStateFile, fair);
 	}
 	
-	public TCompoundReinforcementLearning(String bipFile, String badStateFile) {
-		super(bipFile, true, false, null, null, badStateFile, false);
+	public TCompoundDeepReinforcementLearning(String bipFile, String badStateFile, boolean fair) {
+		super(bipFile, true, false, null, null, badStateFile, fair);
 	}
 	
 	public void generalInitialize() {
@@ -52,14 +48,13 @@ public class TCompoundReinforcementLearning extends TCompound {
 	}
 
 	
-	public TCompoundReinforcementLearning(String bipFile, CompoundType compound, boolean defaultInitializeVariables, String badStateFile) {
+	public TCompoundDeepReinforcementLearning(String bipFile, CompoundType compound, boolean defaultInitializeVariables, String badStateFile) {
 		super(bipFile, true, defaultInitializeVariables, badStateFile);
 	}
 	
 
 	private void initializeRL() {
-		Kripke transitionSystem = new Kripke(compound);
-		valueIterator = new ValueIterator(transitionSystem, badStateFile);
+		deepRL = new DeepReinforcementLearning(compound, badStateFile);
 	}
 
 	@Override
@@ -87,49 +82,63 @@ public class TCompoundReinforcementLearning extends TCompound {
 		injectPostCondition(caCycle1);	
 	}
 	
+	public void setCurrentState(TCompositeAction caCycle1) {
+		TNamedElement variableInput = new TNamedElement("double * " + TogetherSyntax.current_state_identifier +
+				" = new double[" + deepRL.getInputNetworkSize() + "];");
+		TCompositeAction ca = new TCompositeAction();
+		for(int i = 0; i < tComponents.size(); i++) {
+			ca.addAction(new TNamedElement(
+					TogetherSyntax.current_state_identifier + "[" + i + "] = " +
+							tComponents.get(i).getCurrentState().getName() + ";"	
+					));
+		}
+		ca.addAction(new TNamedElement(
+				TogetherSyntax.current_state_identifier + "[" + tComponents.size() + "] = " +
+						deepRL.getBias()[0] + ";"	
+				));
+		
+		
+		TNamedElement variableOutput = new TNamedElement("double * " + TogetherSyntax.interactions_filtered_re + " = " 
+				+ TogetherSyntax.forwardProp + "(" + TogetherSyntax.current_state_identifier + ", " + deepRL.getInputNetworkSize()
+				+ ");");
+		
+		caCycle1.getContents().add(variableInput);
+		caCycle1.getContents().add(ca);
+		caCycle1.getContents().add(variableOutput);
+	}
+	
 	@Override
 	protected void setInteractionEnablement(TCompositeAction ca) {
 		setFirstInteractionEnablement(ca);
-		setInteractionEnablementRE(ca);
+		System.out.println(fair);
+		if(!fair) setInteractionEnablementRE(ca);
+		else {
+			setInteractionEnablementFairRE(ca);
+		}
 		if (withPriority) setFilterInteractionPriority(ca);
 		setSelectOneInteraction(ca, withPriority);
 	}
 	
+	
+
+	
 	private void setInteractionEnablementRE(TCompositeAction action) {
-		action.getContents().add(tInteractions.getInteractionEnablementRL());
+		action.getContents().add(tInteractions.getInteractionEnablementDeepRL());
 	}
 	
-	public void setCurrentState(TCompositeAction caCycle1) {
-		TVariable variable = new TVariable(TogetherSyntax.current_state_identifier, TEnumType.STRING);
-		variable.create();
-		String currentState = "";
-		for(int i = 0; i < tComponents.size() - 1; i++) {
-			currentState += "to_string(" + tComponents.get(i).getCurrentState().getName() + ") + \"_\" + ";
-		}
-		currentState += "to_string(" + tComponents.get(tComponents.size() - 1).getCurrentState().getName() + ")";
-		caCycle1.getContents().add(variable.create(new TNamedElement(currentState)));
+	private void setInteractionEnablementFairRE(TCompositeAction action) {
+		action.getContents().add(tInteractions.getInteractionEnablementFairDeepRL());
 	}
 	
 	@Override
 	protected void createInteractions() {
 		togetherAction.getContents().add(this.getTInteractions().create());
 		togetherAction.getContents().add(this.getTInteractions().getTInteractionsFirstEnable().create());
-		togetherAction.getContents().add(this.getTInteractions().getTInteractionsRuntimeEnforcement().create());
-		initializeQValueTable();
 		if (withPriority)
 			togetherAction.getContents().add(this.getTInteractions().getTInteractionsFilterPriority().create());
 	}
 	
-	private void initializeQValueTable() {
-		for (KripkeState state : valueIterator.transitionSystem.getStates()) {
-			int stateId = valueIterator.transitionSystem.getStateId(state.getState().toString());
-			for (Transition t : state.getTransitions()) {
-				double value = valueIterator.qValue[stateId][t.getLabel().getId()];
-				togetherAction.getContents().add(new TNamedElement(TogetherSyntax.interactions_filtered_re + "[\""
-						+ state.getState().getLocalIds() + "" + t.getLabel().getId() + "\"] = " + value + ";"));
-			}
-		}
-	}
+
 	
 }
 

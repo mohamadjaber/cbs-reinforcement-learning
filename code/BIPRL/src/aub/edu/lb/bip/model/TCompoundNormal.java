@@ -31,10 +31,8 @@ import ujf.verimag.bip.Core.Interactions.CompoundType;
  */
 public class TCompoundNormal extends TCompound {
 
-	
-	
 	public TCompoundNormal(String bipFile, boolean defaultInitializeVariables, String preCondition, String postCondition) {
-		super(bipFile, true, defaultInitializeVariables, preCondition, postCondition, null);
+		super(bipFile, true, defaultInitializeVariables, preCondition, postCondition, null, false);
 	}
 	
 	public TCompoundNormal(String bipFile, CompoundType compound, boolean defaultInitializeVariables) {
@@ -60,7 +58,6 @@ public class TCompoundNormal extends TCompound {
 		whileLoop.setAction(ca);
 		togetherAction.getContents().add(whileLoop);
 		setRandomSelector(caCycle1);
-		setCurrentState(caCycle1);
 		setLocalPortEnablement(caCycle1);
 		setInteractionEnablement(caCycle1);
 		setPortInteractionEnablement(caCycle1);

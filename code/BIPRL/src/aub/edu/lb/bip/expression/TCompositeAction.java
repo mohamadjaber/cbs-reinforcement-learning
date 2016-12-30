@@ -14,4 +14,8 @@ public class TCompositeAction implements TAction {
 	public List<TAction> getContents() {
 		return actions; 
 	}
+	
+	public void addAction(TAction a) {
+		actions.add(a);
+	}
 }

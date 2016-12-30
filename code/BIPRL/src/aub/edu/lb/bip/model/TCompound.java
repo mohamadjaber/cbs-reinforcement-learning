@@ -15,7 +15,6 @@ import aub.edu.lb.bip.expression.TCompositeAction;
 import aub.edu.lb.bip.expression.TDoTogetherAction;
 import aub.edu.lb.bip.expression.TNamedElement;
 import aub.edu.lb.bip.expression.TVariable;
-import aub.edu.lb.bip.rl.ValueIterator;
 import aub.edu.lb.model.Compound;
 
 public abstract class TCompound {
@@ -38,10 +37,9 @@ public abstract class TCompound {
 	protected String preCondition;
 	protected String postCondition;
 
-	ValueIterator valueIterator;
 
 	protected String badStateFile; 
-
+	protected boolean fair; 
 	
 	/**
 	 * @param compound
@@ -53,7 +51,9 @@ public abstract class TCompound {
 	 *            integers, or false if boolean. This will improve the
 	 *            verification time.
 	 */
-	public TCompound(String bipFile, boolean optmized, boolean defaultInitializeVariables, String preCondition, String postCondition, String badStateFile) {
+	public TCompound(String bipFile, boolean optmized, boolean defaultInitializeVariables, String preCondition, String postCondition, String badStateFile,
+			boolean fair) {
+		this.fair = fair;
 		this.badStateFile = badStateFile;
 		compoundType = TransformationFunction.parseBIPFile(bipFile);
 		compound = new Compound(compoundType);
@@ -93,7 +93,7 @@ public abstract class TCompound {
 
 
 	public TCompound(String bipFile, boolean optmized, boolean defaultInitializeVariables, String badStateFile) {
-		this(bipFile, optmized, defaultInitializeVariables, null, null, badStateFile);
+		this(bipFile, optmized, defaultInitializeVariables, null, null, badStateFile, false);
 	}
 
 	protected void setTogetherAction() {
@@ -147,17 +147,6 @@ public abstract class TCompound {
 		caCycle1.getContents().add(action);
 	}
 	
-	public void setCurrentState(TCompositeAction caCycle1) {
-		TVariable variable = new TVariable(TogetherSyntax.current_state_identifier, TEnumType.STRING);
-		variable.create();
-		String currentState = "";
-		for(int i = 0; i < tComponents.size() - 1; i++) {
-			currentState += "to_string(" + tComponents.get(i).getCurrentState().getName() + ") + \"_\" + ";
-		}
-		currentState += "to_string(" + tComponents.get(tComponents.size() - 1).getCurrentState().getName() + ")";
-		caCycle1.getContents().add(variable.create(new TNamedElement(currentState)));
-	}
-
 	
 	private void defaultInitializeVariables() {
 		TDoTogetherAction initialization = new TDoTogetherAction();

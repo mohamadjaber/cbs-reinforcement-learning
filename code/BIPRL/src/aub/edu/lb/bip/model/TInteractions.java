@@ -68,6 +68,26 @@ public class TInteractions extends TArrayVariable {
 		}
 		return action;
 	}
+	
+	public TCompositeAction getInteractionEnablementDeepRL() {
+		TCompositeAction action = new TCompositeAction();
+		for (TInteraction tInteraction : getTInteractions()) {
+			TArrayVariable arrayVariable = new TArrayVariable(tInteractionsFirstEnable.getName(),
+					tInteractionsFirstEnable.getType(), new TNamedElement("" + tInteraction.getId()));
+			action.getContents().add(arrayVariable.set(tInteraction.getExpressionDeepReinforcementLearning()));
+		}
+		return action;
+	}
+	
+	public TCompositeAction getInteractionEnablementFairDeepRL() {
+		TCompositeAction action = new TCompositeAction();
+		for (TInteraction tInteraction : getTInteractions()) {
+			TArrayVariable arrayVariable = new TArrayVariable(tInteractionsFirstEnable.getName(),
+					tInteractionsFirstEnable.getType(), new TNamedElement("" + tInteraction.getId()));
+			action.getContents().add(arrayVariable.set(tInteraction.getExpressionFairDeepReinforcementLearning()));
+		}
+		return action;
+	}
 
 	public TVariable getTInteractionsRuntimeEnforcement() {
 		return tInteractionsRuntimeEnforcement;

@@ -10,7 +10,6 @@ public class TestRL1 {
 
 	public static void main(String[] args) {
 		CompoundType ct = TransformationFunction.parseBIPFile("bip-files/dining.bip");
-
 		Compound compound = new Compound(ct);
 		Kripke transitionSystem = new Kripke(compound);
 		ValueIterator valueIterator = new ValueIterator(transitionSystem, "bench/badStates1");
