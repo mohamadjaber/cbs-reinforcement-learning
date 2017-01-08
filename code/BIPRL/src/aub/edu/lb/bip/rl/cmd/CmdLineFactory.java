@@ -92,7 +92,7 @@ public class CmdLineFactory {
 				(CmdLineHandler) new HelpCmdLineHandler(helpText, cmdLineTool, cmdLineDescription,
 						new Parameter[] { mode, maxIterationValueIterator, episodes, goodReward, badReward, epoch, hidden, 
 								probaRandom, gamma, capacity, minimumTrace, sampleCapacityPercentage,
-								resetHistoryPeriod },
+								resetHistoryPeriod, fair },
 						new Parameter[] { inputBIP, outputFile, badStates} ));
 		
 		cmdLineHandler.parse(args);	
