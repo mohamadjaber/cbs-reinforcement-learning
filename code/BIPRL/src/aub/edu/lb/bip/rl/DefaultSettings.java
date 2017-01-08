@@ -14,15 +14,15 @@ public class DefaultSettings {
 	public final static int DefaultMaxIteration = 100000;
 	
 	// Default Settings for Deep Reinforcement Learning
-	final static int defaultCapacityReplay = 100;
-	final static int defaultNumberEpisodes = 10; // 10
-	final static double defaultProbabilityRandom = 0.5;
-	final static int minimumTraceLengthIteration = 15;
-	final static int defaultNumberOfNeuronsHidden = 10; // 100
-	final static int defaultSampleCapacityPercentage = 50; 
-	final static int defaultResetHistoryTime = 2;
-	final static ActivationFunction defaultActivationFunction = new ActivationSigmoid();
-	final static ActivationFunction defaultActivationFunctionOuter = new ActivationLinear();
+	public final static int defaultCapacityReplay = 100;
+	public final static int defaultNumberEpisodes = 10; // 10
+	public final static double defaultProbabilityRandom = 0.5;
+	public final static int minimumTraceLengthIteration = 15;
+	public final static int defaultNumberOfNeuronsHidden = 10; // 100
+	public final static int defaultSampleCapacityPercentage = 50; 
+	public final static int defaultResetHistoryTime = 2;
+	public final static ActivationFunction defaultActivationFunction = new ActivationSigmoid();
+	public final static ActivationFunction defaultActivationFunctionOuter = new ActivationLinear();
 
 	final public static double EPS = 1e-100;
 	final public static int EPOCH = 10; // 1000

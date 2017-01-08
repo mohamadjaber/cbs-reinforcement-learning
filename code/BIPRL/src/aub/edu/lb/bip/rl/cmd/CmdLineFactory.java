@@ -1,6 +1,7 @@
 package aub.edu.lb.bip.rl.cmd;
 
 
+import aub.edu.lb.bip.rl.DefaultSettings;
 import jcmdline.CmdLineHandler;
 import jcmdline.FileParam;
 import jcmdline.HelpCmdLineHandler;
@@ -54,28 +55,28 @@ public class CmdLineFactory {
 				!FileParam.OPTIONAL,
 				!FileParam.MULTI_VALUED
 			);
-		goodReward = new StringParam("good-reward", "Good reward value");
-		badReward = new StringParam("bad-reward", "Bad reward value");
-		probaRandom = new StringParam("proba-random", "Probability of exploration");
-		gamma = new StringParam("gamma", "Gamma");
+		goodReward = new StringParam("good-reward", "Good reward value (default " + DefaultSettings.goodReward + ")");
+		badReward = new StringParam("bad-reward", "Bad reward value (default " + DefaultSettings.badReward + ")");
+		probaRandom = new StringParam("proba-random", "Probability of exploration (default " + DefaultSettings.defaultProbabilityRandom + ")");
+		gamma = new StringParam("gamma", "Gamma (default " + DefaultSettings.gamma + ")");
 
-		episodes = new IntParam("episodes", "Number of episodes");
-		epoch = new IntParam("epoch", "Epoch");
-		hidden = new IntParam("hidden", "Number of neurons in hidden layer");
-		capacity = new IntParam("capacity", "Capacity of memory replay");
-		minimumTrace = new IntParam("trace", "Minimum trace length (trace length is guaranteed to be greater than minimum trace length and diameter of all atomic components)");
-		sampleCapacityPercentage = new IntParam("sample-capacity", "Size of samples used for training");
-		resetHistoryPeriod = new IntParam("period-reset", "Reset period time");
-		fair = new IntParam("Fairness degree", "Fairness degree");
-		maxIterationValueIterator = new IntParam("max-iteration", "Bound iteration");
+		episodes = new IntParam("episodes", "Number of episodes (default " + DefaultSettings.defaultNumberEpisodes + ")");
+		epoch = new IntParam("epoch", "Epoch (default " + DefaultSettings.EPOCH + ")");
+		hidden = new IntParam("hidden", "Number of neurons in hidden layer (default " + DefaultSettings.defaultNumberOfNeuronsHidden + ")");
+		capacity = new IntParam("capacity", "Capacity of memory replay (default " + DefaultSettings.defaultCapacityReplay + ")");
+		minimumTrace = new IntParam("trace", "Minimum trace length (trace length is guaranteed to be greater than \"minimum trace length\" and \"diameter of all atomic components\" - default minimum trace length is " + DefaultSettings.minimumTraceLengthIteration + ")");
+		sampleCapacityPercentage = new IntParam("sample-capacity", "Size of samples used for training (default " + DefaultSettings.defaultSampleCapacityPercentage + "%)");
+		resetHistoryPeriod = new IntParam("period-reset", "Reset period time (default " + DefaultSettings.defaultResetHistoryTime + ")");
+		fair = new IntParam("Fairness degree", "Fairness degree (default no fairness, i.e., <= 0)");
+		maxIterationValueIterator = new IntParam("max-iteration", "Bound iteration (default " + DefaultSettings.DefaultMaxIteration + ")");
 
-		mode = new StringParam("mode", "\n" + 
+		mode = new StringParam("mode", "\n*" + 
 		finite + ": for finite case \n\toptions used: " + 
 					gamma.getTag() + ", " + goodReward.getTag() + ", " + 
-					maxIterationValueIterator.getTag() + "\n" + 
+					maxIterationValueIterator.getTag() + "\n*" + 
 		infinite + ": for infinite case.\n\toptions used: " + 
-			"all except " + maxIterationValueIterator.getTag() + "\n" + 
-		normal + ": without reinforcement learning (no other option has to be specified)");
+			"all except " + maxIterationValueIterator.getTag() + "\n*" + 
+		normal + ": without reinforcement learning\n\t(no options - default)\n");
 	
 		outputFile = new FileParam(defaultOutputFile, helpOutputFile,
 				FileParam.DOESNT_EXIST | FileParam.EXISTS | FileParam.IS_READABLE,
