@@ -11,13 +11,20 @@ public class CmdLine {
 	static CmdLineFactory cmdLine;
 	
 	public static void main(String[] args)  {
-		CmdLineFactory cmdLine = new CmdLineFactory(args);
+		cmdLine = new CmdLineFactory(args);
 		
 		String bipFile = cmdLine.getInputBIPFile();
 		String outputFile = cmdLine.getOutputFile();
 		String badStateFile = cmdLine.getBadStates();
 
-		String mode = cmdLine.mode.getValue();
+		String mode; 
+		
+		if(!cmdLine.mode.isSet()) {
+			mode = CmdLineFactory.normal;
+		} else mode = cmdLine.mode.getValue();
+		
+		
+		System.out.println("Mode selected: " + mode);
 		
 		TCompound tCompound = null; 
 		

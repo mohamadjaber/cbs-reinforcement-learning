@@ -16,7 +16,7 @@ public class CmdLineFactory {
 	private static final String helpInputBIPFile = "input BIP file name";
 	private static final String cmdLineTool = "java -jar BIPRL.jar";
 	
-	private static final String defaultOutputFile = "input.bip";
+	private static final String defaultOutputFile = "output.cpp";
 	private static final String helpOutputFile = "output file to be automatically generated";
 	public static final String doubleErrorMessage = "good reward, badReward, probality random and gamma must be double";
 	public static final String infiniteAllOrNothing = "In case of infinite option, you either set all the parameters or none (default values will be set)";
@@ -26,7 +26,6 @@ public class CmdLineFactory {
 	
 	private static final String helpText = "Have Fun!";
 		
-	
 	public static final String normal = "normal";
 	public static final String finite = "value-iterator";
 	public static final String infinite = "infinite";
@@ -59,9 +58,9 @@ public class CmdLineFactory {
 		mode = new StringParam("mode", "\n" + finite + ": for finite case.\n" + 
 		infinite + ": for infinite case.\n" + 
 		normal + ": without reinforcement learning");
-		
+	
 		outputFile = new FileParam(defaultOutputFile, helpOutputFile,
-				FileParam.EXISTS & FileParam.IS_READABLE,
+				FileParam.DOESNT_EXIST | FileParam.EXISTS | FileParam.IS_READABLE,
 				!FileParam.OPTIONAL,
 				!FileParam.MULTI_VALUED
 			);
@@ -91,27 +90,14 @@ public class CmdLineFactory {
 
 		cmdLineHandler = new VersionCmdLineHandler(VERSION,
 				(CmdLineHandler) new HelpCmdLineHandler(helpText, cmdLineTool, cmdLineDescription,
-						new Parameter[] { episodes, goodReward, badReward, epoch, hidden, 
+						new Parameter[] { mode, maxIterationValueIterator, episodes, goodReward, badReward, epoch, hidden, 
 								probaRandom, gamma, capacity, minimumTrace, sampleCapacityPercentage,
 								resetHistoryPeriod },
-						new Parameter[] { inputBIP, outputFile } ));
+						new Parameter[] { inputBIP, outputFile, badStates} ));
 		
 		cmdLineHandler.parse(args);	
 	}
 	
-	public boolean allSetsInfinite() {
-		return 	goodReward.isSet() && badReward.isSet() &&  probaRandom.isSet() && 
-				gamma.isSet() && episodes.isSet() && epoch.isSet() &&
-				hidden.isSet() && capacity.isSet() && minimumTrace.isSet() &&
-				sampleCapacityPercentage.isSet() && resetHistoryPeriod.isSet();
-	}
-	
-	public boolean allNotSets() {
-		return 	!goodReward.isSet() && !badReward.isSet() &&  !probaRandom.isSet() && 
-				!gamma.isSet() && !episodes.isSet() && !epoch.isSet() &&
-				!hidden.isSet() && !capacity.isSet() && !minimumTrace.isSet() &&
-				!sampleCapacityPercentage.isSet() && !resetHistoryPeriod.isSet();
-	}
 
 	public String getInputBIPFile() {
 		return inputBIP.getValue().getAbsolutePath();
