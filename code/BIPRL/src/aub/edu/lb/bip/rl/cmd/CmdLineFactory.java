@@ -54,26 +54,6 @@ public class CmdLineFactory {
 				!FileParam.OPTIONAL,
 				!FileParam.MULTI_VALUED
 			);
-		
-		mode = new StringParam("mode", "\n" + finite + ": for finite case.\n" + 
-		infinite + ": for infinite case.\n" + 
-		normal + ": without reinforcement learning");
-	
-		outputFile = new FileParam(defaultOutputFile, helpOutputFile,
-				FileParam.DOESNT_EXIST | FileParam.EXISTS | FileParam.IS_READABLE,
-				!FileParam.OPTIONAL,
-				!FileParam.MULTI_VALUED
-			);
-		
-		badStates = new FileParam("badStates", "File containing bad states to be avoided",
-				FileParam.EXISTS & FileParam.IS_READABLE,
-				!FileParam.OPTIONAL,
-				!FileParam.MULTI_VALUED
-			);
-		
-		maxIterationValueIterator = new IntParam("max-iteration", "Bound iteration");
-
-		
 		goodReward = new StringParam("good-reward", "Good reward value");
 		badReward = new StringParam("bad-reward", "Bad reward value");
 		probaRandom = new StringParam("proba-random", "Probability of exploration");
@@ -83,10 +63,32 @@ public class CmdLineFactory {
 		epoch = new IntParam("epoch", "Epoch");
 		hidden = new IntParam("hidden", "Number of neurons in hidden layer");
 		capacity = new IntParam("capacity", "Capacity of memory replay");
-		minimumTrace = new IntParam("trace", "Minimum trace lenght (trace length is guaranteed to be greater than minimum trace length and diameter of all atomic components)");
+		minimumTrace = new IntParam("trace", "Minimum trace length (trace length is guaranteed to be greater than minimum trace length and diameter of all atomic components)");
 		sampleCapacityPercentage = new IntParam("sample-capacity", "Size of samples used for training");
 		resetHistoryPeriod = new IntParam("period-reset", "Reset period time");
 		fair = new IntParam("Fairness degree", "Fairness degree");
+		maxIterationValueIterator = new IntParam("max-iteration", "Bound iteration");
+
+		mode = new StringParam("mode", "\n" + 
+		finite + ": for finite case \n\toptions used: " + 
+					gamma.getTag() + ", " + goodReward.getTag() + ", " + 
+					maxIterationValueIterator.getTag() + "\n" + 
+		infinite + ": for infinite case.\n\toptions used: " + 
+			"all except " + maxIterationValueIterator.getTag() + "\n" + 
+		normal + ": without reinforcement learning (no other option has to be specified)");
+	
+		outputFile = new FileParam(defaultOutputFile, helpOutputFile,
+				FileParam.DOESNT_EXIST | FileParam.EXISTS | FileParam.IS_READABLE,
+				!FileParam.OPTIONAL,
+				!FileParam.MULTI_VALUED
+			);
+		
+		badStates = new FileParam("badStates.txt", "File containing bad states to be avoided",
+				FileParam.EXISTS & FileParam.IS_READABLE,
+				!FileParam.OPTIONAL,
+				!FileParam.MULTI_VALUED
+			);
+		
 
 		cmdLineHandler = new VersionCmdLineHandler(VERSION,
 				(CmdLineHandler) new HelpCmdLineHandler(helpText, cmdLineTool, cmdLineDescription,

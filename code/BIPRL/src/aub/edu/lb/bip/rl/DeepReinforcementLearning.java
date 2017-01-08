@@ -97,6 +97,12 @@ public class DeepReinforcementLearning extends TCompoundDeepReinforcementLearnin
 		ps.println("Probability random exploration = "+ this.probabilityRandom);
 		ps.println("Reset history period = "+ this.numberResetHistoryTime);
 		ps.println("Sample capacity percentage = "+ this.sampleCapacityPercentage);
+		
+		if(this.fairnessDegreeDistance <= 0) {
+			ps.println("Fairness = no");
+		} else {
+			ps.println("Fairness = " + this.fairnessDegreeDistance);
+		}
 	}
 	
 	private void trainEpisodes() {
