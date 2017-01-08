@@ -47,6 +47,7 @@ public abstract class TCompoundReinforcementLearning extends TCompound {
 
 	public TCompoundReinforcementLearning(String bipFile, String badStateFile) {
 		super(bipFile, true, false, badStateFile);
+		transitionSystem = new Kripke(compound);
 	}
 	
 	@Override

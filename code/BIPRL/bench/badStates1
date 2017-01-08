@@ -1,3 +1,1 @@
-[p_0.s1 p_1.s1 p_2.s1 f_0.unavailable f_1.unavailable f_2.unavailable ]
-[p_0.s1 p_1.s1 p_2.s0 f_0.unavailable f_1.available f_2.unavailable ]
-[p_0.s1 p_1.s0 p_2.s1 f_0.available f_1.unavailable f_2.unavailable ]
+p_0.s1,p_1.s1,p_2.s1,f_0.unavailable,f_1.unavailable,f_2.unavailable

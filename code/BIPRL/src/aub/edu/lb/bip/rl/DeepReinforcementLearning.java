@@ -55,7 +55,7 @@ public class DeepReinforcementLearning extends TCompoundDeepReinforcementLearnin
 	@Override
 	public void compute() {
 		this.badStates = new HashSet<String>();
-		fillBadStates(fileBadStates);
+		fillBadStates();
 		initializeTraceLengthIteration();
 		
 		if(this.debug) printDebugOptions();
@@ -194,9 +194,9 @@ public class DeepReinforcementLearning extends TCompoundDeepReinforcementLearnin
 		
 	}
 
-	private void fillBadStates(String fileBadStates) {
+	private void fillBadStates() {
 		try {
-			Scanner in = new Scanner(new File(fileBadStates));
+			Scanner in = new Scanner(new File(badStateFile));
 			while (in.hasNextLine()) {
 				String badState = in.nextLine().trim();
 				badStates.add(badState);

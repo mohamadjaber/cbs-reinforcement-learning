@@ -17,10 +17,11 @@ public class TestDeepRL2 {
 
 		Scanner in = new Scanner(System.in);
 
+		DeepReinforcementLearning deepRL = new DeepReinforcementLearning("bip-files/dining.bip", "bench/badStates");
+		deepRL.compute();
+		GlobalState currentState = deepRL.getCompound().getInitialState();
+		
 		while (true) {
-			DeepReinforcementLearning deepRL = new DeepReinforcementLearning("bip-files/dining.bip", "bench/badStates");
-			GlobalState currentState = deepRL.getCompound().getInitialState();
-
 			System.out.println("Enter Trace size: ");
 			int traceSize = in.nextInt();
 			if (traceSize <= 0)

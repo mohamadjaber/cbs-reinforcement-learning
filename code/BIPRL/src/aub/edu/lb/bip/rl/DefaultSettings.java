@@ -25,5 +25,5 @@ public class DefaultSettings {
 	final static ActivationFunction defaultActivationFunctionOuter = new ActivationLinear();
 
 	final public static double EPS = 1e-100;
-	final public static int EPOCH = 1; // 1000
+	final public static int EPOCH = 10; // 1000
 }

@@ -24,8 +24,6 @@ import aub.edu.lb.bip.expression.TWhileAction;
  */
 public abstract class TCompoundDeepReinforcementLearning extends TCompound {
 
-	protected String fileBadStates;
-
 	// configuration
 	protected int capacityReplay;
 	protected int numberEpisodes;
@@ -64,13 +62,11 @@ public abstract class TCompoundDeepReinforcementLearning extends TCompound {
 		this.numberEpisodes = episodes;
 		this.sampleCapacityPercentage = sampleCapacityPercentage;
 		this.fairnessDegreeDistance = fairnessDegreeDistance;
-		setTogetherAction();
 	}
 
 	public TCompoundDeepReinforcementLearning(String bipFile, String badStateFile) {
 		super(bipFile, true, false, badStateFile);
 		this.fairnessDegreeDistance = -1;
-		setTogetherAction();
 	}
 
 	public TCompoundDeepReinforcementLearning(String bipFile, String badStateFile, int fairnessDegreeDistance) {

@@ -127,13 +127,14 @@ public class Kripke {
 		return compound;
 	}
 
+	
 	public String toString() {
 		String kripkeName = "[ ";
 		for (KripkeState s : stateSpace)
 			kripkeName += s + "  ";
 		return kripkeName + "]";
 	}
-	
+
 	public int getStateId(String name) {
 		return mapStateNameId.get(name);
 	}
