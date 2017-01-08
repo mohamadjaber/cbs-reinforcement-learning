@@ -7,7 +7,6 @@ import aub.edu.lb.bip.expression.TCompositeAction;
 import aub.edu.lb.bip.expression.TDoTogetherAction;
 import aub.edu.lb.bip.expression.TNamedElement;
 import aub.edu.lb.bip.expression.TWhileAction;
-import ujf.verimag.bip.Core.Interactions.CompoundType;
 
 /**
  * Variables and wires creation. 
@@ -30,17 +29,10 @@ import ujf.verimag.bip.Core.Interactions.CompoundType;
  *
  */
 public class TCompoundNormal extends TCompound {
-
-	public TCompoundNormal(String bipFile, boolean defaultInitializeVariables, String preCondition, String postCondition) {
-		super(bipFile, true, defaultInitializeVariables, preCondition, postCondition, null, false);
-	}
-	
-	public TCompoundNormal(String bipFile, CompoundType compound, boolean defaultInitializeVariables) {
-		super(bipFile, true, defaultInitializeVariables, null);
-	}
 	
 	public TCompoundNormal(String bipFile) {
 		super(bipFile, true, false, null);
+		setTogetherAction();
 	}
 	
 	@Override
@@ -64,7 +56,6 @@ public class TCompoundNormal extends TCompound {
 		setNextStateFunctionInteraction(caCycle1);
 		setNextStateFunctionLocationVariable(caCycle1);
 		injectFooter(caCycle1);
-		injectPostCondition(caCycle1);
 	}
 
 }

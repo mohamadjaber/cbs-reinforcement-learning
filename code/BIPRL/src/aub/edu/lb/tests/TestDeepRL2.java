@@ -5,25 +5,21 @@ import java.util.List;
 import java.util.Scanner;
 
 import aub.edu.lb.bip.api.Helper;
-import aub.edu.lb.bip.model.TCompound;
-import aub.edu.lb.bip.model.TCompoundNormal;
 import aub.edu.lb.bip.rl.DeepReinforcementLearning;
 import aub.edu.lb.bip.rl.DefaultSettings;
 import aub.edu.lb.model.BIPInteraction;
-import aub.edu.lb.model.Compound;
 import aub.edu.lb.model.GlobalState;
 
 public class TestDeepRL2 {
 
 	public static void main(String[] args) {
-		TCompound tCompound = new TCompoundNormal("bip-files/dining.bip");
-		Compound compound = tCompound.getCompound();
+
 
 		Scanner in = new Scanner(System.in);
 
 		while (true) {
-			DeepReinforcementLearning deepRL = new DeepReinforcementLearning(compound, "bench/badStates");
-			GlobalState currentState = compound.getInitialState();
+			DeepReinforcementLearning deepRL = new DeepReinforcementLearning("bip-files/dining.bip", "bench/badStates");
+			GlobalState currentState = deepRL.getCompound().getInitialState();
 
 			System.out.println("Enter Trace size: ");
 			int traceSize = in.nextInt();
@@ -31,7 +27,7 @@ public class TestDeepRL2 {
 				break;
 			for (int t = 0; t < traceSize; t++) {
 				double[] output = deepRL.getOutput(currentState.getIds());
-				List<BIPInteraction> enabledInteractions = compound.getEnabledInteractions(currentState);
+				List<BIPInteraction> enabledInteractions = deepRL.getCompound().getEnabledInteractions(currentState);
 
 				if (enabledInteractions == null || enabledInteractions.size() == 0) {
 					System.out.println("enter deadlock state....");
@@ -62,7 +58,7 @@ public class TestDeepRL2 {
 				selectedInteraction = selectedInteractions.get(random);
 				System.out.println("--------------");
 				System.out.println("select interaction " + selectedInteraction.getId() + " -> " + selectedInteraction);
-				currentState = compound.next(currentState, selectedInteraction);
+				currentState = deepRL.getCompound().next(currentState, selectedInteraction);
 			}
 		}
 		in.close();

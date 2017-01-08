@@ -1,20 +1,16 @@
 package aub.edu.lb.tests;
 
 
-import aub.edu.lb.bip.model.TCompound;
-import aub.edu.lb.bip.model.TCompoundNormal;
+
 import aub.edu.lb.bip.rl.DeepReinforcementLearning;
-import aub.edu.lb.model.Compound;
 
 public class TestDeepRL {
 	
 	public static void main(String[] args) {
-		TCompound tCompound = new TCompoundNormal("bip-files/dining.bip");
-		Compound compound = tCompound.getCompound();
 		int globalCounter = 0; 
 		int numberOfBench = 100; 
 		for(int i = 1; i <= numberOfBench; i++) {
-			DeepReinforcementLearning deepRL = new DeepReinforcementLearning(compound, "bench/badStates"); 
+			DeepReinforcementLearning deepRL = new DeepReinforcementLearning("bip-files/dining.bip", "bench/badStates"); 
 			double[] output1 = deepRL.getOutput(new double[]{1.0, 1.0, 0.0, 1.0, 0.0, 1.0}); 
 			double[] output2 = deepRL.getOutput(new double[]{0, 1, 1, 1, 1, 0}); 
 			double[] output3 = deepRL.getOutput(new double[]{1, 0, 1, 0, 1, 1}); 

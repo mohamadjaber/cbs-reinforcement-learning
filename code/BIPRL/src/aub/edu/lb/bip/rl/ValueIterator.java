@@ -2,71 +2,81 @@ package aub.edu.lb.bip.rl;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
 
-import aub.edu.lb.kripke.Kripke;
+import aub.edu.lb.bip.model.TCompoundReinforcementLearning;
 import aub.edu.lb.kripke.KripkeState;
 import aub.edu.lb.kripke.Transition;
 
 
 /**
  * 
- * @author Jaber & Nassar
+ * @author Jaber 
  *
  */
-public class ValueIterator {
+public class ValueIterator extends TCompoundReinforcementLearning {
 
-	private final static double EPS = 1E-50;
-	private final static int MAXITERATION = 10000000;
-
+	private final static double EPS = DefaultSettings.EPS;
+	
 	public double[][] qValue; // TODO hash map in case of sparse cases...
 	protected double[] utility;
 	protected double[] reward;
-	public Kripke transitionSystem;
 
 	public int numberStates;
 	public int numberActions;
 	
 	private Set<String> badStatesNames;
 	
-	// default values
-	private double gamma = DefaultSettings.gamma;
-	private double badReward = DefaultSettings.badReward;
-	private double goodReward = DefaultSettings.goodReward;
-	private int initialUtility = DefaultSettings.initialUtility; 
 	
+	private boolean debug = true; 
+	PrintStream ps = System.out; 
 	
-	public ValueIterator(Kripke transitionSystem, String fileBadStates) {
-		initialize(transitionSystem, fileBadStates);
+	public ValueIterator(String bipFile, String badStateFile) {
+		this(bipFile, badStateFile, 
+				DefaultSettings.DefaultMaxIteration, 
+				DefaultSettings.gamma,
+				DefaultSettings.badReward, DefaultSettings.goodReward, DefaultSettings.initialUtility);
 	}
 	
-	public ValueIterator(Kripke transitionSystem, String fileBadStates, double gamma, double badReward, double goodReward, int initialUtility) {
+	public double getQValue(int i, int j) {
+		return qValue[i][j];
+	}
+	
+	@Override
+	public void compute() {
+		if(this.debug) printDebugOptions();
+		initialize();
+		setTogetherAction();
+	}
+ 	
+	public ValueIterator(String bipFile, String badStateFile, int maxIteration, double gamma, double badReward, double goodReward, int initialUtility) {
+		super(bipFile, badStateFile);
 		this.gamma = gamma;
 		this.badReward = badReward; 
 		this.goodReward = goodReward;
 		this.initialUtility = initialUtility;
-		initialize(transitionSystem, fileBadStates);
+		this.maxIteration = maxIteration;
 	}
 	
-	private void initialize(Kripke transitionSystem, String fileBadStates) {
-		this.transitionSystem = transitionSystem;
+	private void initialize() {
 		this.numberStates = (int) transitionSystem.getNumberStates();
 		this.numberActions = transitionSystem.getCompound().getInteractions().size();
 		this.utility = new double[numberStates];
 		this.reward = new double[numberStates];
 		this.badStatesNames = new HashSet<String>();
 		qValue = new double[numberStates][numberActions];
-		computeReward(fileBadStates);
+		computeReward();
 		computeQValues();
 	}
 
-	private void computeReward(String fileBadStates) {
+	private void computeReward() {
 		Arrays.fill(reward, goodReward);
 		try {
-			Scanner in = new Scanner(new File(fileBadStates));
+			Scanner in = new Scanner(new File(badStateFile));
 			while (in.hasNextLine()) {
 				String badState = in.nextLine();
 				int stateId = transitionSystem.getStateId(badState);
@@ -84,7 +94,7 @@ public class ValueIterator {
 		Arrays.fill(utility, initialUtility);
 		int iteration = 0;
 		double error = EPS + 1;
-		while (iteration++ < MAXITERATION && error > EPS) {
+		while (iteration++ < maxIteration && error > EPS) {
 			error = Double.MIN_VALUE;
 			for (int i = 0; i < numberStates; i++) {
 				KripkeState state = transitionSystem.getState(i);
@@ -106,6 +116,13 @@ public class ValueIterator {
 			}
 		}
 		System.out.println(iteration + " iterations are needed to converge for EPS " + EPS);
+	}
+	
+	private void printDebugOptions() {
+		ps.println("Configuration...");
+		ps.println("Good reward = "+ this.goodReward);
+		ps.println("Bad reward = "+ this.badReward);
+		ps.println("Max iteration bound = " + this.maxIteration);
 	}
 
 	public void printDebug() {

@@ -94,7 +94,15 @@ public class TransformationFunction {
 	}
 	
 	
-	
+	/**
+	 * REQUIRES: comp is a component of type atomic
+	 * @param comp 
+	 * @return
+	 */
+	public static long getNumberStates(Component comp) {
+		AtomType atomicType = (AtomType) comp.getType();
+		return ( (PetriNet) atomicType.getBehavior()).getState().size();
+	}
 	
 	
 	private static void setConnSynType() {
@@ -218,6 +226,8 @@ public class TransformationFunction {
 		BL.setBValue(value);
 		var.setInitialValue(BL) ;
 	}
+	
+	
 	
 	/**
 	 * 

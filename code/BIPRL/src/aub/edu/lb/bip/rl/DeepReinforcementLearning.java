@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,65 +15,96 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 
 import aub.edu.lb.bip.api.Helper;
+import aub.edu.lb.bip.api.TransformationFunction;
+import aub.edu.lb.bip.model.TCompoundDeepReinforcementLearning;
 import aub.edu.lb.encog.helper.EncogHelper;
 import aub.edu.lb.model.BIPInteraction;
 import aub.edu.lb.model.Compound;
 import aub.edu.lb.model.GlobalState;
+import ujf.verimag.bip.Core.Interactions.Component;
 
-public class DeepReinforcementLearning {
-	PrintStream ps ; 
-	private Compound compound;
+public class DeepReinforcementLearning extends TCompoundDeepReinforcementLearning {
+
 	private BasicNetwork networkCurrent; // teta
 	private BasicNetwork networkHistory; // teta minus
 	private List<TransitionReplay> memoryReplay;
 	private Set<String> badStates;
-
-	// configuration
-	private int capacityReplay = DefaultSettings.defaultCapacityReplay;
-	private int numberEpisodes = DefaultSettings.defaultNumberEpisodes;
-	private double probabilityRandom = DefaultSettings.defaultProbabilityRandom;
-	private double numberResetHistoryTime = DefaultSettings.defaultResetHistoryTime;
-	private int sampleCapacityPercentage  = DefaultSettings.defaultSampleCapacityPercentage;
-
-	private int traceLengthIteration;
-	private int numberOfNeuronsHidden = DefaultSettings.defaultNumberOfNeuronsHidden;
+	
 	private ActivationFunction activationFunction = DefaultSettings.defaultActivationFunction;
 	private ActivationFunction activationFunctionOuter = DefaultSettings.defaultActivationFunctionOuter;
-
-	private double badReward = DefaultSettings.badReward;
-	private double goodReward = DefaultSettings.goodReward;
-	private double gamma = DefaultSettings.gamma;
-	private int epoch = DefaultSettings.EPOCH; 
-
+	
 	private boolean debug = true; 
+	PrintStream ps = System.out; 
 	
 	double[][][] weights;
 	double[] bias;
 	
-	public DeepReinforcementLearning(Compound compound, String fileBadStates) {
-		try {
-			if(debug) ps = new PrintStream(new File("bench/outputHaitham.txt"));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		this.compound = compound;
+	public DeepReinforcementLearning(String bipFile, String fileBadStates,
+			double goodReward, double badReward, 
+			int episodes, int epoch, int neuronsHidden,
+			int capacityReplay, 
+			double probaRandomExploration,
+			int minimumTraceLength,
+			int sampleCapacityPercentage, int resetHistoryPeriod, 
+			double gamma, boolean debug, int fairnessDegreeDistance) {
+			super(bipFile, fileBadStates, goodReward, badReward, episodes, epoch,
+					neuronsHidden, capacityReplay, probaRandomExploration, minimumTraceLength, sampleCapacityPercentage,
+					resetHistoryPeriod, gamma, debug, fairnessDegreeDistance);
+	}
+	
+	@Override
+	public void compute() {
 		this.badStates = new HashSet<String>();
 		fillBadStates(fileBadStates);
 		initializeTraceLengthIteration();
+		
+		if(this.debug) printDebugOptions();
+		
 		initializeNeuralNetworks();
 		memoryReplay = new LinkedList<TransitionReplay>();
-		trainEpisodes();
-		if(debug) ps.close();
-	}
+		
+		if(this.debug) ps.println("\n\nStart training:");
 
+		trainEpisodes();
+		
+		setTogetherAction();
+	}
+	
+	public DeepReinforcementLearning(String bipFile, String fileBadStates) {
+		super(bipFile, fileBadStates, 
+				DefaultSettings.goodReward, DefaultSettings.badReward,
+				DefaultSettings.defaultNumberEpisodes, 
+				DefaultSettings.EPOCH, 
+				DefaultSettings.defaultNumberOfNeuronsHidden, 
+				DefaultSettings.defaultCapacityReplay, 
+				DefaultSettings.defaultProbabilityRandom, 
+				DefaultSettings.minimumTraceLengthIteration, 
+				DefaultSettings.defaultSampleCapacityPercentage, 
+				DefaultSettings.defaultResetHistoryTime,
+				DefaultSettings.gamma, true, -1);
+	}
+	
+	private void printDebugOptions() {
+		ps.println("Training configuration...");
+		ps.println("Number episodes = "+ this.numberEpisodes);
+		ps.println("Good reward = "+ this.goodReward);
+		ps.println("Bad reward = "+ this.badReward);
+		ps.println("Number of neurons hidden layer = " + this.numberOfNeuronsHidden);
+		ps.println("Epoch training = "+ this.epoch);
+
+		ps.println("Trace length iteration = "+ this.traceLengthIteration);
+		ps.println("Capacity replay = "+ this.capacityReplay);
+		ps.println("Probability random exploration = "+ this.probabilityRandom);
+		ps.println("Reset history period = "+ this.numberResetHistoryTime);
+		ps.println("Sample capacity percentage = "+ this.sampleCapacityPercentage);
+	}
+	
 	private void trainEpisodes() {
 		for (int i = 1; i <= numberEpisodes; i++) {
-			System.out.println("episode " + i);
+			ps.println("Training: episode " + i + " / " + this.numberEpisodes);
 			trainEpisode();
 		}
 		setWeights();
-		// printWeights(networkCurrent);
 	}
 
 	private void trainEpisode() {
@@ -117,25 +147,18 @@ public class DeepReinforcementLearning {
 	
 	private void train() {
 		List<TransitionReplay> miniBatch = sampleMiniBatch();
-		train(miniBatch);
+		if(miniBatch.size() != 0) train(miniBatch);
 	}
 	
 	private void train(List<TransitionReplay> miniBatch) {
 		double[][] input = new double[miniBatch.size()][];
 		double[][] output = new double[miniBatch.size()][];
 		int i = 0;
-		if(debug) ps.println("start batch size of " + miniBatch.size());
 		for(TransitionReplay t: miniBatch) {
 			output[i] = generateTrainingPoint(t);
 			input[i] = t.getFromState().getIds();
-			if(debug) {
-				ps.println(t);
-				ps.println(Arrays.toString(input[i]));
-				ps.println(Arrays.toString(output[i]) + "\n");
-			}	
 			i++;
 		}
-		if(debug) ps.println("end batch\n\n\n");
 		EncogHelper.learning(networkCurrent, input, output, epoch, DefaultSettings.EPS);
 	}
 	
@@ -175,7 +198,7 @@ public class DeepReinforcementLearning {
 		try {
 			Scanner in = new Scanner(new File(fileBadStates));
 			while (in.hasNextLine()) {
-				String badState = in.nextLine();
+				String badState = in.nextLine().trim();
 				badStates.add(badState);
 			}
 			in.close();
@@ -259,7 +282,11 @@ public class DeepReinforcementLearning {
 	 * TODO: Tweak it w.r.t syntax Diameter or number of locations
 	 */
 	public void initializeTraceLengthIteration() {
-		traceLengthIteration = DefaultSettings.defaultTraceLengthIteration;
+		traceLengthIteration = DefaultSettings.minimumTraceLengthIteration;
+		for(Component component: compound.getCompoundType().getSubcomponent()) {
+			traceLengthIteration = Math.max(traceLengthIteration, 
+					(int) TransformationFunction.getNumberStates(component));
+		}
 	}
 	
 	public void setWeights() {

@@ -34,17 +34,19 @@ public class TGenerator {
 
 	public TGenerator(TCompound tCompound, String fileName) {
 		this.tCompound = tCompound;
-		if(tCompound instanceof TCompoundDeepReinforcementLearning)
-			this.deepRL = ((TCompoundDeepReinforcementLearning)tCompound).deepRL; 
+		if(tCompound instanceof DeepReinforcementLearning)
+			this.deepRL = (DeepReinforcementLearning) tCompound; 
 		try {
 			output = new PrintStream(new File(fileName));
 		} catch (FileNotFoundException e) {
-			System.out.println("Cannot create output ABC file.");
+			System.out.println("Error creating source code file.");
 			System.exit(0);
 		}
 		createHeaders();
 		decompile(tCompound.getTogetherAction());
 		createFooters();
+		
+		System.out.println("\nFile " + fileName + " created successfully...");
 	}
 	
 	protected void createFooters() {
@@ -158,7 +160,9 @@ public class TGenerator {
 		output.println("double* " + TogetherSyntax.forwardProp + "(double* input, int size) {");
 		indent();
 		output.println(indent + "double *output1 = product(input, weights1, layer0, layer1, bias1, true);");
-		output.println(indent + "return product(output1, weights2, layer1, layer2, 0, false);");
+		output.println(indent + "double *output2 = product(output1, weights2, layer1, layer2, 0, false);");
+		output.println(indent + "delete[] output1;");
+		output.println(indent + "return output2;");
 		deindent();
 		output.println("}");
 	}

@@ -34,12 +34,7 @@ public abstract class TCompound {
 
 	protected boolean defaultInitializeVariables;
 
-	protected String preCondition;
-	protected String postCondition;
-
-
 	protected String badStateFile; 
-	protected boolean fair; 
 	
 	/**
 	 * @param compound
@@ -51,20 +46,14 @@ public abstract class TCompound {
 	 *            integers, or false if boolean. This will improve the
 	 *            verification time.
 	 */
-	public TCompound(String bipFile, boolean optmized, boolean defaultInitializeVariables, String preCondition, String postCondition, String badStateFile,
-			boolean fair) {
-		this.fair = fair;
+	public TCompound(String bipFile, boolean optmized, boolean defaultInitializeVariables, String badStateFile) {
 		this.badStateFile = badStateFile;
 		compoundType = TransformationFunction.parseBIPFile(bipFile);
 		compound = new Compound(compoundType);
 		
-		generalInitialize();
-
 		withPriority = compoundType.getPriorityRule().size() > 0;
 		this.optmized = optmized;
 		this.defaultInitializeVariables = defaultInitializeVariables;
-		this.preCondition = preCondition;
-		this.postCondition = postCondition;
 
 		tInteractions = new TInteractions(this);
 
@@ -78,22 +67,12 @@ public abstract class TCompound {
 			mapComponents.put(comp, tComp);
 			tComponents.add(tComp);
 		}
-
-		setTogetherAction();
 	}
+	
+	public void compute() { }
 	
 	public Compound getCompound() {
 		return compound;
-	}
-	
-	protected void generalInitialize() {
-		
-	}
-
-
-
-	public TCompound(String bipFile, boolean optmized, boolean defaultInitializeVariables, String badStateFile) {
-		this(bipFile, optmized, defaultInitializeVariables, null, null, badStateFile, false);
 	}
 
 	protected void setTogetherAction() {
@@ -109,9 +88,7 @@ public abstract class TCompound {
 			defaultInitializeVariables();
 
 		initializeComponentsVariables();
-
-		injectPreCondition();
-
+		
 		mainWhileLoopAction();	
 	}
 	
@@ -130,17 +107,6 @@ public abstract class TCompound {
 	}
 	
 
-	protected void injectPreCondition() {
-		if (preCondition != null && postCondition != null) {
-			togetherAction.getContents().add(new TNamedElement(preCondition));
-		}
-	}
-
-	protected void injectPostCondition(TCompositeAction compositeAction) {
-		if (preCondition != null && postCondition != null) {
-			compositeAction.getContents().add(new TNamedElement(postCondition));
-		}
-	}
 
 	public void setRandomSelector(TCompositeAction caCycle1) {
 		TNamedElement action = new TNamedElement(TogetherSyntax.wire_prefix + TogetherSyntax.selecter + " = rand() % " +  this.getTInteractions().size() + ";");

@@ -107,12 +107,13 @@ public class GlobalState {
 	}
 
 	public String toString() {
-		String globalStateName = "[";
-		for (LocalState ls : localStates) {
-			globalStateName += ls + " ";
+		if(localStates.size() == 0) return "";
+		String globalStateName = localStates.get(0).toString();
+		
+		for (int i = 1; i < localStates.size(); i++) {
+			globalStateName += "," + localStates.get(i).toString();
 		}
-		return globalStateName + "]";
-
+		return globalStateName.trim();
 	}
 
 }

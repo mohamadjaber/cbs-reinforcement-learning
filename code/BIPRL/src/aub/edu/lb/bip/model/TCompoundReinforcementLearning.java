@@ -9,11 +9,10 @@ import aub.edu.lb.bip.expression.TDoTogetherAction;
 import aub.edu.lb.bip.expression.TNamedElement;
 import aub.edu.lb.bip.expression.TVariable;
 import aub.edu.lb.bip.expression.TWhileAction;
-import aub.edu.lb.bip.rl.ValueIterator;
+import aub.edu.lb.bip.rl.DefaultSettings;
 import aub.edu.lb.kripke.Kripke;
 import aub.edu.lb.kripke.KripkeState;
 import aub.edu.lb.kripke.Transition;
-import ujf.verimag.bip.Core.Interactions.CompoundType;
 
 /**
  * Variables and wires creation. 
@@ -35,33 +34,21 @@ import ujf.verimag.bip.Core.Interactions.CompoundType;
  * Note that, in most of the bip models this is the case. 
  *
  */
-public class TCompoundReinforcementLearning extends TCompound {
+public abstract class TCompoundReinforcementLearning extends TCompound {
 
-	ValueIterator valueIterator;
-
-	public TCompoundReinforcementLearning(String bipFile, boolean defaultInitializeVariables, String preCondition, String postCondition, String badStateFile) {
-		super(bipFile, true, defaultInitializeVariables, preCondition, postCondition, badStateFile, false);
-	}
+	public Kripke transitionSystem;
 	
+	// default values - configuration
+	protected double gamma = DefaultSettings.gamma;
+	protected double badReward = DefaultSettings.badReward;
+	protected double goodReward = DefaultSettings.goodReward;
+	protected int initialUtility = DefaultSettings.initialUtility; 
+	protected int maxIteration = DefaultSettings.DefaultMaxIteration; 
+
 	public TCompoundReinforcementLearning(String bipFile, String badStateFile) {
-		super(bipFile, true, false, null, null, badStateFile, false);
+		super(bipFile, true, false, badStateFile);
 	}
 	
-	public void generalInitialize() {
-		initializeRL();
-	}
-
-	
-	public TCompoundReinforcementLearning(String bipFile, CompoundType compound, boolean defaultInitializeVariables, String badStateFile) {
-		super(bipFile, true, defaultInitializeVariables, badStateFile);
-	}
-	
-
-	private void initializeRL() {
-		Kripke transitionSystem = new Kripke(compound);
-		valueIterator = new ValueIterator(transitionSystem, badStateFile);
-	}
-
 	@Override
 	protected void mainWhileLoopAction() {
 		TCompositeAction ca = new TCompositeAction();
@@ -84,7 +71,6 @@ public class TCompoundReinforcementLearning extends TCompound {
 		setNextStateFunctionInteraction(caCycle1);
 		setNextStateFunctionLocationVariable(caCycle1);
 		injectFooter(caCycle1);
-		injectPostCondition(caCycle1);	
 	}
 	
 	@Override
@@ -121,15 +107,31 @@ public class TCompoundReinforcementLearning extends TCompound {
 	}
 	
 	private void initializeQValueTable() {
-		for (KripkeState state : valueIterator.transitionSystem.getStates()) {
-			int stateId = valueIterator.transitionSystem.getStateId(state.getState().toString());
+		for (KripkeState state : transitionSystem.getStates()) {
+			int stateId = transitionSystem.getStateId(state.getState().toString());
 			for (Transition t : state.getTransitions()) {
-				double value = valueIterator.qValue[stateId][t.getLabel().getId()];
+				double value = getQValue(stateId, t.getLabel().getId());
 				togetherAction.getContents().add(new TNamedElement(TogetherSyntax.interactions_filtered_re + "[\""
 						+ state.getState().getLocalIds() + "" + t.getLabel().getId() + "\"] = " + value + ";"));
 			}
 		}
 	}
 	
+	public abstract double getQValue(int i, int j);
+	
+	public void setGamma(double gamma) {
+		this.gamma = gamma;
+	}
+	
+	public void setBadReward(double badReward) {
+		this.badReward = badReward; 
+	}
+	public void setGoodReward(double goodReward) {
+		this.goodReward = goodReward;
+	}
+	
+	public void setMaxIteration(int maxIteration) {
+		this.maxIteration = maxIteration;  
+	}
 }
 

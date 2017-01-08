@@ -15,7 +15,6 @@ import aub.edu.lb.bip.expression.TExpression;
 import aub.edu.lb.bip.expression.TNamedElement;
 import aub.edu.lb.bip.expression.TUnaryExpression;
 import aub.edu.lb.bip.expression.TVariable;
-import aub.edu.lb.bip.rl.DefaultSettings;
 import ujf.verimag.bip.Core.ActionLanguage.Expressions.BinaryOperator;
 import ujf.verimag.bip.Core.ActionLanguage.Expressions.UnaryOperator;
 import ujf.verimag.bip.Core.Behaviors.Port;
@@ -104,7 +103,7 @@ public class TInteraction extends TVariable {
 	}
 	
 
-	public TExpression getExpressionFairDeepReinforcementLearning() {
+	public TExpression getExpressionFairDeepReinforcementLearning(int fairnessDegreeDistance) {
 		TExpression expressionRL = new TNamedElement(TogetherSyntax.interactions_first_enable + "[" + getId() +"]");
 		TInteractions tInteractions = tCompound.getTInteractions();
 		for(TInteraction tNextInteraction : tInteractions.getTInteractions()) {
@@ -114,7 +113,7 @@ public class TInteraction extends TVariable {
 						new TNamedElement(TogetherSyntax.interactions_first_enable + "[" + nextId +"]"));
 				
 				TNamedElement right1 = new TNamedElement("abs(" + TogetherSyntax.interactions_filtered_re + "[" + getId() + "]" +
-						"-" + TogetherSyntax.interactions_filtered_re + "[" + nextId + "]) < " + DefaultSettings.goodReward); 
+						"-" + TogetherSyntax.interactions_filtered_re + "[" + nextId + "]) < " + fairnessDegreeDistance); 
 						
 				TExpression right2 = new TBinaryExpression(
 						BinaryOperator.GREATER_THAN_OR_EQUAL,

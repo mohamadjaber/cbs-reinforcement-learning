@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import aub.edu.lb.bip.api.TransformationFunction;
 import ujf.verimag.bip.Core.Behaviors.AtomType;
 import ujf.verimag.bip.Core.Behaviors.PetriNet;
 import ujf.verimag.bip.Core.Interactions.Component;
@@ -56,7 +57,7 @@ public class Compound {
 		components = new ArrayList<Component>(compoundType.getSubcomponent().size());
 		for(Component component: compoundType.getSubcomponent()) {
 			components.add(component);
-			numberStates *= getNumberStates(component);
+			numberStates *= TransformationFunction.getNumberStates(component);
 		}
 	}
 	
@@ -68,16 +69,7 @@ public class Compound {
 		}
 	}
 	
-	/**
-	 * REQUIRES: comp is a component of type atomic
-	 * @param comp 
-	 * @return
-	 */
-	public long getNumberStates(Component comp) {
-		AtomType atomicType = (AtomType) comp.getType();
-		return ( (PetriNet) atomicType.getBehavior()).getState().size();
-	}
-	
+
 
 	/**
 	 * 
