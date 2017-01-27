@@ -78,7 +78,7 @@ public class ValueIterator extends TCompoundReinforcementLearning {
 		try {
 			Scanner in = new Scanner(new File(badStateFile));
 			while (in.hasNextLine()) {
-				String badState = in.nextLine().trim();
+				String badState = in.nextLine().replaceAll("\\s","");
 				int stateId = transitionSystem.getStateId(badState);
 				badStatesNames.add(badState);
 				reward[stateId] = badReward;

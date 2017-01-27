@@ -204,7 +204,7 @@ public class DeepReinforcementLearning extends TCompoundDeepReinforcementLearnin
 		try {
 			Scanner in = new Scanner(new File(badStateFile));
 			while (in.hasNextLine()) {
-				String badState = in.nextLine().trim();
+				String badState = in.nextLine().replaceAll("\\s","");
 				badStates.add(badState);
 			}
 			in.close();
