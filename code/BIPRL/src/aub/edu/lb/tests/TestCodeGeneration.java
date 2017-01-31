@@ -10,7 +10,7 @@ public class TestCodeGeneration {
 	
 	
 	public static void main(String[] args) throws FileNotFoundException {
-		TCompound tCompound = new DeepReinforcementLearning("/Users/jaber/Desktop/bench-tmp/d5g.bip", "/Users/jaber/Desktop/bench-tmp/badStatesd5g");
+		TCompound tCompound = new DeepReinforcementLearning("bip-files/dining.bip", "bench/badStates");
 		tCompound.compute();
 		new TGenerator(tCompound, "/Users/jaber/Desktop/mainrl.cpp");
 	}
