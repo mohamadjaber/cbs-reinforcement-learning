@@ -1,1 +1,31 @@
-\section{Reinforcement Learning}
+\section{Problem Definition \& Methodology }
+We frame the problem of run time enforcement as a sequential decision making (SDM) one, by which the engine has to determine a set of interactions over an extended life-span (i.e., horizon) that maximize its total return. We formalize SDMs as the following five-tuple $\left \langle Q, \tilde{Q},\Gamma, \rightarrow, {R}_{+}, {R}_{-}, \gamma \right\rangle$. Here, $Q$ represents the set of all possible states, $\tilde{Q} \subseteq Q$ the set of ``bad'' states that need to be avoided, $\Gamma$ the set of allowed interactions, and $\rightarrow$ representing the transition model. $R_{+}$ and ${R}_{-}$ are two positive and negative scalar parameter, which allow us to define the reward function quantifying the performance of the engine. Clearly, the engine gets rewarded when in a state $\bm{q} \notin \tilde{Q}$, while penalized if $\bm{q} \in \tilde{Q}$. Using this intuition, one can define a reward function of the states written as: 
+   \begin{displaymath}
+   \mathcal{R}(\bm{q}) = \left\{
+     \begin{array}{lr}
+       R_{+} & :  \bm{q} \notin \tilde{Q} \\
+       R_{-} & : \bm{q} \in \tilde{Q}.
+     \end{array}
+   \right.
+\end{displaymath} 
+Given the above reward definition, we finally introduce $\gamma \in [0,1)$ to denote the discount factor specifying the degree to which rewards are discounted over time as the engine interacts with each of the components. 
+
+
+At each time step $t$, the engine observes a state $\bm{q}_{t} \in Q$ and must choose an action $\bm{a}_{t} \in \mathcal{A}_{t} \subseteq \Gamma$, transitioning it to a new state $\bm{q}_{t+1} \goesto[\bm{a}_{t}]\bm{q}_{t}$ as given by $\rightarrow$ and yielding a reward $\mathcal{R}\left(\bm{q}_{t+1}\right)$. The choice of these actions at each time-step is dictated by an action-selection rule, which we refer to as the policy $\pi$. We extend the sequential decision making literature by defining policies that map between the set of states, $Q$, and any combination of the allowed interactions, i.e., $\pi: Q \rightarrow 2^{\Gamma}$. As detailed in Section~\ref{Sec:Fairness}, sampling policies from this space -- the standard direction followed in current literature -- allows us to acquire \emph{fair} policies. 
+
+
+The goal of the engine is to find an optimal policy $\pi^{\star}$ that maximizes the expected return. Rather than targeting the determination of $\pi^{\star}$ directly, we will speak of optimal \emph{value} of a state, which is defined as the discounted sum of rewards that the engine gains if it starts in that state and executes the optimal policy: 
+\begin{equation}
+V^{\star}(\bm{q}) = \max_{\pi} \mathbb{E}\left[\sum_{t=1}^{T}\gamma^{t}\mathcal{R}\left(\bm{q}_{t}, \bm{a}_{t}\right)\right] =  \max_{\pi}\mathbb{E}\left[\sum_{t=1}^{T}\gamma^{t}\mathcal{R}\left(\bm{q}_{t+1}\right)\right]. 
+\end{equation}
+
+It can be shown that the optimal value function is unique and can be defined as the solution to the following simultaneous equations:
+\begin{equation}
+\label{Eq:Vstar}
+V^{\star}(\bm{q}) = \max_{\bm{a}} \left(\mathcal{R}(\bm{q},\bm{a})+ \gamma \sum_{\bm{q} \goesto[\bm{a}]\bm{q}^{\prime}} V^{\star}\left(\bm{q}^{\prime}\right)\right),  \ \ \forall \ \ \bm{q} \in Q.
+\end{equation}
+
+Equation~\ref{Eq:Vstar} asserts that the value of a state $\bm{q}$ is the expected instantaneous reward plus the expected discounted value of the next state, using the best available action. Given the optimal value function, we can specify the optimal policy as:
+\begin{equation}
+\pi^{\star}(\bm{q}) = \arg\max_{\bm{a}} \left(\mathcal{R}(\bm{q},\bm{a}) + \gamma \sum_{\bm{q} \goesto[\bm{a}]\bm{q}^{\prime}} V^{\star}\left(\bm{q}^{\prime}\right)\right).
+\end{equation}
