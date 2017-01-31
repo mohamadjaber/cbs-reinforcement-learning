@@ -135,8 +135,10 @@ public class Kripke {
 		return kripkeName + "]";
 	}
 
-	public int getStateId(String name) {
-		return mapStateNameId.get(name);
+	public Integer getStateId(String name) {
+		if(mapStateNameId.containsKey(name))
+			return mapStateNameId.get(name);
+		return null;
 	}
 	
 	public KripkeState getState(int id) {

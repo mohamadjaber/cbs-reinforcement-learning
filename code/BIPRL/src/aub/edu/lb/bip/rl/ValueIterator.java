@@ -12,56 +12,54 @@ import aub.edu.lb.bip.model.TCompoundReinforcementLearning;
 import aub.edu.lb.kripke.KripkeState;
 import aub.edu.lb.kripke.Transition;
 
-
 /**
  * 
- * @author Jaber 
+ * @author Jaber
  *
  */
 public class ValueIterator extends TCompoundReinforcementLearning {
 
 	private final static double EPS = DefaultSettings.EPS;
-	
+
 	public double[][] qValue; // TODO hash map in case of sparse cases...
 	protected double[] utility;
 	protected double[] reward;
 
 	public int numberStates;
 	public int numberActions;
-	
+
 	private Set<String> badStatesNames;
-	
-	
-	private boolean debug = true; 
-	PrintStream ps = System.out; 
-	
+
+	private boolean debug = true;
+	PrintStream ps = System.out;
+
 	public ValueIterator(String bipFile, String badStateFile) {
-		this(bipFile, badStateFile, 
-				DefaultSettings.DefaultMaxIteration, 
-				DefaultSettings.gamma,
+		this(bipFile, badStateFile, DefaultSettings.DefaultMaxIteration, DefaultSettings.gamma,
 				DefaultSettings.badReward, DefaultSettings.goodReward, DefaultSettings.initialUtility);
 	}
-	
+
 	public double getQValue(int i, int j) {
 		return qValue[i][j];
 	}
-	
+
 	@Override
 	public void compute() {
-		if(this.debug) printDebugOptions();
+		if (this.debug)
+			printDebugOptions();
 		initialize();
 		setTogetherAction();
 	}
- 	
-	public ValueIterator(String bipFile, String badStateFile, int maxIteration, double gamma, double badReward, double goodReward, int initialUtility) {
+
+	public ValueIterator(String bipFile, String badStateFile, int maxIteration, double gamma, double badReward,
+			double goodReward, int initialUtility) {
 		super(bipFile, badStateFile);
 		this.gamma = gamma;
-		this.badReward = badReward; 
+		this.badReward = badReward;
 		this.goodReward = goodReward;
 		this.initialUtility = initialUtility;
 		this.maxIteration = maxIteration;
 	}
-	
+
 	private void initialize() {
 		this.numberStates = (int) transitionSystem.getNumberStates();
 		this.numberActions = transitionSystem.getCompound().getInteractions().size();
@@ -78,10 +76,12 @@ public class ValueIterator extends TCompoundReinforcementLearning {
 		try {
 			Scanner in = new Scanner(new File(badStateFile));
 			while (in.hasNextLine()) {
-				String badState = in.nextLine().replaceAll("\\s","");
-				int stateId = transitionSystem.getStateId(badState);
-				badStatesNames.add(badState);
-				reward[stateId] = badReward;
+				String badState = in.nextLine().replaceAll("\\s", "");
+				Integer stateId = transitionSystem.getStateId(badState);
+				if (stateId != null) { // otherwise the bad state is not reachable
+					badStatesNames.add(badState);
+					reward[stateId] = badReward;
+				}
 			}
 			in.close();
 		} catch (FileNotFoundException e) {
@@ -98,11 +98,14 @@ public class ValueIterator extends TCompoundReinforcementLearning {
 			error = Double.MIN_VALUE;
 			for (int i = 0; i < numberStates; i++) {
 				KripkeState state = transitionSystem.getState(i);
-				
-				// to avoid incrementing q value in case bad state is connected to good state
-				// Haitham suggested to remove it but increase/decrease good/bad reward
-				// if(badStatesNames.contains(state.getState().toString())) { continue; }
-	
+
+				// to avoid incrementing q value in case bad state is connected
+				// to good state
+				// Haitham suggested to remove it but increase/decrease good/bad
+				// reward
+				// if(badStatesNames.contains(state.getState().toString())) {
+				// continue; }
+
 				double maxUtility = Double.MIN_VALUE;
 				for (Transition t : state.getTransitions()) {
 					int actionId = t.getLabel().getId();
@@ -117,11 +120,11 @@ public class ValueIterator extends TCompoundReinforcementLearning {
 		}
 		System.out.println(iteration + " iterations are needed to converge for EPS " + EPS);
 	}
-	
+
 	private void printDebugOptions() {
 		ps.println("Configuration...");
-		ps.println("Good reward = "+ this.goodReward);
-		ps.println("Bad reward = "+ this.badReward);
+		ps.println("Good reward = " + this.goodReward);
+		ps.println("Bad reward = " + this.badReward);
 		ps.println("Max iteration bound = " + this.maxIteration);
 	}
 
