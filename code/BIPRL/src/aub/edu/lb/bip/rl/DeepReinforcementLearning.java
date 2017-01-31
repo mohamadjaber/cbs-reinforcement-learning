@@ -4,11 +4,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
 
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.neural.networks.BasicNetwork;
@@ -28,7 +26,7 @@ public class DeepReinforcementLearning extends TCompoundDeepReinforcementLearnin
 	private BasicNetwork networkCurrent; // teta
 	private BasicNetwork networkHistory; // teta minus
 	private List<TransitionReplay> memoryReplay;
-	private Set<String> badStates;
+	private BadStates badStates;
 	
 	private ActivationFunction activationFunction = DefaultSettings.defaultActivationFunction;
 	private ActivationFunction activationFunctionOuter = DefaultSettings.defaultActivationFunctionOuter;
@@ -52,9 +50,11 @@ public class DeepReinforcementLearning extends TCompoundDeepReinforcementLearnin
 					resetHistoryPeriod, gamma, debug, fairnessDegreeDistance);
 	}
 	
+
+	
 	@Override
 	public void compute() {
-		this.badStates = new HashSet<String>();
+		this.badStates = new BadStates();
 		fillBadStates();
 		initializeTraceLengthIteration();
 		
@@ -130,7 +130,7 @@ public class DeepReinforcementLearning extends TCompoundDeepReinforcementLearnin
 			 * store in memoryReplay the transition replay 
 			 * <currentState, interaction, reward nextState, nextState>
 			 */
-			boolean isBadStateNext = badStates.contains(nextState.toString());
+			boolean isBadStateNext = badStates.isBadState(nextState);
 			double reward = isBadStateNext ? badReward : goodReward;
 			TransitionReplay transition = new TransitionReplay(currentState, interaction, nextState, reward);
 			
@@ -169,7 +169,7 @@ public class DeepReinforcementLearning extends TCompoundDeepReinforcementLearnin
 	}
 	
 	private double[] generateTrainingPoint(TransitionReplay transition) {
-		boolean isBadState = badStates.contains(transition.getToState().toString()); 
+		boolean isBadState = badStates.isBadState(transition.getToState()); 
 		double[] outputNetworkCurrentState = EncogHelper.forwardPropagation(networkHistory, transition.getFromState().getIds());
 		List<BIPInteraction> enabledInteractions = compound.getEnabledInteractions(transition.getToState());
 
@@ -204,8 +204,7 @@ public class DeepReinforcementLearning extends TCompoundDeepReinforcementLearnin
 		try {
 			Scanner in = new Scanner(new File(badStateFile));
 			while (in.hasNextLine()) {
-				String badState = in.nextLine().replaceAll("\\s","");
-				badStates.add(badState);
+				badStates.addBadState(new BadState(in.nextLine()));
 			}
 			in.close();
 		} catch (FileNotFoundException e) {

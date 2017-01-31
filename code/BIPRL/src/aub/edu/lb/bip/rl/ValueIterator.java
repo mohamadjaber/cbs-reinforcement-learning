@@ -4,9 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Scanner;
-import java.util.Set;
 
 import aub.edu.lb.bip.model.TCompoundReinforcementLearning;
 import aub.edu.lb.kripke.KripkeState;
@@ -28,7 +26,7 @@ public class ValueIterator extends TCompoundReinforcementLearning {
 	public int numberStates;
 	public int numberActions;
 
-	private Set<String> badStatesNames;
+	private BadStates badStates;
 
 	private boolean debug = true;
 	PrintStream ps = System.out;
@@ -65,7 +63,7 @@ public class ValueIterator extends TCompoundReinforcementLearning {
 		this.numberActions = transitionSystem.getCompound().getInteractions().size();
 		this.utility = new double[numberStates];
 		this.reward = new double[numberStates];
-		this.badStatesNames = new HashSet<String>();
+		this.badStates = new BadStates();
 		qValue = new double[numberStates][numberActions];
 		computeReward();
 		computeQValues();
@@ -76,12 +74,7 @@ public class ValueIterator extends TCompoundReinforcementLearning {
 		try {
 			Scanner in = new Scanner(new File(badStateFile));
 			while (in.hasNextLine()) {
-				String badState = in.nextLine().replaceAll("\\s", "");
-				Integer stateId = transitionSystem.getStateId(badState);
-				if (stateId != null) { // otherwise the bad state is not reachable
-					badStatesNames.add(badState);
-					reward[stateId] = badReward;
-				}
+				badStates.addBadState(new BadState(in.nextLine()));
 			}
 			in.close();
 		} catch (FileNotFoundException e) {
@@ -110,7 +103,8 @@ public class ValueIterator extends TCompoundReinforcementLearning {
 				for (Transition t : state.getTransitions()) {
 					int actionId = t.getLabel().getId();
 					KripkeState nextState = t.getEndState();
-					double updateQValue = reward[nextState.getId()] + gamma * utility[nextState.getId()];
+					double reward = badStates.isBadState(nextState)? badReward : goodReward; 
+					double updateQValue = reward + gamma * utility[nextState.getId()];
 					error = Math.max(error, Math.abs(updateQValue - qValue[i][actionId]));
 					qValue[i][actionId] = updateQValue;
 					maxUtility = Math.max(maxUtility, qValue[i][actionId]);

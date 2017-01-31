@@ -7,26 +7,50 @@ import java.io.PrintStream;
 public class RobotGeneration {
 	private Integer gridSize;
 	private String fileName;
-
+	private Integer robots; 
 	private PrintStream BIPFile;
+	private PrintStream badStateFile; 
 
-	public RobotGeneration(int gridSize, String fileName) {
+
+	public RobotGeneration(int gridSize, int robots, String fileName, String badStateFileName) {
 		try {
 			this.gridSize = gridSize;
 			this.fileName = fileName;
+			this.robots = robots; 
 			BIPFile = new PrintStream(new File(fileName));
+			badStateFile = new PrintStream(new File(badStateFileName));
+
 			BIPFile.println("model robot");
 			CreateConnectors();
 			CreateAtomics();
 			CreateCompoundType();
 
 			BIPFile.println("component Robots top");
-			BIPFile.write("end\n".getBytes());
+			BIPFile.write("   end\n".getBytes());
 			BIPFile.close();
+			
+			generateBadState();
+			badStateFile.close();
+			
 		} catch (IOException e) {
 			System.out.println(e);
 		}
 	}
+	
+	
+	public void generateBadState() {
+		for(int i = 0 ; i < robots ; i++) {
+			for(int j = 0; j < gridSize; j++) {
+				badStateFile.println("r" + i + ".l_" + j + "_" + (gridSize - 1));
+			}
+			
+			for(int j = gridSize - 2; j > gridSize / 2; j--) {
+				badStateFile.println("r" + i + ".l_" + (gridSize - 1) + "_" + (j));
+			}
+		}
+	}
+	
+
 
 	public String getFileName() {
 		return fileName;
@@ -74,15 +98,15 @@ public class RobotGeneration {
 
 	private void CreateCompoundType() throws IOException {
 		BIPFile.println("\n\n  compound type Robots");
-		for (int i = 0; i < gridSize; i++) {
+		for (int i = 0; i < robots; i++) {
 			BIPFile.println("    component Robot r" + i + "(" + i + ")");
 		}
-		for (int i = 0; i < gridSize; i++) {
-			BIPFile.println("    connector SyncTwo connRight_" + i + "(r" + i + ".rightAction, r" + ((i + 1) % gridSize)+ ".rightAction)");
-			BIPFile.println("    connector SyncTwo connUp_" + i + "(r" + i + ".upAction, r" + ((i + 1) % gridSize)+ ".upAction)");
+		for (int i = 0; i < robots; i++) {
+			BIPFile.println("    connector SyncTwo connRight_" + i + "(r" + i + ".rightAction, r" + ((i + 1) % robots)+ ".rightAction)");
+			BIPFile.println("    connector SyncTwo connUp_" + i + "(r" + i + ".upAction, r" + ((i + 1) % robots)+ ".upAction)");
 		}
 
-		BIPFile.println("end\n");
+		BIPFile.println("  end\n");
 	}
 
 }

@@ -73,7 +73,7 @@ public abstract class TCompoundDeepReinforcementLearning extends TCompound {
 		super(bipFile, true, false, badStateFile);
 		this.fairnessDegreeDistance = fairnessDegreeDistance;
 	}
-
+	
 	@Override
 	protected void mainWhileLoopAction() {
 		TCompositeAction ca = new TCompositeAction();
