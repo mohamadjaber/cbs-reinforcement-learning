@@ -8,7 +8,7 @@ import aub.edu.lb.model.GlobalState;
 import aub.edu.lb.model.LocalState;
 
 /**
- * Symbolic bad state representation
+ * Symbolic/partial bad state representation
  * TODO: add description
  * @author jaber
  *
