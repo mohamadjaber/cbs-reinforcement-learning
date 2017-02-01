@@ -11,21 +11,37 @@ We frame the problem of run time enforcement as a sequential decision making (SD
 Given the above reward definition, we finally introduce $\gamma \in [0,1)$ to denote the discount factor specifying the degree to which rewards are discounted over time as the engine interacts with each of the components. 
 
 
-At each time step $t$, the engine observes a state $\bm{q}_{t} \in Q$ and must choose an action $\bm{a}_{t} \in \mathcal{A}_{t} \subseteq \Gamma$, transitioning it to a new state $\bm{q}_{t+1} \goesto[\bm{a}_{t}]\bm{q}_{t}$ as given by $\rightarrow$ and yielding a reward $\mathcal{R}\left(\bm{q}_{t+1}\right)$. The choice of these actions at each time-step is dictated by an action-selection rule, which we refer to as the policy $\pi$. We extend the sequential decision making literature by defining policies that map between the set of states, $Q$, and any combination of the allowed interactions, i.e., $\pi: Q \rightarrow 2^{\Gamma}$. As detailed in Section~\ref{Sec:Fairness}, sampling policies from this space -- the standard direction followed in current literature -- allows us to acquire \emph{fair} policies. 
+At each time step $t$, the engine observes a state $\bm{q}_{t} \in Q$ and must choose an action $\bm{a}_{t} \in \mathcal{A}_{t} \subseteq \Gamma$, transitioning it to a new state $\bm{q}_{t} \goesto[\bm{a}_{t}]\bm{q}_{t+1}$ as given by $\rightarrow$ and yielding a reward $\mathcal{R}\left(\bm{q}_{t+1}\right)$. The choice of these actions at each time-step is dictated by an action-selection rule, which we refer to as the policy $\pi$. We extend the sequential decision making literature by defining policies that map between the set of states, $Q$, and any combination of the allowed interactions, i.e., $\pi: Q \rightarrow 2^{\Gamma}$. As detailed in Section~\ref{Sec:Fairness}, sampling policies from this space -- the standard direction followed in current literature -- allows us to acquire \emph{fair} policies. 
 
 
-The goal of the engine is to find an optimal policy $\pi^{\star}$ that maximizes the expected return. Rather than targeting the determination of $\pi^{\star}$ directly, we will speak of optimal \emph{value} of a state, which is defined as the discounted sum of rewards that the engine gains if it starts in that state and executes the optimal policy: 
+The goal of the engine is to find an optimal policy $\pi^{\star}$ that maximizes the \emph{expected} total sum of the rewards it receives in the long run, while starting from an initial state $\bm{q}_{0} \in Q$. Rather than targeting the determination of $\pi^{\star}$ directly, we will speak of \emph{value} of a state $\bm{q} \in Q$, which can be regarded as an evaluator of how good a policy $\pi$ is performing while being in $\bm{q}$. We will define the value of a state as:
 \begin{equation}
-V^{\star}(\bm{q}) = \max_{\pi} \mathbb{E}\left[\sum_{t=1}^{T}\gamma^{t}\mathcal{R}\left(\bm{q}_{t}, \bm{a}_{t}\right)\right] =  \max_{\pi}\mathbb{E}\left[\sum_{t=1}^{T}\gamma^{t}\mathcal{R}\left(\bm{q}_{t+1}\right)\right]. 
+\label{Eq:ValueOne}
+V^{\pi}(\bm{q}_{0}) = \mathbb{E} \left[\sum_{t=0}^{T} \gamma^{t}\mathcal{R}(\bm{q}_{t},\bm{a}_{t})\right]= \mathbb{E} \left[\sum_{t=0}^{T} \gamma^{t}\mathcal{R}(\bm{q}_{t+1})\right].
 \end{equation}
+Notice that we index the value of the state by the policy $\pi$ to explicitly reflect the dependency of the value on the policy being followed from a state $\bm{q}_{t}$. Interestingly, the definition of the value function in Equation~\ref{Eq:ValueOne} can be written in a much-more intuitive manner which asserts that the value of a state $\bm{q}_{t}$ is the expected instantaneous reward plus the expected discounted value of the next state: 
+\begin{equation*}
+V^{\pi}(\bm{q}_{t}) = \mathbb{E}\left[\mathcal{R} \left(\bm{q}_{t+1}\right) + \gamma V^{\pi}\left(\bm{q}_{t+1}\right)\right]. 
+\end{equation*}
+Clearly, we are interested in determining the optimal policy $\pi^{\star}$, which upon its usage yields maximized values for any $\bm{q}_{t} \in Q$. As such our goal is to determine a policy $\pi$ that solves:
+\begin{equation*}
+\max_{\pi} V^{\pi}(\bm{q}_{0}). 
+\end{equation*}
+Due to the number of possible policies at each time step, it is a challenge to compute the value for all possible options. Instead, we propose the application of a dynamic programming algorithm known as value iteration, summarized in Algorithm~\ref{Algo:VI} to find the optimal policy efficiently. 
+\begin{algorithm}[h!]
+\caption{Value Iteration for Run Time Enforcement}
+\label{Algo:VI}
+\begin{algorithmic}[1]
+\STATE \textbf{Input:} Initialization of $V_{0}(\bm{q})$ for all $\bm{q}\in Q$, precision parameter $\epsilon$
+\WHILE {$|V_{k+1} - V_{k}| \leq \epsilon$}
+	\FOR {\textbf{each} $\bm{q} \in Q$ }
+		\FOR {\textbf{each} $\bm{a} \in \mathcal{A}$}
+			\STATE $V_{k+1}(\bm{q}) = \max_{a} \left[\mathcal{R}(\bm{q}, \bm{a}) + \gamma \sum_{\bm{q} \goesto[\bm{a}]\bm{q}^{\prime}}V_{k}(\bm{q}^{\prime})\right]$
+		\ENDFOR
+	\ENDFOR
+		\STATE k = k+1
+\ENDWHILE
+\end{algorithmic}
+\end{algorithm}
 
-It can be shown that the optimal value function is unique and can be defined as the solution to the following simultaneous equations:
-\begin{equation}
-\label{Eq:Vstar}
-V^{\star}(\bm{q}) = \max_{\bm{a}} \left(\mathcal{R}(\bm{q},\bm{a})+ \gamma \sum_{\bm{q} \goesto[\bm{a}]\bm{q}^{\prime}} V^{\star}\left(\bm{q}^{\prime}\right)\right),  \ \ \forall \ \ \bm{q} \in Q.
-\end{equation}
-
-Equation~\ref{Eq:Vstar} asserts that the value of a state $\bm{q}$ is the expected instantaneous reward plus the expected discounted value of the next state, using the best available action. Given the optimal value function, we can specify the optimal policy as:
-\begin{equation}
-\pi^{\star}(\bm{q}) = \arg\max_{\bm{a}} \left(\mathcal{R}(\bm{q},\bm{a}) + \gamma \sum_{\bm{q} \goesto[\bm{a}]\bm{q}^{\prime}} V^{\star}\left(\bm{q}^{\prime}\right)\right).
-\end{equation}
+In essence, Algorithm~\ref{Algo:VI} is iteratively updating the value for all states by choosing these actions that maximize the instantaneous rewards, as well as the future information encoded through $V_{k}(\bm{q}^{\prime})$. Defining the operator $$\mathcal{T}^{\pi} = \max_{a} \left[\mathcal{R}(\bm{q}, \bm{a}) + \gamma \sum_{\bm{q} \goesto[\bm{a}]\bm{q}^{\prime}}V_{k}(\bm{q}^{\prime})\right],$$ one can easily see that the optimal value function is essentially  fixed-point of $V_{k+1} = \mathcal{T}^{\pi}  V_{k}$. 
