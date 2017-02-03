@@ -23,12 +23,12 @@ public class CmdLineFactory {
 	public static final String infiniteAllOrNothing = "In case of infinite option, you either set all the parameters or none (default values will be set)";
 	private static final String VERSION = "V 1.0";
 	
-	private static final String cmdLineDescription = "A tool to enforce properties using reinforcement learning!";
+	private static final String cmdLineDescription = "A tool for autonomous learning correctness at runtime!";
 	
 	private static final String helpText = "Have Fun!";
 		
-	public static final String normal = "normal";
-	public static final String finite = "value-iterator";
+	public static final String normal = "standard";
+	public static final String finite = "finite";
 	public static final String infinite = "infinite";
 
 	public static final String typeNotSupportedError = "Mode is not supported (" +
@@ -55,19 +55,19 @@ public class CmdLineFactory {
 				!FileParam.OPTIONAL,
 				!FileParam.MULTI_VALUED
 			);
-		goodReward = new StringParam("good-reward", "Good reward value (default " + DefaultSettings.goodReward + ")");
-		badReward = new StringParam("bad-reward", "Bad reward value (default " + DefaultSettings.badReward + ")");
-		probaRandom = new StringParam("proba-random", "Probability of exploration (default " + DefaultSettings.defaultProbabilityRandom + ")");
-		gamma = new StringParam("gamma", "Gamma (default " + DefaultSettings.gamma + ")");
+		goodReward = new StringParam("good", "Good reward value (default " + DefaultSettings.goodReward + ")");
+		badReward = new StringParam("bad", "Bad reward value (default " + DefaultSettings.badReward + ")");
+		probaRandom = new StringParam("exploration-factor", "Probability of exploration (default " + DefaultSettings.defaultProbabilityRandom + ")");
+		gamma = new StringParam("discount", "Discounting factor (default " + DefaultSettings.gamma + ")");
 
 		episodes = new IntParam("episodes", "Number of episodes (default " + DefaultSettings.defaultNumberEpisodes + ")");
 		epoch = new IntParam("epoch", "Epoch (default " + DefaultSettings.EPOCH + ")");
 		hidden = new IntParam("hidden", "Number of neurons in hidden layer (default " + DefaultSettings.defaultNumberOfNeuronsHidden + ")");
 		capacity = new IntParam("capacity", "Capacity of memory replay (default " + DefaultSettings.defaultCapacityReplay + ")");
-		minimumTrace = new IntParam("trace", "Minimum trace length (trace length is guaranteed to be greater than \"minimum trace length\" and \"diameter of all atomic components\" - default minimum trace length is " + DefaultSettings.minimumTraceLengthIteration + ")");
-		sampleCapacityPercentage = new IntParam("sample-capacity", "Size of samples used for training (default " + DefaultSettings.defaultSampleCapacityPercentage + "%)");
-		resetHistoryPeriod = new IntParam("period-reset", "Reset period time (default " + DefaultSettings.defaultResetHistoryTime + ")");
-		fair = new IntParam("Fairness degree", "Fairness degree (default no fairness, i.e., <= 0)");
+		minimumTrace = new IntParam("horizon", "Minimum trace length (trace length is guaranteed to be greater than \"minimum trace length\" and \"diameter of all atomic components\" - default minimum trace length is " + DefaultSettings.minimumTraceLengthIteration + ")");
+		sampleCapacityPercentage = new IntParam("percentage-sample", "Percentage of samples from replay memory (default " + DefaultSettings.defaultSampleCapacityPercentage + "%)");
+		resetHistoryPeriod = new IntParam("period-reset", "Reset period time, i.e., theta- (default " + DefaultSettings.defaultResetHistoryTime + ")");
+		fair = new IntParam("fair", "Fairness degree (default no fairness, i.e., <= 0)");
 		maxIterationValueIterator = new IntParam("max-iteration", "Bound iteration (default " + DefaultSettings.DefaultMaxIteration + ")");
 
 		mode = new StringParam("mode", "\n*" + 
