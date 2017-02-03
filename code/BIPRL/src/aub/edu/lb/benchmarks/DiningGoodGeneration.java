@@ -36,8 +36,8 @@ public class DiningGoodGeneration {
 	
 	public void generateBadState() {
 		for(int i = 0 ; i < nbOfPhilosophers ; i++) {
-			if(i == 0) badStateFile.print("p" + i +"_Eating");
-			else badStateFile.print(", p" + i + "_Eating");
+			if(i == 0) badStateFile.print("p" + i +".Eating");
+			else badStateFile.print(", p" + i + ".Eating");
 		}
 	}
 	
