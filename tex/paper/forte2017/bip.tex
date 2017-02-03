@@ -1,6 +1,5 @@
 \section{Behavior, Interaction and Priority (BIP)}
 \label{sec:bip}
-
 We recall the necessary concepts of the BIP framework~\cite{bip2}.
 BIP allows to construct systems by superposing three layers of design: Behavior, Interaction, and Priority.
 The \emph{behavior} layer consists of a set of atomic components represented by transition systems. 
@@ -74,22 +73,20 @@ Figure~\ref{fig:diningbip} illustrates a composite component $\Gamma(P_0, P_1, P
 
 
 Notice that several distinct interactions can be enabled at the same time, thus introducing non-determinism in the product behavior. One can add priorities to reduce non-determinism. In this case, one of the interactions with the highest priority is chosen non-deterministically.
-%\footnote{The BIP engine implementing this semantics chooses one interaction at random, when faced with several enabled interactions.}
-%
 
 \begin{definition}[Priority]
   \label{defn:priority}
-  Let $C = (Q,A,\goesto)$ be the behavior of the composite component $\Gamma(\{B_1, \ldots, B_n\})$.  A {\em priority model} $\pi$ is a
-  strict partial order on the set of interactions $A$. Given a priority model $\pi$, we
-  abbreviate $(a,a')\in \pi$ by $a \prec_\pi a'$ or $a \prec a'$ when clear from the context. Adding the priority model $\pi$ over $\Gamma(\{B_1, \ldots, B_n\})$ defines a new composite component $\pi\big(\Gamma(\{B_1, \ldots, B_n\})\big)$ noted $\pi(C)$ and whose behavior is defined by $(Q, A, \goesto_\pi)$, where $\goesto_\pi$ is the least set of transitions satisfying the following rule:
+  Let $C = (Q,\Gamma,\goesto)$ be the behavior of the composite component $\Gamma(\{B_1, \ldots, B_n\})$.  A {\em priority model} $\prio$ is a
+  strict partial order on the set of interactions $\Gamma$. Given a priority model $\prio$, we
+  abbreviate $(a,a')\in \prio$ by $a \prec a'$. Adding the priority model $\prio$ over $\Gamma(\{B_1, \ldots, B_n\})$ defines a new composite component $B = \prio\big(\Gamma(\{B_1, \ldots, B_n\})\big)$ noted $\pi(C)$ and whose behavior is defined by $(Q, \Gamma, \goesto_\prio)$, where $\goesto_\prio$ is the least set of transitions satisfying the following rule:
 \begin{mathpar}
 \inferrule*
 	{
       q \goesto[a] q' \and
-      \neg\big(\exists a'\in A,\exists q''\in Q: a \prec a' \wedge q \goesto[a'] q'' \big)
+      \neg\big(\exists a'\in \Gamma,\exists q''\in Q: a \prec a' \wedge q \goesto[a'] q'' \big)
     }
     {
-      q \goesto[a]_\pi q'
+      q \goesto[a]_\prio q'
     }
 \end{mathpar}
 \end{definition}
@@ -97,12 +94,8 @@ Notice that several distinct interactions can be enabled at the same time, thus 
 An interaction $a$ is enabled in $\pi(C)$ whenever $a$ is enabled in $C$ and $a$ is maximal according to $\pi$ among the active interactions in $C$.
 
 
-
-BIP provides both centralized and distributed
-implementations. In the centralized implementation,
-a centralized engine guarantees to execute only one interaction at a time, and thus conforms to the operational
-semantics of the BIP.  The main loop of the BIP
-engine consists of the following steps:
+BIP provides both centralized and distributed implementations. In the centralized implementation,
+a centralized engine guarantees to execute only one interaction at a time, and thus conforms to the operational semantics of the BIP.  The main loop of the BIP engine consists of the following steps:
 \begin{enumerate}
 \item Each atomic component sends to the engine its current
 location.
@@ -119,6 +112,26 @@ and schedules their transitions for execution.
 Alternatively, BIP allows the generation of distributed
 implementations~\cite{bip-distributed} where non-conflicting interactions
 can be simultaneously executed.
+
+\begin{definition}[BIP system]
+\label{def:bipsystem}
+A BIP system is a tuple $(B, q_0)$, where $q_0$ is the initial state with $q_0 \in \bigotimes_{i=1}^n Q_i$ being the tuple of initial states of atomic components.
+\end{definition}
+
+
+For the rest of the paper, we fix an arbitrary BIP-system $(B, q_0)$, where  $B = \prio\big(\Gamma(\{B_1, \ldots, B_n\})\big)$ with semantics $C = (Q, \Gamma, \goesto)$.
+
+We abstract the execution of a BIP system as a trace.
+%
+\begin{definition}[BIP trace]
+\label{def:trace-global}
+A BIP trace $\rho = (q_0 \cdot a_0 \cdot q_1 \cdot a_1 \cdots q_{i-1} \cdot a_{i-1} \cdot q_i)$ is an alternating sequence of states of $Q$ and interactions in $\Gamma$; where $q_k \xrightarrow{a_k} q_{k+1} \in \rightarrow$, for $k \in [0, i-1]$.
+\end{definition}
+
+Given a trace $\rho = (q_0 \cdot a_0 \cdot q_1 \cdot a_1 \cdots q_{i-1} \cdot a_{i-1} \cdot q_i)$, 
+$\rho^q_i$ (resp. $\rho^a_i$) denotes the $i^\text{th}$ state (resp. interaction) of the trace, i.e., $q_i$ (resp. $a_i$). Also, $\bm{\rho}(C)$ denotes the set of all the traces of an LTS $C$. 
+
+
 
 
 

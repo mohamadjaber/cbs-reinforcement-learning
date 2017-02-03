@@ -1,42 +1,62 @@
 \section{Problem Definition \& Methodology }
-We frame the problem of run time enforcement as a sequential decision making (SDM) one, by which the engine has to determine a set of interactions over an extended life-span (i.e., horizon) that maximize its total return. We formalize SDMs as the following five-tuple $\left \langle Q, \tilde{Q},\Gamma, \rightarrow, {R}_{+}, {R}_{-}, \gamma \right\rangle$. Here, $Q$ represents the set of all possible states, $\tilde{Q} \subseteq Q$ the set of ``bad'' states that need to be avoided, $\Gamma$ the set of allowed interactions, and $\rightarrow$ representing the transition model. $R_{+}$ and ${R}_{-}$ are two positive and negative scalar parameter, which allow us to define the reward function quantifying the performance of the engine. Clearly, the engine gets rewarded when in a state $\bm{q} \notin \tilde{Q}$, while penalized if $\bm{q} \in \tilde{Q}$. Using this intuition, one can define a reward function of the states written as: 
-   \begin{displaymath}
-   \mathcal{R}(\bm{q}) = \left\{
+We frame the problem of run time enforcement as a sequential decision making (SDM) one, by which the BIP engine has to be guided to select the set of interactions over an extended execution traces that maximize a cumulative return.  We formalize SDMs as the following five-tuple $\left \langle Q, \tilde{Q},\Gamma, \rightarrow, {R}_{+}, {R}_{-}, \gamma \right\rangle$.  Here, $Q$ represents the set of all possible states, $\tilde{Q} \subseteq Q$ the set of ``bad'' states that need to be avoided, $\Gamma$ the set of allowed interactions, and $\rightarrow$ representing the transition model. $R_{+}$ and ${R}_{-}$ are two positive and negative scalar parameter, which allow us to define the reward function quantifying the selection of the engine.
+Clearly, the engine gets rewarded when in a state $q \notin \tilde{Q}$, while penalized if $q \in \tilde{Q}$. Using this intuition, one can define a reward function of the states written as: 
+
+
+\begin{displaymath}
+   \mathcal{R}(q) = \left\{
      \begin{array}{lr}
-       R_{+} & :  \bm{q} \notin \tilde{Q} \\
-       R_{-} & : \bm{q} \in \tilde{Q}.
+       R_{+} & :  q \notin \tilde{Q} \\
+       R_{-} & : q \in \tilde{Q}.
      \end{array}
    \right.
 \end{displaymath} 
 Given the above reward definition, we finally introduce $\gamma \in [0,1)$ to denote the discount factor specifying the degree to which rewards are discounted over time as the engine interacts with each of the components. 
 
+At each time step $t$, the engine observes a state $q_{t} \in Q$ and must choose an interaction $a_{t} \in \mathcal{A}_{q_t} \subseteq \Gamma$, transitioning it to a new state $q_{t} \goesto[a_{t}]q_{t+1}$ as given by $\rightarrow$ and yielding a reward $\mathcal{R}\left(q_{t+1}\right)$, where $\mathcal{A}_{q_t}$ denotes all enabled interactions from state  $q_{t}$, i.e., $\mathcal{A}_{q_t} = \{a \mid \exists q': q_{t} \goesto[a] q' \in \rightarrow\}$. 
+We filter the choice of the allowed interactions, i.e., $\mathcal{A}_{q_t}$, at each time-step by an interaction-selection rule, which we refer to as the policy $\pi$. We extend the sequential decision making literature by defining policies that map between the set of states, $Q$, and any combination of the allowed interactions, i.e., $\pi: Q \rightarrow 2^{\Gamma}$, where for all $q \in Q: \pi(q) \subseteq\mathcal{A}_{q}$.
+Consequently, the new behavior of the composite component, guided by the policy $\pi$, is defined by $C_\pi = (Q, \Gamma, \goesto_\pi)$, where $\goesto_\pi$ is the least set of transitions satisfying the following rule:
+\begin{mathpar}
+\inferrule*
+	{
+      q \goesto[a] q' \and
+      a \in \pi(q)
+    }
+    {
+      q \goesto[a]_\pi q'
+    }
+\end{mathpar}
 
-At each time step $t$, the engine observes a state $\bm{q}_{t} \in Q$ and must choose an action $\bm{a}_{t} \in \mathcal{A}_{t} \subseteq \Gamma$, transitioning it to a new state $\bm{q}_{t} \goesto[\bm{a}_{t}]\bm{q}_{t+1}$ as given by $\rightarrow$ and yielding a reward $\mathcal{R}\left(\bm{q}_{t+1}\right)$. The choice of these actions at each time-step is dictated by an action-selection rule, which we refer to as the policy $\pi$. We extend the sequential decision making literature by defining policies that map between the set of states, $Q$, and any combination of the allowed interactions, i.e., $\pi: Q \rightarrow 2^{\Gamma}$. As detailed in Section~\ref{Sec:Fairness}, sampling policies from this space -- the standard direction followed in current literature -- allows us to acquire \emph{fair} policies. 
-
-
-The goal of the engine is to find an optimal policy $\pi^{\star}$ that maximizes the \emph{expected} total sum of the rewards it receives in the long run, while starting from an initial state $\bm{q}_{0} \in Q$. Rather than targeting the determination of $\pi^{\star}$ directly, we will speak of \emph{value} of a state $\bm{q} \in Q$, which can be regarded as an evaluator of how good a policy $\pi$ is performing while being in $\bm{q}$. We will define the value of a state as:
+The goal now is to find an optimal policy $\pi^{\star}$ that maximizes the \emph{expected} total sum of the rewards it receives in the long run, while starting from an initial state $q_{0} \in Q$. We will evaluate the performance of a policy $\pi$ by:
 \begin{equation}
 \label{Eq:ValueOne}
-V^{\pi}(\bm{q}_{0}) = \mathbb{E} \left[\sum_{t=0}^{T} \gamma^{t}\mathcal{R}(\bm{q}_{t},\bm{a}_{t})\right]= \mathbb{E} \left[\sum_{t=0}^{T} \gamma^{t}\mathcal{R}(\bm{q}_{t+1})\right].
+\texttt{eval}({\pi}) = \mathbb{E}_{\bm{\rho}(C_\pi)} \left[\sum_{t=0}^{T} \gamma^{t}\mathcal{R}(q_{t},a_{t})\right]= \mathbb{E}_{\bm{\rho}(C_\pi)} \left[\sum_{t=0}^{T} \gamma^{t}\mathcal{R}(q_{t+1})\right],
 \end{equation}
-Notice that we index the value of the state by the policy $\pi$ to explicitly reflect the dependency of the value on the policy being followed from a state $\bm{q}_{t}$. Interestingly, the definition of the value function in Equation~\ref{Eq:ValueOne} can be written in a much-more intuitive manner which asserts that the value of a state $\bm{q}_{t}$ is the expected instantaneous reward plus the expected discounted value of the next state: 
+where  $\mathbb{E}_{\bm{\rho}(C_\pi)}$ denotes the expectation under all the set of all the allowed (by the policy $\pi$) possible traces, and $T$ is the length of the trace. 
+
+
+Notice that we index the value of the state by the policy $\pi$ to explicitly reflect the dependency of the value on the policy being followed from a state $q_{t}$. Interestingly, the definition of the evaluator asserts that the value of a state $q_{t}$ is the expected instantaneous reward plus the expected discounted value of the next state. Clearly, we are interested in determining the optimal policy $\pi^{\star}$, which upon its usage yields maximized values for any $q_{t} \in Q$. As such our goal is to determine a policy $\pi$ that solves:
 \begin{equation*}
-V^{\pi}(\bm{q}_{t}) = \mathbb{E}\left[\mathcal{R} \left(\bm{q}_{t+1}\right) + \gamma V^{\pi}\left(\bm{q}_{t+1}\right)\right]. 
+\max_{\pi} V^{\pi}(q_{0}). 
 \end{equation*}
-Clearly, we are interested in determining the optimal policy $\pi^{\star}$, which upon its usage yields maximized values for any $\bm{q}_{t} \in Q$. As such our goal is to determine a policy $\pi$ that solves:
-\begin{equation*}
-\max_{\pi} V^{\pi}(\bm{q}_{0}). 
-\end{equation*}
+
+In other words, rather than targeting the determination of $\pi^{\star}$ directly, we will seek the \emph{value} of a state $q \in Q$. Clearly, one can recover the current iteration policy $\pi$ using:
+$
+\pi(q) = \texttt{argmax}_{a}\{V(q') \mid q \goesto[a] q'\}
+$.
+
+
+\subsection{Finite state-space - value iteration}
 Due to the number of possible policies at each time step, it is a challenge to compute the value for all possible options. Instead, we propose the application of a dynamic programming algorithm known as value iteration, summarized in Algorithm~\ref{Algo:VI} to find the optimal policy efficiently. 
 \begin{algorithm}[h!]
 \caption{Value Iteration for Run Time Enforcement}
 \label{Algo:VI}
 \begin{algorithmic}[1]
-\STATE \textbf{Input:} Initialization of $V_{0}(\bm{q})$ for all $\bm{q}\in Q$, precision parameter $\epsilon$
+\STATE \textbf{Input:} Initialization of $V_{0}(q)$ for all $q\in Q$, precision parameter $\epsilon$
 \WHILE {$|V_{k+1} - V_{k}| \leq \epsilon$}
-	\FOR {\textbf{each} $\bm{q} \in Q$ }
-		\FOR {\textbf{each} $\bm{a} \in \mathcal{A}$}
-			\STATE $V_{k+1}(\bm{q}) = \max_{a} \left[\mathcal{R}(\bm{q}, \bm{a}) + \gamma \sum_{\bm{q} \goesto[\bm{a}]\bm{q}^{\prime}}V_{k}(\bm{q}^{\prime})\right]$
+	\FOR {\textbf{each} $q \in Q$ }
+		\FOR {\textbf{each} $a \in \mathcal{A}$}
+			\STATE $V_{k+1}(q) = \max_{a} \left[\mathcal{R}(q, a) + \gamma \sum_{q \goesto[a]q^{\prime}}V_{k}(q^{\prime})\right]$
 		\ENDFOR
 	\ENDFOR
 		\STATE k = k+1
@@ -44,4 +64,4 @@ Due to the number of possible policies at each time step, it is a challenge to c
 \end{algorithmic}
 \end{algorithm}
 
-In essence, Algorithm~\ref{Algo:VI} is iteratively updating the value for all states by choosing these actions that maximize the instantaneous rewards, as well as the future information encoded through $V_{k}(\bm{q}^{\prime})$. Defining the operator $$\mathcal{T}^{\pi} = \max_{a} \left[\mathcal{R}(\bm{q}, \bm{a}) + \gamma \sum_{\bm{q} \goesto[\bm{a}]\bm{q}^{\prime}}V_{k}(\bm{q}^{\prime})\right],$$ one can easily see that the optimal value function is essentially  fixed-point of $V_{k+1} = \mathcal{T}^{\pi}  V_{k}$. 
+In essence, Algorithm~\ref{Algo:VI} is iteratively updating the value for all states by choosing these actions that maximize the instantaneous rewards, as well as the future information encoded through $V_{k}(q^{\prime})$. Defining the operator $$\mathcal{T}^{\pi} = \max_{a} \left[\mathcal{R}(q, a) + \gamma \sum_{q \goesto[a]q^{\prime}}V_{k}(q^{\prime})\right],$$ one can easily see that the optimal value function is essentially  fixed-point of $V_{k+1} = \mathcal{T}^{\pi}  V_{k}$. 
