@@ -41,8 +41,8 @@ public class CmdLineFactory {
 	
 	public static final String ErrorGeneratingFile = "Error while generating source code";
 
-	public StringParam goodReward, badReward, probaRandom, gamma;
-	public IntParam episodes, epoch, hidden, capacity, minimumTrace, fair;
+	public StringParam goodReward, badReward, probaRandom, gamma, fair;
+	public IntParam episodes, epoch, hidden, capacity, minimumTrace;
 	public IntParam sampleCapacityPercentage, resetHistoryPeriod;
 	public CmdLineHandler cmdLineHandler;
 	
@@ -67,7 +67,7 @@ public class CmdLineFactory {
 		minimumTrace = new IntParam("horizon", "Minimum trace length (trace length is guaranteed to be greater than \"minimum trace length\" and \"diameter of all atomic components\" - default minimum trace length is " + DefaultSettings.minimumTraceLengthIteration + ")");
 		sampleCapacityPercentage = new IntParam("percentage-sample", "Percentage of samples from replay memory (default " + DefaultSettings.defaultSampleCapacityPercentage + "%)");
 		resetHistoryPeriod = new IntParam("period-reset", "Reset period time, i.e., theta- (default " + DefaultSettings.defaultResetHistoryTime + ")");
-		fair = new IntParam("fair", "Fairness degree (default no fairness, i.e., <= 0)");
+		fair = new StringParam("fair", "Fairness degree (default no fairness, i.e., <= 0)");
 		maxIterationValueIterator = new IntParam("max-iteration", "Bound iteration (default " + DefaultSettings.DefaultMaxIteration + ")");
 
 		mode = new StringParam("mode", "\n*" + 

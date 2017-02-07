@@ -9,12 +9,15 @@ public class DiningBadGeneration {
 	private String fileName; 
 
 	private PrintStream BIPFile ; 
-	
-	public DiningBadGeneration(int nbOfPhilosophers, String fileName) {
+	private PrintStream badStateFile; 
+
+	public DiningBadGeneration(int nbOfPhilosophers, String fileName, String badStateFileName) {
 		try {
 			this.nbOfPhilosophers = nbOfPhilosophers;
 			this.fileName = fileName; 	
 			BIPFile = new PrintStream(new File(fileName));
+			badStateFile = new PrintStream(new File(badStateFileName));
+			
 			BIPFile.println("model dining");
 			CreateConnectors();
 			CreateAtomics();
@@ -24,9 +27,23 @@ public class DiningBadGeneration {
 			BIPFile.println("component DiningPhilosopher top");
 			BIPFile.write("end\n".getBytes());
 			BIPFile.close();
+			
+			generateBadState();
+			badStateFile.close();
 		}
 		catch(IOException e) {
 			System.out.println(e);
+		}
+	}
+	
+	public void generateBadState() {
+		for(int i = 0 ; i < nbOfPhilosophers ; i++) {
+			if(i == 0) badStateFile.print("p" + i +".Right");
+			else badStateFile.print(", p" + i + ".Right");
+		}
+		
+		for(int i = 0 ; i < nbOfPhilosophers ; i++) {
+			badStateFile.print(", f" + i + ".Occupied");
 		}
 	}
 	

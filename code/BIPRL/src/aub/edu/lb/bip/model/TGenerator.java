@@ -22,7 +22,6 @@ public class TGenerator {
 	protected PrintStream output;
 
 
-	protected String counterVarName = "__cycle_num__";
 
 	protected static void indent() {
 		indent += TogetherSyntax.tabSpace;
@@ -59,7 +58,7 @@ public class TGenerator {
 		output.println("#include<time.h>");
 		output.println("#include <unordered_map>");
 		output.println("#include <string>");
-		output.println("#include <math.h>");
+		output.println("#include <cmath>");
 
 
 		output.println("using namespace std;");
@@ -72,7 +71,7 @@ public class TGenerator {
 		output.println(indent + "int main() {");
 		indent();
 
-		output.println(indent + "int " + counterVarName + " = 0;");
+		output.println(indent + "int " + TogetherSyntax.counterVarName + " = 0;");
 		output.println(indent + "int __sed = time(NULL);");
 		output.println(indent + "srand (__sed);");
 		output.println(indent + "cout<< \"The sed is \" << __sed << endl;");

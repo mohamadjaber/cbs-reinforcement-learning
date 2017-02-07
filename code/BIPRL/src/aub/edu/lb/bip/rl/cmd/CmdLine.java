@@ -87,7 +87,15 @@ public class CmdLine {
 		if(cmdLine.episodes.isSet()) deepRL.setEpisode(cmdLine.episodes.getValue());
 		if(cmdLine.epoch.isSet()) deepRL.setEpoch(cmdLine.epoch.getValue());
 		if(cmdLine.capacity.isSet()) deepRL.setCapacityReplay(cmdLine.capacity.getValue());
-		if(cmdLine.fair.isSet()) deepRL.setFairnessDegreeDistance(cmdLine.fair.getValue());
+		
+		if(cmdLine.fair.isSet()) deepRL.setFairnessDegreeDistance(Double.parseDouble(cmdLine.fair.getValue()));
+		
+		if(cmdLine.fair.isSet()) {
+			String fairness = cmdLine.fair.getValue();
+			if(!Helper.isDouble(fairness)) return false;
+			else deepRL.setFairnessDegreeDistance(Double.parseDouble(fairness)); 
+		}
+		
 		if(cmdLine.hidden.isSet()) deepRL.setHiddenCount(cmdLine.hidden.getValue());
 		if(cmdLine.minimumTrace.isSet()) deepRL.setMinimumTraceLength(cmdLine.minimumTrace.getValue());
 		if(cmdLine.resetHistoryPeriod.isSet()) deepRL.setResetHistoryPeriod(cmdLine.resetHistoryPeriod.getValue());

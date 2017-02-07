@@ -103,7 +103,7 @@ public class TInteraction extends TVariable {
 	}
 	
 
-	public TExpression getExpressionFairDeepReinforcementLearning(int fairnessDegreeDistance) {
+	public TExpression getExpressionFairDeepReinforcementLearning(double fairnessDegreeDistance) {
 		TExpression expressionRL = new TNamedElement(TogetherSyntax.interactions_first_enable + "[" + getId() +"]");
 		TInteractions tInteractions = tCompound.getTInteractions();
 		for(TInteraction tNextInteraction : tInteractions.getTInteractions()) {

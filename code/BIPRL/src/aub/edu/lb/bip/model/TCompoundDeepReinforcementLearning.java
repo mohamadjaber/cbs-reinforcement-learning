@@ -43,7 +43,7 @@ public abstract class TCompoundDeepReinforcementLearning extends TCompound {
 	 * affect correctness <= 0 => no fairness good value is to set it to the
 	 * good reward value
 	 */
-	protected int fairnessDegreeDistance;
+	protected double fairnessDegreeDistance;
 
 	public TCompoundDeepReinforcementLearning(String bipFile, String badStateFile, double goodReward, double badReward,
 			int episodes, int epoch, int neuronsHidden, int capacityReplay, double probaRandomExploration,
@@ -203,7 +203,7 @@ public abstract class TCompoundDeepReinforcementLearning extends TCompound {
 		this.sampleCapacityPercentage = sampleCapacityPercentage;
 	}
 
-	public void setFairnessDegreeDistance(int fairnessDegreeDistance) {
+	public void setFairnessDegreeDistance(double fairnessDegreeDistance) {
 		this.fairnessDegreeDistance = fairnessDegreeDistance;
 	}
 	

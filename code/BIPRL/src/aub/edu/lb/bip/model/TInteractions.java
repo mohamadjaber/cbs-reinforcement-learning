@@ -79,7 +79,7 @@ public class TInteractions extends TArrayVariable {
 		return action;
 	}
 	
-	public TCompositeAction getInteractionEnablementFairDeepRL(int fairnessDegreeDistance) {
+	public TCompositeAction getInteractionEnablementFairDeepRL(double fairnessDegreeDistance) {
 		TCompositeAction action = new TCompositeAction();
 		for (TInteraction tInteraction : getTInteractions()) {
 			TArrayVariable arrayVariable = new TArrayVariable(tInteractionsFirstEnable.getName(),

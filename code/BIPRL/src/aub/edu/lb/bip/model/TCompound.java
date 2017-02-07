@@ -93,6 +93,9 @@ public abstract class TCompound {
 	}
 	
 	protected void injectFooter(TCompositeAction action) {
+		action.getContents().add(new TNamedElement(TogetherSyntax.counterVarName + " ++;")); 
+		action.getContents().add(new TNamedElement("if(" + TogetherSyntax.counterVarName + " == " + TogetherSyntax.horizon + ") break;")); 
+
 		action.getContents().add(new TNamedElement("bool deadlock = true;"));
 		action.getContents().add(new TNamedElement("for(int i = 0; i < " + this.getTInteractions().size() + "; i++) {"));
 		action.getContents().add(new TNamedElement(TogetherSyntax.tabSpace + "if(interactions_enablement[i]) {"));

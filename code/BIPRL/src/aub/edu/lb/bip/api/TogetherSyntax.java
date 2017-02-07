@@ -23,7 +23,8 @@ public class TogetherSyntax {
 	public final static String priority = "priority";
 	public final static String filter_Interaction = "filter_Interaction";
 	public final static String selecter = "selector";
-
+	public final static String counterVarName = "__cycle_num__";
+	public final static int horizon = 100000;  
 	
 	public final static String currentState = "currentState";
 
