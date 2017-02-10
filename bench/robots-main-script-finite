@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# example ./script-finite tmp1 run1 bench1 50 
+tmptmp=$1 # store temp files
+runtmp=$2 # store temp executable
+benchtmp=$3 # store bench temp
+bound=$4
+
+rm -rf $tmptmp $benchtmp bench$tmptmp $runtmp
+
+build_finite() {
+  gridSize=$((3*$1))
+  rm -rf $tmptmp
+  (time java -jar ../RERL.jar -mode=finite robots$1_$2.bip $tmptmp-robots$1_$2.cpp robots$1_$2.bad) &>> bench$tmptmp 
+  g++ -o $runtmp $tmptmp-robots$1_$2.cpp -std=c++11
+  ./$runtmp >> $tmptmp
+
+  counts=`cat $tmptmp | awk -F ":-->" '{print $2 $3}' | awk '$1 >= '"$gridSize"' || $2 >= '"$gridSize"'' | wc -l`
+  if test $counts -eq 0; then
+    echo Good >> $benchtmp
+  else
+    echo Bad >> $benchtmp
+  fi
+}
+
+
+for i in `seq 5 5 25`; do
+   rm -rf $benchtmp
+   for j in `seq 1 1 $bound`; do
+      build_finite $i 2
+   done
+   echo "robots"$i"_2"
+   echo "Good " $(cat $benchtmp | grep Good | wc -l) "out of" $(cat $benchtmp | wc -l)
+done
+
+
