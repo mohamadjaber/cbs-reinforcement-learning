@@ -48,6 +48,7 @@ public class DeepReinforcementLearning extends TCompoundDeepReinforcementLearnin
 			super(bipFile, fileBadStates, goodReward, badReward, episodes, epoch,
 					neuronsHidden, capacityReplay, probaRandomExploration, minimumTraceLength, sampleCapacityPercentage,
 					resetHistoryPeriod, gamma, debug, fairnessDegreeDistance);
+			initializeTraceLengthIteration();
 	}
 	
 
@@ -56,7 +57,6 @@ public class DeepReinforcementLearning extends TCompoundDeepReinforcementLearnin
 	public void compute() {
 		this.badStates = new BadStates();
 		fillBadStates();
-		initializeTraceLengthIteration();
 		
 		if(this.debug) printDebugOptions();
 		
