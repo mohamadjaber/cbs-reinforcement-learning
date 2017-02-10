@@ -1,0 +1,24 @@
+#!/bin/bash
+for i in `seq 2 5 100`;
+do
+	java -jar ../RERL.jar -mode=infinite -episode=1 -hidden=10 dp$i.bip dp$i-i-10.cpp dp$i.bad
+	g++ -o run-i-10-$i dp$i-i-10.cpp -std=c++11
+        (time ./run-i-10-$i) &> bench-i-10-$i
+	java -jar ../RERL.jar -mode=infinite -episode=1 -hidden=50 dp$i.bip dp$i-i-50.cpp dp$i.bad
+	g++ -o run-i-50-$i dp$i-i-50.cpp -std=c++11
+        (time ./run-i-50-$i) &> bench-i-50-$i
+	java -jar ../RERL.jar -mode=infinite -episode=1 -hidden=100 dp$i.bip dp$i-i-100.cpp dp$i.bad
+	g++ -o run-i-100-$i dp$i-i-100.cpp -std=c++11
+        (time ./run-i-100-$i) &> bench-i-100-$i
+	java -jar ../RERL.jar -mode=infinite -episode=1 -hidden=500 dp$i.bip dp$i-i-500.cpp dp$i.bad
+	g++ -o run-i-500-$i dp$i-i-500.cpp -std=c++11
+        (time ./run-i-500-$i) &> bench-i-500-$i
+	java -jar ../RERL.jar -mode=infinite -episode=1 -hidden=1000 dp$i.bip dp$i-i-1000.cpp dp$i.bad
+	g++ -o run-i-1000-$i dp$i-i-1000.cpp -std=c++11
+        (time ./run-i-1000-$i) &> bench-i-1000-$i
+done  
+
+
+
+
+
