@@ -86,30 +86,37 @@ public class ValueIterator extends TCompoundReinforcementLearning {
 	private void computeQValues() {
 		Arrays.fill(utility, initialUtility);
 		int iteration = 0;
-		double error = EPS + 1;
+		double error = 1 + EPS;
 		while (iteration++ < maxIteration && error > EPS) {
-			error = Double.MIN_VALUE;
+			error = -Double.POSITIVE_INFINITY;
+
 			for (int i = 0; i < numberStates; i++) {
 				KripkeState state = transitionSystem.getState(i);
 
-				// to avoid incrementing q value in case bad state is connected
-				// to good state
-				// Haitham suggested to remove it but increase/decrease good/bad
-				// reward
-				// if(badStatesNames.contains(state.getState().toString())) {
-				// continue; }
+				//FIXME
+				
+				if (state.getTransitions().size() == 0) {
+					if (badStates.isBadState(state)) {
+						utility[state.getId()] = badReward;
+					} else {
+						utility[state.getId()] = goodReward;
+					}
+					continue;
+				}
 
-				double maxUtility = Double.MIN_VALUE;
+				if(badStates.isBadState(state)) continue;
+				
+				double maxUtility = -Double.POSITIVE_INFINITY;
 				for (Transition t : state.getTransitions()) {
 					int actionId = t.getLabel().getId();
 					KripkeState nextState = t.getEndState();
-					double reward = badStates.isBadState(nextState)? badReward : goodReward; 
+					double reward = badStates.isBadState(nextState) ? badReward : goodReward;
 					double updateQValue = reward + gamma * utility[nextState.getId()];
-					error = Math.max(error, Math.abs(updateQValue - qValue[i][actionId]));
-					qValue[i][actionId] = updateQValue;
-					maxUtility = Math.max(maxUtility, qValue[i][actionId]);
+					error = Math.max(error, Math.abs(updateQValue - qValue[state.getId()][actionId]));
+					qValue[state.getId()][actionId] = updateQValue;
+					maxUtility = Math.max(maxUtility, qValue[state.getId()][actionId]);
 				}
-				utility[i] = maxUtility;
+				utility[state.getId()] = maxUtility;
 			}
 		}
 		System.out.println(iteration + " iterations are needed to converge for EPS " + EPS);
@@ -120,6 +127,7 @@ public class ValueIterator extends TCompoundReinforcementLearning {
 		ps.println("Good reward = " + this.goodReward);
 		ps.println("Bad reward = " + this.badReward);
 		ps.println("Max iteration bound = " + this.maxIteration);
+		ps.println("Discount factor = " + this.gamma);
 	}
 
 	public void printDebug() {
