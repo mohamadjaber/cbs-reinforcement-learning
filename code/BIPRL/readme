@@ -6,4 +6,15 @@
 4. aub.edu.lb.model: contains classes that construct a helper BIP model from a BIP file. 
 Note that aub.edu.lb.model and aub.edu.lb.bip.model can be merged. However, they are seperated for a better design.
 
-5. aub.edu.lb.bip.rl: contains classes related to reinforcement learning. 
+5. aub.edu.lb.bip.rl: contains classes related to reinforcement learning.
+
+carefull selection of good and bad reward. 
+
+Consider a system with only the following two traces: 
+1->2->3-> ... -> 100
+and 1-> 101
+assuming that 100 is a bad state but all the others are considered good states
+in this case the cumulative reward may be better for the trace leading to a bad state
+in this case good=0 and bad=-1 would lead to a correct choice
+
+In case of deadlock good=1 and bad=1 would be a better choice
