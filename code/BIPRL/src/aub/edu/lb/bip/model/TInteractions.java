@@ -42,7 +42,7 @@ public class TInteractions extends TArrayVariable {
 				TEnumType.ARRAY_WIRE_BOOLEAN, new TNamedElement("" + size));
 
 		tInteractionsRuntimeEnforcement = new TVariable(TogetherSyntax.interactions_filtered_re,
-				TEnumType.UNORDERED_MAP_DOUBLE_INT);
+				TEnumType.UNORDERED_MAP_STRING_DOUBLE);
 
 		if (tCompound.containsPriority())
 			tInteractionsFilterPriority = new TArrayVariable(TogetherSyntax.interactions_filtered_priority,

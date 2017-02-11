@@ -75,9 +75,9 @@ public class RobotGeneration {
 		for (int i = 0; i < gridSize; i++) {
 			for (int j = 0; j < gridSize; j++) {
 				if (i == 0 && j == 0)
-					BIPFile.print("l_" + i + "_" + j);
+					BIPFile.print("l_" + j + "_" + i);
 				else
-					BIPFile.print(", l_" + i + "_" + j);
+					BIPFile.print(", l_" + j + "_" + i);
 			}
 		}
 		BIPFile.println();

@@ -88,13 +88,11 @@ public class ValueIterator extends TCompoundReinforcementLearning {
 		int iteration = 0;
 		double error = 1 + EPS;
 		while (iteration++ < maxIteration && error > EPS) {
-			error = -Double.POSITIVE_INFINITY;
+			error = Double.NEGATIVE_INFINITY;
 
 			for (int i = 0; i < numberStates; i++) {
 				KripkeState state = transitionSystem.getState(i);
 
-				//FIXME
-				
 				if (state.getTransitions().size() == 0) {
 					if (badStates.isBadState(state)) {
 						utility[state.getId()] = badReward;
@@ -106,7 +104,7 @@ public class ValueIterator extends TCompoundReinforcementLearning {
 
 				if(badStates.isBadState(state)) continue;
 				
-				double maxUtility = -Double.POSITIVE_INFINITY;
+				double maxUtility = Double.NEGATIVE_INFINITY;
 				for (Transition t : state.getTransitions()) {
 					int actionId = t.getLabel().getId();
 					KripkeState nextState = t.getEndState();
@@ -133,10 +131,10 @@ public class ValueIterator extends TCompoundReinforcementLearning {
 	public void printDebug() {
 		for (int i = 0; i < numberStates; i++) {
 			KripkeState state = transitionSystem.getState(i);
-			System.out.println("Utility of " + state.getState() + " is" + utility[i]);
+			System.out.println("Utility of " + state.getState() + " is -> " + utility[i]);
 			for (Transition t : state.getTransitions()) {
 				System.out.println(
-						"q value to action " + t.getLabel().toString() + " is " + qValue[i][t.getLabel().getId()]);
+						"q value to action " + t.getLabel().toString() + " is -> " + qValue[i][t.getLabel().getId()]);
 			}
 			System.out.println("------------------------------------------------------");
 		}

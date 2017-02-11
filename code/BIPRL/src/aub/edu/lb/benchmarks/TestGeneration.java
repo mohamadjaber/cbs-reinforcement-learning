@@ -2,8 +2,13 @@ package aub.edu.lb.benchmarks;
 
 public class TestGeneration {
 	public static void main(String[] args) {
-		// generateBadDining();
-		new RobotGeneration(5, 2, "/home/mj54/Desktop/bench-forte/bench/dining-bad/robots.bip", "/home/mj54/Desktop/bench-forte/bench/dining-bad/robots.bad");
+		generateRobots();
+	}
+	
+	public static void generateRobots() {
+		for(int i = 5; i < 30; i += 2) {
+			new RobotGeneration(i, 2, "/home/mj54/Desktop/bench-forte/bench/robots/robots"+ i +"_2.bip", "/home/mj54/Desktop/bench-forte/bench/robots/robots"+ i +"_2.bad");
+		}
 	}
 	
 	public static void generateGoodDining() {

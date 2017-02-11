@@ -10,7 +10,7 @@ public enum TEnumType {
 	ARRAY_WIRE_BOOLEAN(5, "wire boolean"),
 	TwoD_ARRAY_WIRE_BOOLEAN(6, "wire boolean"),
 	TwoD_ARRAY_BOOLEAN(7, "boolean"),
-	UNORDERED_MAP_DOUBLE_INT(8,"std::unordered_map<std::string, int>"),
+	UNORDERED_MAP_STRING_DOUBLE(8,"std::unordered_map<std::string, double>"),
 	STRING(9, "string");
 
 	private int value; 
@@ -24,7 +24,7 @@ public enum TEnumType {
 	public static final int ARRAY_WIRE_BOOLEAN_VALUE = 5;
 	public static final int TwoD_ARRAY_WIRE_BOOLEAN_VALUE = 6;
 	public static final int TwoD_ARRAY_BOOLEAN_VALUE = 7;
-	public static final int UNORDERED_MAP_DOUBLE_INT_VALUE = 8;
+	public static final int UNORDERED_MAP_STRING_DOUBLE_VALUE = 8;
 	public static final int STRING_VALUE = 9;
 
 
