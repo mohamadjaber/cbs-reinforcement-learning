@@ -73,6 +73,7 @@ public class TGenerator {
 
 		output.println(indent + "int " + TogetherSyntax.counterVarName + " = 0;");
 		output.println(indent + "int __sed = time(NULL);");
+
 		output.println(indent + "srand (__sed);");
 		output.println(indent + "cout<< \"The sed is \" << __sed << endl;");
 		if(tCompound instanceof TCompoundDeepReinforcementLearning)

@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# example ./script-infinite tmp1 run1 bench1 10 10 10 50 
+tmptmp=$1 # store temp files
+runtmp=$2 # store temp executable
+benchtmp=$3 # store bench temp
+episode=$4 
+epoch=$5
+hidden=$6
+bound=$7
+
+rm -rf $tmptmp $benchtmp bench$tmptmp $runtmp
+
+build_infinite() {
+  gridSize=$((((1 + $4) / 2) * $4)) # bad states >= ceil(n / 2) * n
+  rm -rf $tmptmp
+  (time java -jar ../RERL.jar -mode=infinite -episode=$1 -epoch=$2  -hidden=$3  robots$4_$5.bip $tmptmp-robots$4_$5.cpp robots$4_$5.bad) &>> bench$tmptmp 
+  g++ -o $runtmp $tmptmp-robots$4_$5.cpp -std=c++11
+  ./$runtmp >> $tmptmp
+
+  counts=`cat $tmptmp | awk -F ":-->" '{print $2 $3 $4 $5}' | awk '$1 >= '"$gridSize"' || $2 >= '"$gridSize"' || $3 >= '"$gridSize"' || $4 >= '"$gridSize"'' | wc -l`
+  if test $counts -eq 0; then
+    echo Good >> $benchtmp
+  else
+    echo Bad >> $benchtmp
+  fi
+}
+
+
+for i in `seq 5 4 30`; do
+   rm -rf $benchtmp
+   for j in `seq 1 1 $bound`; do
+      build_infinite $episode $epoch $hidden $i 4
+   done
+   echo "robots"$i"_4"
+   echo "Good " $(cat $benchtmp | grep Good | wc -l) "out of" $(cat $benchtmp | wc -l)
+done
+
+

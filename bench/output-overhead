@@ -1,3 +1,7 @@
+# dining philosopher good - compute overhead
+# all numbers are in seconds
+# varying number of philosophers
+# infinite with 10, 50, 100, 500, 1000, neurons in hidden, finite and re-bip
 # infinite=10	infinite=50	inifinite=100 infinite=500 infinit=1000	finite	re-bip
 2 0.7	2.8	5.5	27	55 	1.2	29
 7 1.4	6	11.3    58 	130 	12.2	72
