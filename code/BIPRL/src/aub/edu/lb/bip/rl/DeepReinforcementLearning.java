@@ -82,6 +82,7 @@ public class DeepReinforcementLearning extends TCompoundDeepReinforcementLearnin
 				DefaultSettings.defaultSampleCapacityPercentage, 
 				DefaultSettings.defaultResetHistoryTime,
 				DefaultSettings.gamma, true, -1);
+		initializeTraceLengthIteration();
 	}
 	
 	private void printDebugOptions() {
