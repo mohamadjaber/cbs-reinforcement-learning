@@ -2,26 +2,26 @@
 
 build_infinite() {
   gridSize=$((((1 + $4) / 2) * $4)) # bad states >= ceil(n / 2) * n
-  rm -rf tmp
-  java -jar ../RERL.jar -mode=infinite -episode=0 -hidden=40 -epoch=0 robots$4_$5.bip robots$4_$5.cpp robots$4_$5.bad > /dev/null 
-  g++ -o run robots$4_$5.cpp -std=c++11
-  ./run >> tmp
-  counts=`cat tmp | awk -F ":-->" '{print $2 $3}' | awk '$1 >= '"$gridSize"' || $2 >= '"$gridSize"'' | wc -l`
+  rm -rf tmp-normal
+  java -jar ../RERL.jar -mode=infinite -episode=0 -hidden=40 -epoch=0 robots$4_$5.bip robots$4_$5-normal.cpp robots$4_$5.bad > /dev/null 
+  g++ -o run-normal robots$4_$5-normal.cpp -std=c++11
+  ./run-normal >> tmp-normal
+  counts=`cat tmp-normal | awk -F ":-->" '{print $2 $3}' | awk '$1 >= '"$gridSize"' || $2 >= '"$gridSize"'' | wc -l`
   if test $counts -eq 0; then
-    echo Good >> bench
+    echo Good >> bench-normal
   else
-    echo Bad >> bench
+    echo Bad >> bench-normal
   fi
 }
 
 
 for i in `seq 5 4 30`; do
-   rm -rf bench
-   for j in `seq 1 1 100`; do
+   rm -rf bench-normal
+   for j in `seq 1 1 1000`; do
       build_infinite 1 1 1 $i 2
    done
    echo "robots"$i"_2"
-   echo "Good " $(cat bench | grep Good | wc -l) "out of" $(cat bench | wc -l)
+   echo "Good " $(cat bench-normal | grep Good | wc -l) "out of" $(cat bench-normal | wc -l)
 done
 
 
