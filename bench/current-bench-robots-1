@@ -1,0 +1,114 @@
+[mj54@CSX000048310L robots]$ ./script-robots-infinite2 tmprobotsinfinite2-2 runrobotsinfinite2-2 benchrobotsinfinite2-2 10 200 10 1000
+robots5_2
+Good  721 out of 1000
+robots9_2
+Good  745 out of 1000
+robots13_2
+Good  772 out of 1000
+robots17_2
+Good  750 out of 1000
+robots21_2
+Good  711 out of 1000
+robots25_2
+Good  733 out of 1000
+robots29_2
+Good  720 out of 1000
+------------------------------------------------------------------------
+[mj54@CSX000048310L robots]$ ./script-robots-infinite2 tmprobotsinfinite2-6 runrobotsinfinite2-6 benchrobotsinfinite2-6 10 100 10 1000
+robots5_2
+Good  732 out of 1000 - 1.0 sec
+robots9_2
+Good  772 out of 1000 - 1.8
+robots13_2
+Good  740 out of 1000 - 3.1
+robots17_2
+Good  738 out of 1000 - 4.1
+robots21_2
+Good  735 out of 1000 - 5.6
+robots25_2
+Good  770 out of 1000 - 6.4
+robots29_2
+Good  728 out of 1000 - 7.4
+[mj54@CSX000048310L robots]$ 
+---------------------------------------------------------------------------
+scale from 200
+[mj54@CSX000048310L robots]$ ./script-robots-infinite2 tmprobotsinfinite2-9 runrobotsinfinite2-9 benchrobotsinfinite2-9 10 100 50 1000
+robots5_2   ----> compile time (learning)
+Good  760 out of 1000  -- 1.4 sec
+robots9_2
+Good  806 out of 1000 -- 2.6 sec
+robots13_2
+Good  842 out of 1000 -- 6.2 sec
+robots17_2
+Good  845 out of 1000 -- 10.6 sec
+robots21_2
+Good  905 out of 1000 -- 14.6 sec
+robots25_2
+Good  855 out of 1000 -- 17.2 sec
+robots29_2
+Good  892 out of 1000 -- 19.9 sec
+[mj54@CSX000048310L robots]$ 
+-----------------------------------------------------------------------------
+./script-robots-infinite2 tmprobotsinfinite2-11 runrobotsinfinite2-11 benchrobotsinfinite2-11 10 100 100 1000
+robots5_2
+Good  739 out of 1000 - 1.2sec
+robots9_2
+Good  844 out of 1000 - 4.2sec
+robots13_2
+Good  893 out of 1000 - 12.1sec
+robots17_2
+Good  926 out of 1000 - 18.1sec
+robots21_2
+Good  945 out of 1000 - 22.2sec
+robots25_2
+Good  940 out of 1000 - 30.1sec
+robots29_2
+Good  946 out of 1000 - 41.1sec
+---------------------
+./script-robots-infinite2 tmprobotsinfinite2-12 runrobotsinfinite2-12 benchrobotsinfinite2-12 10 100 200 1000
+robots5_2
+Good  683 out of 1000 - 1.5sec
+robots9_2
+Good  886 out of 1000 - 6.7sec
+robots13_2
+Good  919 out of 1000 - 13.2
+robots17_2
+Good  965 out of 1000 - 31.2sec
+robots21_2
+Good  978 out of 1000 - 40.1sec
+robots25_2
+Good  977 out of 1000 - 53.2sec
+robots29_2
+Good  987 out of 1000 - 76.2sec
+[mj54@CSX000048310L robots]$ 
+--------------------------------------------------------
+
+50 200 100 1000 
+
+1. 747 out of 1000
+2. 156 out of 231 so far
+-------------------------------
+50 100 50 1000
+1. robots5_2
+Good  805 out of 1000
+2. robots9_2
+Good  721 out of 1000
+3. 264 out of 352 so far
+-------------------------------
+
+X000048310L robots]$ ./script-normal 
+robots5_2
+Good  617 out of 1000
+robots9_2
+Good  633 out of 1000
+robots13_2
+Good  616 out of 1000
+robots17_2
+Good  584 out of 1000
+robots21_2
+Good  632 out of 1000
+robots25_2
+Good  592 out of 1000
+robots29_2
+Good  618 out of 1000
+---------------------------
