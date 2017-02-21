@@ -90,6 +90,8 @@ public class DeepReinforcementLearning extends TCompoundDeepReinforcementLearnin
 		ps.println("Number episodes = "+ this.numberEpisodes);
 		ps.println("Good reward = "+ this.goodReward);
 		ps.println("Bad reward = "+ this.badReward);
+		ps.println("Discount factor = "+ this.gamma);
+
 		ps.println("Number of neurons hidden layer = " + this.numberOfNeuronsHidden);
 		ps.println("Epoch training = "+ this.epoch);
 
