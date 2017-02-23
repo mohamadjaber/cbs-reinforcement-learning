@@ -30,23 +30,31 @@ Consequently, the new behavior of the composite component, guided by the policy 
 The goal now is to find an optimal policy $\pi^{\star}$ that maximizes the \emph{expected} total sum of the rewards it receives in the long run, while starting from an initial state $q_{0} \in Q$. We will evaluate the performance of a policy $\pi$ by:
 \begin{equation}
 \label{Eq:ValueOne}
-\texttt{eval}({\pi}) = \mathbb{E}_{\bm{\rho}(C_\pi)} \left[\sum_{t=0}^{T} \gamma^{t}\mathcal{R}(q_{t},a_{t})\right]= \mathbb{E}_{\bm{\rho}(C_\pi)} \left[\sum_{t=0}^{T} \gamma^{t}\mathcal{R}(q_{t+1})\right],
+\texttt{eval}({\pi}|q_{0}) = \mathbb{E}_{\bm{\rho}(C_\pi)} \left[\sum_{t=0}^{T} \gamma^{t}\mathcal{R}(q_{t},a_{t})\right]= \mathbb{E}_{\bm{\rho}(C_\pi)} \left[\sum_{t=0}^{T} \gamma^{t}\mathcal{R}(q_{t+1})\right],
 \end{equation}
 where  $\mathbb{E}_{\bm{\rho}(C_\pi)}$ denotes the expectation under all the set of all the allowed (by the policy $\pi$) possible traces, and $T$ is the length of the trace. 
 
 
 Notice that we index the value of the state by the policy $\pi$ to explicitly reflect the dependency of the value on the policy being followed from a state $q_{t}$. Interestingly, the definition of the evaluator asserts that the value of a state $q_{t}$ is the expected instantaneous reward plus the expected discounted value of the next state. Clearly, we are interested in determining the optimal policy $\pi^{\star}$, which upon its usage yields maximized values for any $q_{t} \in Q$. As such our goal is to determine a policy $\pi$ that solves:
 \begin{equation*}
-\max_{\pi} V^{\pi}(q_{0}). 
+\pi^{\star} \equiv \max_{\pi} \texttt{eval}({\pi}|q_{0}). 
 \end{equation*}
 
-In other words, rather than targeting the determination of $\pi^{\star}$ directly, we will seek the \emph{value} of a state $q \in Q$. Clearly, one can recover the current iteration policy $\pi$ using:
-$
-\pi(q) = \texttt{argmax}_{a}\{V(q') \mid q \goesto[a] q'\}
-$.
+%In other words, rather than targeting the determination of $\pi^{\star}$ directly, we will seek the \emph{value} of a state $q \in Q$. %Clearly, one can recover the current iteration policy $\pi$ using:
+%$
+%\pi(q) = \texttt{argmax}_{a}\{V(q') \mid q \goesto[a] q'\}
+%$.
 
 
-\subsection{Finite state-space - value iteration}
+Finally, we quantify the performance of the engine being in a state $q_{t}$ using the so-called value function $V: {Q} \rightarrow \mathbb{R}$. Given such a performance measure, we can deduce the policy, $\pi$ as: 
+\begin{equation}
+\label{Eq:Policy}
+\pi(q) = \arg\max_{a} V(q).
+\end{equation}
+
+In what comes next, we define two methods capable of computing such performance measures (consequently policies) in both finite as well as infinite state-space. 
+
+\subsection{Finite State-Space - Value Iteration}
 Due to the number of possible policies at each time step, it is a challenge to compute the value for all possible options. Instead, we propose the application of a dynamic programming algorithm known as value iteration, summarized in Algorithm~\ref{Algo:VI} to find the optimal policy efficiently. 
 \begin{algorithm}[h!]
 \caption{Value Iteration for Run Time Enforcement}
@@ -64,4 +72,66 @@ Due to the number of possible policies at each time step, it is a challenge to c
 \end{algorithmic}
 \end{algorithm}
 
-In essence, Algorithm~\ref{Algo:VI} is iteratively updating the value for all states by choosing these actions that maximize the instantaneous rewards, as well as the future information encoded through $V_{k}(q^{\prime})$. Defining the operator $$\mathcal{T}^{\pi} = \max_{a} \left[\mathcal{R}(q, a) + \gamma \sum_{q \goesto[a]q^{\prime}}V_{k}(q^{\prime})\right],$$ one can easily see that the optimal value function is essentially  fixed-point of $V_{k+1} = \mathcal{T}^{\pi}  V_{k}$. 
+In essence, Algorithm~\ref{Algo:VI} is iteratively updating the value for all states by choosing these actions that maximize the instantaneous rewards, as well as the future information encoded through $V_{k}(q^{\prime})$. Defining the operator $$\mathcal{T}^{\pi} = \max_{a} \left[\mathcal{R}(q, a) + \gamma \sum_{q \goesto[a]q^{\prime}}V_{k}(q^{\prime})\right],$$ one can easily see that the optimal value function is essentially  fixed-point of $V_{k+1} = \mathcal{T}^{\pi}  V_{k}$. Contrary to state-space-exploration algorithms, our method remedies the need to construct the full labeled transition system as we only require the knowledge of the successor state from a given state and action pair with no regard to its reachability properties. Furthermore, notice that though line~3 in Algorithm~\ref{Algo:VI} requires a loop over all states computational time can be highly reduced by following a sampling-based procedure, where fractions of the state-space are considered. Notice, however, the successfulness of the attained policy comes hand-in-hand with the fraction of the state space sampled. In other words, the higher the fraction, the closer to optimality is the policy and vice versa. 
+
+
+
+
+\subsection{Infinite State-Space - Deep Value Iteration}
+The methodology detailed so-far suffers when considering infinite state-spaces as it requires exact representation of performance measures and policies. In general, an exact representation can only be achieved by storing distinct estimates of the return for every state-interaction pair. When states are continuous, such exact representations are no longer possible and performance measures need to be represented approximately. 
+
+Approximation in the continuous setting is not only a problem of representation. Two additional types of approximation are needed. Firstly, sample-based approximation is necessary in any of these frameworks. Secondly, the algorithm must repeatedly solve a difficult minimization problem. To clarify, consider Algorithm~\ref{Algo:VI}, where every iteration necessitates a loop over \emph{every state-interaction pair}. When state space contains an infinite number of elements, it is impossible to loop over all pairs in finite time. Instead, a sample-based update that only considers a finite number of such pairs has to be used. %Given these collected samples, the algorithm has then to update the approximate performance measure; a step that entails 
+
+%The usage of sample-based methods in combination with standard machine learning approximators pose additional problems that need to be carefully analyzed. 
+%\textbf{Write about experience replay idea, i.e., forgetting and representation} 
+In this section, our goal is to develop an algorithm capable of avoiding the problems above. This ultimately leads us to a method for run-time enforcement operating in continuous state spaces. 
+To commence, we introduce a function approximator, encoded through a neural network (particularly its weight matrices which we denote by $\bm{\theta}$), to represent state-values. The goal of this approximator is to \emph{autonomously generalize} over the state-space, such that similarly behaving states cluster together. To achieve the aforementioned goal, one is to fit the parameterization, $\bm{\theta}$, of the neural network to obtain high-expected return.  Unfortunately, the direct application of neural networks in the context of run-time enforcement is challenging since the engine itself has to build, through sampling, a \emph{labeled} data set (with states being inputs and state-values as outputs) to train on. To worsen the problem, at no time instance the engine is given the optimal value of a state $q_{t}$. It rather has to determine these through exploring an infinite state-space. 
+
+
+\begin{algorithm}[h!]
+\caption{Deep-Value Iteration for Run Time Enforcement in Continuous States}
+\label{Algo:VI2}
+\begin{algorithmic}[1]
+\STATE Initialize replay memory $\mathcal{D}$ to capacity $N$, and the neural network weights randomly 
+\FOR {$\text{episode} = 1 \ \ \text{to} \ \ M$}
+\STATE Set initial state to $q_{0}$
+\FOR  {$t=1$ \ \ \text{to} \ \ T}
+\STATE With some probability $\epsilon$ select a random interaction $a_{t}$
+\STATE With a probability $1 - \epsilon$ select $a_{t} = \max_{a} \left[\mathcal{R}(q_{t}, a) + \gamma V(q_{t};\bm{\theta})\right]$
+\STATE Execute interaction $a_{t}$ and observe reward, $r_{t}$,and successor state $q_{t+1}$
+\STATE Store transition $\left(q_{t}, a_{t}, r_{t}, q_{t+1}\right)$ on replay memory $\mathcal{D}$
+\STATE Sample random minibatch of transition $\left(q_{j}, a_{j}, r_{j}, q_{j+1}\right)$ of size $N_{2}$ from $\mathcal{D}$ and create output label by 
+\begin{displaymath}
+   y_{j} = \left\{
+     \begin{array}{lr}
+       r_{j} & \text{for terminal $q_{j+1}$}\\
+        r_{j} + \gamma \max_{a^{\prime}}\left[\mathcal{R}(q_{j+1}, a^{\prime}) + \gamma V(q_{j+1};\bm{\theta})\right]  & \text{for non-terminal $q_{j+1}$}
+     \end{array}
+   \right.
+\end{displaymath} 
+\ENDFOR
+\STATE Retrain network $N_{2}$ data points with $y_{j}$ being the labels. 
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+The details of the above process are described in Algorithm~\ref{Algo:VI2}. On a high-level, the algorithm operates in two loops. The first is episode-based, while the second runs for a horizon $T$. At each iteration of the episode loop, the engines goal is to collect relevant labeled data to improve its approximation (encoded through the neural network) of the performance measure, as summarized in lines 5-10 in the algorithm. First, the engine selects an interaction either randomly with a probability $\epsilon$ (i.e., exploration) or by exploiting the current estimate of the performance measure. Next, the engine executes the interaction and stores both the dynamical transition and its usefulness (i.e., reward) in a replay memory data set, $\mathcal{D}$. To ensure that the engine takes learning memory into account, we sample a set of size $N_{2}$ from $\mathcal{D}$ and label them in line~9 to in preparation to retrain the original neural network. The process by which we generate these labels is in essence similar to finite value iterator. The main difference, however, can be traced back to using sample-based transitions. 
+
+
+
+
+
+
+%In other words, starting from randomly initialized weights, $\bm{\theta}$, the engine has to 1) gather relevant traces from the environment, and 2) improve its estimate of $\bm{\theta}$ to maximize its return. Having 
+
+
+
+
+
+
+
+
+
+%The goal of such a neural net is to enable continuous states by autonomously generalizing similar...
+
+
+
