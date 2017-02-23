@@ -7,7 +7,7 @@ public class TestGeneration {
 	
 	public static void generateRobots() {
 		for(int i = 5; i < 30; i += 4) {
-			new RobotGeneration(i, 2, "/home/mj54/Desktop/bench-forte/bench/robots/robots"+ i +"_2.bip", "/home/mj54/Desktop/bench-forte/bench/robots/robots"+ i +"_2.bad");
+			new RobotGeneration(i, 8, "/home/mj54/Desktop/bench-forte/bench/robots8/robots"+ i +"_8.bip", "/home/mj54/Desktop/bench-forte/bench/robots8/robots"+ i +"_8.bad");
 		}
 	}
 	

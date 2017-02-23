@@ -96,6 +96,7 @@ public abstract class TCompound {
 		//FIXME RO REMOVE USED JUST FOR BENCHMARKS
 		// action.getContents().add(new TNamedElement("cout << \":--> \" << r0_currentState << \" :--> \" << r1_currentState << endl;"));
 		// action.getContents().add(new TNamedElement("cout << \":--> \" << r0_currentState << \" :--> \" << r1_currentState << \" :--> \" << r2_currentState << \" :--> \" << r3_currentState << endl;"));
+		// action.getContents().add(new TNamedElement("cout << \":--> \" << r0_currentState << \" :--> \" << r1_currentState << \" :--> \" << r2_currentState << \" :--> \" << r3_currentState << \":--> \" << r4_currentState << \":--> \" << r5_currentState << \":--> \" << r6_currentState << \":--> \" << r7_currentState << endl;"));
 
 		
 		action.getContents().add(new TNamedElement(TogetherSyntax.counterVarName + " ++;")); 
