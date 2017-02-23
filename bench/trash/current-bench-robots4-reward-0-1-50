@@ -1,0 +1,84 @@
+Good=0   Bad=-1   percentage-sample=50
+X000048310L robots4]$ ./script-robots-infinite4 tmprobotsinf4-0 runrobotsinf4-0 benchrobotsinf4-0 10 100 10 100
+robots5_4
+Good  42 out of 100
+robots9_4
+Good  54 out of 100
+robots13_4
+Good  47 out of 100
+robots17_4
+Good  40 out of 100
+robots21_4
+Good  39 out of 100
+robots25_4
+Good  31 out of 100
+robots29_4
+Good  41 out of 100
+---------------------------------
+[mj54@CSX000048310L robots4]$ ./script-robots-infinite4 tmprobotsinf4-1 runrobotsinf4-1 benchrobotsinf4-1 10 100 50 100
+robots5_4
+Good  32 out of 100
+robots9_4
+Good  44 out of 100
+robots13_4
+Good  54 out of 100
+robots17_4
+Good  53 out of 100
+robots21_4
+Good  49 out of 100
+robots25_4
+Good  46 out of 100
+robots29_4
+Good  45 out of 100
+[mj54@CSX000048310L robots4]$ 
+-------------------------------------------------
+[mj54@CSX000048310L robots4]$ ./script-robots-infinite4 tmprobotsinf4-2 runrobotsinf4-2 benchrobotsinf4-2 10 100 100 100
+robots5_4
+Good  29 out of 100
+robots9_4
+Good  33 out of 100
+robots13_4
+Good  49 out of 100
+robots17_4
+Good  53 out of 100
+robots21_4
+Good  57 out of 100
+robots25_4
+Good  62 out of 100
+robots29_4
+Good  50 out of 100
+[mj54@CSX000048310L robots4]$ 
+-------------------------------------------
+[mj54@CSX000048310L robots4]$ ./script-robots-infinite4 tmprobotsinf4-3 runrobotsinf4-3 benchrobotsinf4-3 10 100 200 100
+robots5_4
+Good  27 out of 100
+robots9_4
+Good  32 out of 100
+robots13_4
+Good  44 out of 100
+robots17_4
+Good  49 out of 100
+robots21_4
+Good  48 out of 100
+robots25_4
+Good  62 out of 100
+robots29_4
+Good  61 out of 100
+[mj54@CSX000048310L robots4]$ 
+-----------------------------------------------
+[mj54@CSX000048310L robots4]$ ./script-robots-infinite4 tmprobotsinf4-8 runrobotsinf4-8 benchrobotsinf4-8 0 0 2 100
+robots5_4
+Good  28 out of 100
+robots9_4
+Good  36 out of 100
+robots13_4
+Good  28 out of 100
+robots17_4
+Good  36 out of 100
+robots21_4
+Good  28 out of 100
+robots25_4
+Good  32 out of 100
+robots29_4
+Good  33 out of 100
+

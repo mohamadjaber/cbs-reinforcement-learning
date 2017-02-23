@@ -1,0 +1,136 @@
+Good reward = 10
+Bad reward = -1000000
+Sample capacity = 75%
+Gamma = 0.9
+
+---------------------------------------------------
+
+[mj54@CSX000048310L robots]$ ./script-robots-infinite2-update1 tmpfinalbench1 runfinalbench1 benchfinalbench1 10 2 10 1000
+robots5_2
+Good  968 out of 1000  - 0.85
+robots9_2
+Good  986 out of 1000  - 0.98
+robots13_2
+Good  985 out of 1000  - 1.09
+robots17_2
+Good  994 out of 1000  - 1.13
+robots21_2
+Good  993 out of 1000  - 1.29
+robots25_2
+Good  999 out of 1000  - 1.4
+robots29_2
+Good  996 out of 1000   - 1.6
+
+
+Random choice - without a policy
+
+robots5_2
+Good  617 out of 1000
+robots9_2
+Good  633 out of 1000
+robots13_2
+Good  616 out of 1000
+robots17_2
+Good  584 out of 1000
+robots21_2
+Good  632 out of 1000
+robots25_2
+Good  592 out of 1000
+robots29_2
+Good  618 out of 1000
+
+
+-----------------------------------------------------
+[mj54@CSX000048310L robots4]$  ./script-robots-infinite4-update1 tmpfinalbench4 runfinalbench4 benchfinalbench4 10 2 10 1000
+robots5_4
+Good  955 out of 1000  - 0.9 
+robots9_4
+Good  930 out of 1000  - 1.08
+robots13_4
+Good  947 out of 1000 -  1.23
+robots17_4
+Good  978 out of 1000  - 1.52
+robots21_4
+Good  977 out of 1000   - 1.82
+robots25_4
+Good  981 out of 1000   - 2.2
+robots29_4
+Good  973 out of 1000    - 2.5
+
+
+[mj54@CSX000048310L robots4]$ ./script-robots-infinite4-update1 tmpfinalbench4-default runfinalbench4-default benchfinalbench4-default 0 0 2 1000
+robots5_4
+Good  305 out of 1000
+robots9_4
+Good  307 out of 1000
+robots13_4
+Good  306 out of 1000
+robots17_4
+Good  286 out of 1000
+robots21_4
+Good  298 out of 1000
+robots25_4
+Good  301 out of 1000
+robots29_4
+Good  301 out of 1000 
+-------------------------------------------------------
+
+mj54@CSX000048310L robots8]$ ./script-robots-infinite4-update1 tmpfinalbench8 runfinalbench8 benchfinalbench8 10 2 10 1000
+robots5_8
+Good  925 out of 1000  - 1.1
+robots9_8
+Good  939 out of 1000  - 1.5
+robots13_8
+Good  970 out of 1000  - 1.68
+robots17_8
+Good  950 out of 1000   - 2.2
+robots21_8
+Good  946 out of 1000   - 3.0
+robots25_8
+Good  935 out of 1000   - 3.3
+robots29_8
+Good  942 out of 1000   - 3.6
+[mj54@CSX000048310L robots8]$ 
+
+[mj54@CSX000048310L robots8]$ ./script-robots-infinite4-update1 tmpfinalbench8-1-update runfinalbench8-1-update benchfinalbench8-1-update 0 0 2 1000
+robots5_8
+Good  122 out of 1000
+robots9_8
+Good  138 out of 1000
+robots13_8
+Good  151 out of 1000
+robots17_8
+Good  138 out of 1000
+robots21_8
+Good  171 out of 1000
+robots25_8
+Good  142 out of 1000   
+robots29_8
+Good  151 out of 1000 
+
+------------------------------------------------------------
+Finite: 
+robots5_2  (7 iterations to converge) 
+robots9_2  (9 iterations to converge)
+robots13_2 (26 iterations to converge)
+robots17_2 (34 iterations)
+robots21_2 (42)
+robots25_2 (50)
+robots29_2 (58)
+-----------------------
+Finite: 
+robots5_4  (10 iterations to converge) 
+robots9_4  (TLE - Memory limit)
+robots13_4 (TLE - Memory limit)
+robots17_4 (TLE - Memory limit)
+robots21_4 (TLE - Memory limit)
+robots25_4 (TLE - Memory limit)
+robots29_4 (TLE - Memory limit)
+----------------
+Finite: 
+robots5_8 (TLE)
+robots9_8 (TLE)
+...
+
+
+
