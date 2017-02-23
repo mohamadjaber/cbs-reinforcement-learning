@@ -93,12 +93,12 @@ public abstract class TCompound {
 	}
 	
 	protected void injectFooter(TCompositeAction action) {
-		//FIXME RO REMOVE USED JUST FOR BENCHMARKS
+		//FIXME TO BE REMOVE USED JUST FOR BENCHMARKS
 		// action.getContents().add(new TNamedElement("cout << \":--> \" << r0_currentState << \" :--> \" << r1_currentState << endl;"));
 		// action.getContents().add(new TNamedElement("cout << \":--> \" << r0_currentState << \" :--> \" << r1_currentState << \" :--> \" << r2_currentState << \" :--> \" << r3_currentState << endl;"));
 		// action.getContents().add(new TNamedElement("cout << \":--> \" << r0_currentState << \" :--> \" << r1_currentState << \" :--> \" << r2_currentState << \" :--> \" << r3_currentState << \":--> \" << r4_currentState << \":--> \" << r5_currentState << \":--> \" << r6_currentState << \":--> \" << r7_currentState << endl;"));
 
-		
+		//FIXME TO BE REMOVE USED JUST FOR BENCHMARKS
 		action.getContents().add(new TNamedElement(TogetherSyntax.counterVarName + " ++;")); 
 		action.getContents().add(new TNamedElement("if(" + TogetherSyntax.counterVarName + " == " + TogetherSyntax.horizon + ") break;")); 
 
