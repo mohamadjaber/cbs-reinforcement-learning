@@ -1,4 +1,36 @@
 \section{Related work}
+[IDEAS]
+
+~
+
+
+Runtime enforcement of component-based systems was introduced in~\cite{CharafeddineEFJ15} to ensure the correct runtime behavior (w.r.t. a formal specification) of a system. 
+The authors define series of transformations to instrument a component-based system described in the BIP framework. The instrumented system allow to observe and avoid any error in the behavior of the system. 
+The proposed method was fully implemented in RE-BIP. 
+Although, contrarily to our method, the proposed method is sound (i.e., it always avoids bad states), it mainly suffers from two limitations. First, it only considers a 1-step recovery. That is, if the system enters a correct state from which all the reachable states are bad states, the method fails.  Second, the instrumented system introduces a huge overhead w.r.t. original behavior. This overhead would be drastically increased to support more than 1-step recovery. 
+
+In~\cite{PinisettyPTJFM16}, the authors introduced a predictive runtime enforcement framework that allows to build an enforcement monitor with a-priori knowledge about the system. The enforcement monitor ensures that the system complies with a certain property, by delaying or modifying events. The proposed method is theoretical and cannot be applied to real software systems as delaying or modifying events cannot be applied.
+
+ 
+
+In~\cite{HuangPSW16}, the authors proposed a game-theoretic method for synthesizing control strategies to maximize the resilience of software systems. The method considers replication of components where the synthesized controllers allow to recover some regions in case of component failures. 
+Unlike our approach, we tackle  ....
+
+5. Compositional Runtime Enforcement. NFM 2016
+
+
+7. Automatic Synthesis of Code Using Genetic Programming. ISoLA (1) 2016: 182-187
+
+
+8. Using Genetic Programming for Software Reliability. RV 2016: 116-131
+
+
+
+9. Synthesizing, correcting and improving code, using model checking-based genetic programming: http://link.springer.com/article/10.1007/s10009-016-0418-1
+
+
+
+
 
 \begin{itemize}
 \item RV BIP 
