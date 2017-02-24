@@ -1,37 +1,18 @@
 \section{Related work}
-[IDEAS]
-
-~
-
-
 Runtime enforcement of component-based systems was introduced in~\cite{CharafeddineEFJ15} to ensure the correct runtime behavior (w.r.t. a formal specification) of a system. 
 The authors define series of transformations to instrument a component-based system described in the BIP framework. The instrumented system allow to observe and avoid any error in the behavior of the system. 
 The proposed method was fully implemented in RE-BIP. 
 Although, contrarily to our method, the proposed method is sound (i.e., it always avoids bad states), it mainly suffers from two limitations. First, it only considers a 1-step recovery. That is, if the system enters a correct state from which all the reachable states are bad states, the method fails.  Second, the instrumented system introduces a huge overhead w.r.t. original behavior. This overhead would be drastically increased to support more than 1-step recovery. 
 
-In~\cite{PinisettyPTJFM16}, the authors introduced a predictive runtime enforcement framework that allows to build an enforcement monitor with a-priori knowledge about the system. The enforcement monitor ensures that the system complies with a certain property, by delaying or modifying events. The proposed method is theoretical and cannot be applied to real software systems as delaying or modifying events cannot be applied.
+In~\cite{PinisettyPTJFM16,PinisettyT16}, the authors introduced a predictive runtime enforcement framework that allows to build an enforcement monitor with or without a-priori knowledge about the system. 
+The enforcement monitor ensures that the system complies with a certain property, by delaying or modifying events. The proposed method is theoretical and cannot be applied to real software systems as delaying or modifying events would require an infinite memory and also is not practical in software systems. 
 
- 
-
-In~\cite{HuangPSW16}, the authors proposed a game-theoretic method for synthesizing control strategies to maximize the resilience of software systems. The method considers replication of components where the synthesized controllers allow to recover some regions in case of component failures. 
-Unlike our approach, we tackle  ....
-
-5. Compositional Runtime Enforcement. NFM 2016
+In~\cite{HuangPSW16}, the authors proposed a game-theoretic method for synthesizing control strategies to maximize the resilience of software systems. The method allows the system to not take transition leading to bad states using game-theoretic method. Consequently,  similar to RE-BIP, the proposed approach only allows a 1-step recovery. In other words, they need to do a back propagation from the bad states to re-label all good states as bad states when all their corresponding traces would lead to bad states, which is not feasible in case of infinite-state system. 
 
 
-7. Automatic Synthesis of Code Using Genetic Programming. ISoLA (1) 2016: 182-187
+Recent work~\cite{genetic1,genetic2,genetic3} establishes techniques to synthesize code using genetic programming.  In particular, the method randomly generates an initial population of programs based on a given configuration and then they apply mutation function to optimize a given fitness function (w.r.t. specification). Nonetheless, the method was applied to a communication protocols without reporting success rates. Moreover, deep learning is much more expressing that genetic programming, which failed to learn complex structures. Moreover, it is not clear how to automatically derive fitness function from a given specification. 
 
-
-8. Using Genetic Programming for Software Reliability. RV 2016: 116-131
-
-
-
-9. Synthesizing, correcting and improving code, using model checking-based genetic programming: http://link.springer.com/article/10.1007/s10009-016-0418-1
-
-
-
-
-
+\iffalse
 \begin{itemize}
 \item RV BIP 
 \item RE BIP
@@ -46,3 +27,4 @@ Unlike our approach, we tackle  ....
 \item Automatic Synthesis of Code Using Genetic Programming. ISoLA (1) 2016: 182-187
 \item Using Genetic Programming for Software Reliability. RV 2016: 116-131
 \end{itemize}
+\fi

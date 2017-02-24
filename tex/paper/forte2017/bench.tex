@@ -19,50 +19,6 @@ As for the deep value iteration, we ran it with $50$ \texttt{epochs}, $50$ hidde
 %
 We also evaluated the runtime overhead induced by the policy, which at every computation step it needs to do a forward propagation on the trained neural network to select the best next interactions. Moreover, we compare this overhead against RE-BIP, a tool-set to enforce properties in BIP systems, but which is limited to only a one-step recovery. In this example, one-step recovery is sufficient to avoid deadlock, however, as we will see later it fails in the second benchmark as a $k$ step recovery is needed. Table~\ref{tab:execution-times} summarizes the runtime execution times in case of infinite (i.e., deep value iteration), finite (i.e., value iteration) and RE-BIP. Clearly, the infinite-based implementation drastically outperforms RE-BIP, when the number of hidden neuron units is less than $100$. Although the finite-based outperforms RE-BIP and guarantees to enforce correct execution, it fails when the size of the system becomes large.  
 
-
-\paragraph{Pair-wise synchronized robots.} In this benchmark, we model a set of robots placed on a map of size $n \times n$. Initially, all robots are placed at position $(0, 0)$. We consider that robots can only move up or to the right, that is, cannot go back after taking a move. Moreover, robot $i$ must synchronize with either robot $i-1$ or $i+1$ (modulo the number of robots) in order to move and both must move with the same direction. Clearly, this would require to create controllers to allow robots to follow that specification. The state of each robot can be modeled by two integers denoting the current position of the robot. We also assume the grid has mines (i.e., bad states) at the top row of the map and at the most left 
-
-\begin{center}
-\begin{tikzpicture}
-    [%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        box/.style={rectangle,draw=black,thick,inner sep=0pt,minimum size=0.5cm, },
-    ]%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\foreach \x in {0,0.5, ..., 4}{
-    \foreach \y in {0,0.5, ..., 4}
-        \node[box] at (\x,\y){};
-}
-
-\foreach \x in {0,0.5, ..., 4}{
-        \node[box, fill=red] at (\x,4){};
-}
-
-\foreach \y in {2.5,3, ..., 4}{
-    \node[box, fill=red] at (4,\y){};
-}
-
-\foreach \y in {0,0.5, ..., 2}{
-    \node[box, fill=blue] at (4,\y){};
-} 
-
-\foreach \x in {0,0.5, ..., 3.5}{
-    \foreach \y in {2.5,3, ..., 3.5}
-        \node[box, fill=red!5] at (\x,\y){};
-}
-  \node[box] (robot1) at (2,2){};
-   \node[box] (robot2) at (1,1){};
-
-  \node[draw, circle, fill=black] (robot11) at (robot1.center) {};
-    \node[draw, circle, fill=black] (robot21) at (robot2.center) {};
-\draw[->, red] (robot11) -- (2, 2.5);
-\draw[->, blue] (robot11) -- (2.5, 2);
-
-\draw[->, red] (robot21) -- (1, 1.5);
-\draw[->, blue] (robot21) -- (1.5, 1);
-\end{tikzpicture}
-\end{center}
-
-
 \begin{table}
 \centering
 \begin{tabular}{|C{2cm}||C{0.85cm}|C{0.85cm}|C{0.85cm}|C{0.85cm}|C{0.85cm}||C{1.2cm}||C{1.5cm}||}
@@ -84,6 +40,57 @@ We also evaluated the runtime overhead induced by the policy, which at every com
 \label{tab:execution-times}
 \end{table}
 
+\paragraph{Pair-wise synchronized robots.} In this benchmark, we model a set of robots placed on a map of size $n \times n$. Initially, all robots are placed at position $(0, 0)$. We consider that robots can only move up or to the right, that is, cannot go back after taking a move. Moreover, robot $i$ must synchronize with either robot $i-1$ or $i+1$ (modulo the number of robots) in order to move and both must move with the same direction. Clearly, this would require to create controllers to allow robots to follow that specification. The state of each robot can be modeled by two integers denoting the current position of the robot. We also assume the grid has mines (i.e., bad states) at the top row and the top half most left of the map (i.e., red places in Figure~\ref{fig:map-robots}). Bottom half most left places are considered safe. Also, we assume that the green location has an exit, which allows the robot to safely exit the map.   
+%
+\begin{figure}
+\centering
+\begin{tikzpicture}
+    [%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        box/.style={rectangle,draw=black,thick,inner sep=0pt,minimum size=0.5cm, },
+    ]%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\foreach \x in {0,0.5, ..., 4}{
+    \foreach \y in {0,0.5, ..., 4}
+        \node[box] at (\x,\y){};
+}
+
+\foreach \x in {0,0.5, ..., 4}{
+        \node[box, fill=red] at (\x,4){};
+}
+
+\foreach \y in {2.5,3, ..., 4}{
+    \node[box, fill=red] at (4,\y){};
+}
+
+\foreach \y in {0,0.5, ..., 1.5}{
+    \node[box, fill=blue] at (4,\y){};
+} 
+
+\node[box, fill=green] at (4,2){};
+
+
+\foreach \x in {0,0.5, ..., 3.5}{
+    \foreach \y in {2.5,3, ..., 3.5}
+        \node[box, fill=red!5] at (\x,\y){};
+}
+  \node[box] (robot1) at (2,2){};
+   \node[box] (robot2) at (1,1){};
+
+  \node[draw, circle, fill=black] (robot11) at (robot1.center) {};
+    \node[draw, circle, fill=black] (robot21) at (robot2.center) {};
+\draw[->, red] (robot11) -- (2, 2.5);
+\draw[->, blue] (robot11) -- (2.5, 2);
+
+\draw[->, red] (robot21) -- (1, 1.5);
+\draw[->, blue] (robot21) -- (1.5, 1);
+\end{tikzpicture}
+\caption{Map of pair-wise synchronizing robots}
+\label{fig:map-robots}
+\end{figure}
+We have modeled robots and their pair-wise synchronization using BIP, however by allowing them to move any border locations. Then, we define bad states (i.e., red location) and the goal is to generate a policy that allows robots to not go to a bad state. Notice that RE-BIP cannot be used to avoid states as if a robot enters a location on the top half of the map, then 1-step recovery would try all the possible next actions and then fail. For instance, the robot (black circle) on the top has two choices, either moves right or up. The two choices lead the robot to go to a correct state. However, if the robot would take the move up action, it will enter a region where 1-step recovery will fail. 
+%
+We have tested \rerl using value iteration and deep value iteration by varying the size of the map and the number of robots. Tables~\ref{tab:robots-2},~\ref{tab:robots-4}, \ref{tab:robots-8} depicts (1) the success rate when using deep value iteration, value iteration and standard implementation, (2) the time needed to converge in case of deep value iteration, and (3) the number of iterations needed to converge in case of finite value iteration. We have each configuration $10000$ times to compute the success rate. 
+We notice that the value iteration provides a success rate of $100\%$, however, it fails when the size of the system increases. As for the deep value iteration, the system is learning to avoid bad states or states that could lead to bad states and it achieves a high success rate. For instance, if we take a map with $29\times29$ grid size and $8$ robots (i.e.,  possible $841^8$ states), the standard implementation has $15.1\%$ success rate whereas when using deep value iteration we reach $95.6\%$ success rate. As the state space in this example has a well-defined structure, we only needed $10$ hidden neuron units to train our network using by deep value iteration algorithm. For this, we notice the efficient of the compile time, e.g., only $3.6$ seconds are needed to train a system consisting of  $841^8$ states and to reach a $95.6\%$ success rate. 
 
 \begin{table}
 \centering

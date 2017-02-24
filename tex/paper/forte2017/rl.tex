@@ -49,7 +49,7 @@ Notice that we index the value of the state by the policy $\pi$ to explicitly re
 Finally, we quantify the performance of the engine being in a state $q_{t}$ using the so-called value function $V: {Q} \rightarrow \mathbb{R}$. Given such a performance measure, we can deduce the policy, $\pi$ as: 
 \begin{equation}
 \label{Eq:Policy}
-\pi(q) = \arg\max_{a} V(q).
+\pi(q) = \arg\max_{a} \{V(q') \mid q \goesto[a] q'\}.
 \end{equation}
 
 In what comes next, we define two methods capable of computing such performance measures (consequently policies) in both finite as well as infinite state-space. 
@@ -97,7 +97,7 @@ To commence, we introduce a function approximator, encoded through a neural netw
 \STATE Set initial state to $q_{0}$
 \FOR  {$t=1$ \ \ \text{to} \ \ T}
 \STATE With some probability $\epsilon$ select a random interaction $a_{t}$
-\STATE With a probability $1 - \epsilon$ select $a_{t} = \max_{a} \left[\mathcal{R}(q_{t}, a) + \gamma V(q_{t};\bm{\theta})\right]$
+\STATE With a probability $1 - \epsilon$ select $a_{t} = \max_{a} \left[\mathcal{R}(q_{t}, a) + \gamma V(q_{t+1};\bm{\theta})\right]$
 \STATE Execute interaction $a_{t}$ and observe reward, $r_{t}$,and successor state $q_{t+1}$
 \STATE Store transition $\left(q_{t}, a_{t}, r_{t}, q_{t+1}\right)$ on replay memory $\mathcal{D}$
 \STATE Sample random minibatch of transition $\left(q_{j}, a_{j}, r_{j}, q_{j+1}\right)$ of size $N_{2}$ from $\mathcal{D}$ and create output label by 
