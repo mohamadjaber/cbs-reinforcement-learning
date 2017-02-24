@@ -1,9 +1,67 @@
 \section{Experimental results}
+In this section, we present \rerl an implementation of our proposed approach and its evaluation in terms of (1) accuracy of avoiding bad states and, (2) compile and runtime efficiency. 
 \subsection{Implementation}
 
 \subsection{Evaluation}
+\paragraph{Dining philosophers.} Figure~\ref{fig:diningbench} shows an example of dining philosophers modeled in BIP that may deadlock. A deadlock will arise when philosopher $P_0$ allocates its right fork $F_0$, then philosopher $P_1$ allocates its right fork $F_1$. That is, a deadlock state is defined as the concatenation when all the philosophers allocate their right forks. We used \rerl to enforce deadlock freedom on this example. We vary the number of philosophers from $2$ to $47$ increasing by $5$. The total number of states is equal to $6^{n}$, where $n$ is the number of philosophers. 
+Clearly, value iteration method would explode when the number of philosophers is greater than $12$. 
+%
+As for the deep value iteration, we ran it with $50$ \texttt{epochs}, $50$ hidden neuron units and $5$ as degree of fairness. The degree of fairness was chosen to be consistent with the good ($+1$) and bad reward ($-1$). Then, we run the system until it executes $10^5$ iterations. The normal implementation always enters the deadlock state whereas when we apply deep value iteration the obtained implementation always avoid the deadlock state.  
+%
+\begin{figure}[t]
+\centering
+\subfigure[Philosopher\label{fig:philo}]{\scalebox{0.55}{\input{figs/philo.pdf_t}}}
+\subfigure[Fork\label{fig:fork}]{\scalebox{0.55}{\input{figs/fork.pdf_t}}}
+\subfigure[Dining philosophers in BIP\label{fig:dining}]{\scalebox{0.7}{\input{figs/diningbip-deadlock.pdf_t}}} 
+\caption{Dining philosophers with possible deadlock.}
+\label{fig:diningbench}
+\end{figure}
+%
+We also evaluated the runtime overhead induced by the policy, which at every computation step it needs to do a forward propagation on the trained neural network to select the best next interactions. Moreover, we compare this overhead against RE-BIP, a tool-set to enforce properties in BIP systems, but which is limited to only a one-step recovery. In this example, one-step recovery is sufficient to avoid deadlock, however, as we will see later it fails in the second benchmark as a $k$ step recovery is needed. Table~\ref{tab:execution-times} summarizes the runtime execution times in case of infinite (i.e., deep value iteration), finite (i.e., value iteration) and RE-BIP. Clearly, the infinite-based implementation drastically outperforms RE-BIP, when the number of hidden neuron units is less than $100$. Although the finite-based outperforms RE-BIP and guarantees to enforce correct execution, it fails when the size of the system becomes large.  
 
-% episode 50 - fairness 5 - hidden = 50 ... no deadlock... good reward = 1, bad reward = -1
+
+\paragraph{Pair-wise synchronized robots.} In this benchmark, we model a set of robots placed on a map of size $n \times n$. Initially, all robots are placed at position $(0, 0)$. We consider that robots can only move up or to the right, that is, cannot go back after taking a move. Moreover, robot $i$ must synchronize with either robot $i-1$ or $i+1$ (modulo the number of robots) in order to move and both must move with the same direction. Clearly, this would require to create controllers to allow robots to follow that specification. The state of each robot can be modeled by two integers denoting the current position of the robot. We also assume the grid has mines (i.e., bad states) at the top row of the map and at the most left 
+
+\begin{center}
+\begin{tikzpicture}
+    [%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        box/.style={rectangle,draw=black,thick,inner sep=0pt,minimum size=0.5cm, },
+    ]%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\foreach \x in {0,0.5, ..., 4}{
+    \foreach \y in {0,0.5, ..., 4}
+        \node[box] at (\x,\y){};
+}
+
+\foreach \x in {0,0.5, ..., 4}{
+        \node[box, fill=red] at (\x,4){};
+}
+
+\foreach \y in {2.5,3, ..., 4}{
+    \node[box, fill=red] at (4,\y){};
+}
+
+\foreach \y in {0,0.5, ..., 2}{
+    \node[box, fill=blue] at (4,\y){};
+} 
+
+\foreach \x in {0,0.5, ..., 3.5}{
+    \foreach \y in {2.5,3, ..., 3.5}
+        \node[box, fill=red!5] at (\x,\y){};
+}
+  \node[box] (robot1) at (2,2){};
+   \node[box] (robot2) at (1,1){};
+
+  \node[draw, circle, fill=black] (robot11) at (robot1.center) {};
+    \node[draw, circle, fill=black] (robot21) at (robot2.center) {};
+\draw[->, red] (robot11) -- (2, 2.5);
+\draw[->, blue] (robot11) -- (2.5, 2);
+
+\draw[->, red] (robot21) -- (1, 1.5);
+\draw[->, blue] (robot21) -- (1.5, 1);
+\end{tikzpicture}
+\end{center}
+
 
 \begin{table}
 \centering
@@ -25,7 +83,6 @@
 \caption{Execution times (in seconds)}
 \label{tab:execution-times}
 \end{table}
-
 
 
 \begin{table}
