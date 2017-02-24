@@ -23,7 +23,7 @@ predicate on variables that must be true to allow the execution of the
 transition. An update function is a local computation triggered by the
 transition that modifies the variables. 
 
-Figure \ref{fig:philo-fork} shows an atomic component $P$ that corresponds to the behavior of a philosopher in the dining-philosopher problem, where $Q = \{e,h\}$ denoting eating and hungry, $P = \{\release, \get\}$ denoting releasing and getting of forks, and $\goesto = \{e \goesto[\release] h, h \goesto[\get] e\}$.
+Figure \ref{fig:philo-fork} shows an atomic component $P$ that corresponds to the behavior of a philosopher in the dining-philosopher problem, where $Q = \{e,h\}$ denotes eating and hungry, $P = \{\release, \get\}$ denotes releasing and getting of forks, and $\goesto = \{e \goesto[\release] h, h \goesto[\get] e\}$.
 
 
 \subsection{Composition Component}
@@ -38,8 +38,8 @@ associated transfer function is called and modifies the variables.
 \begin{figure}[t]
   \begin{center}
     \mbox{
-      \subfigure[Philosopher $P$ and fork $F$ atomic components.]{\label{fig:philo-fork}\scalebox{0.4}{\input{figs/philAndFork.pdf_t}}} \quad
-      \subfigure[Dining philosophers composite component with four philosophers.]{\label{fig:diningbip}\scalebox{0.35}{\input{figs/diningbip.pdf_t}}}
+      \subfigure[Philosopher $P$ and fork $F$ atomic components.]{\label{fig:philo-fork}\scalebox{0.35}{\input{figs/philAndFork.pdf_t}}} \quad
+      \subfigure[Dining philosophers composite component with four philosophers.]{\label{fig:diningbip}\scalebox{0.3}{\input{figs/diningbip.pdf_t}}}
       }
     \caption{Dining philosophers.}
     \label{fig:diningSpectrum}
