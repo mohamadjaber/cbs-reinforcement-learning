@@ -1,6 +1,14 @@
 \section{Experimental results}
+\label{sec:bench}
 In this section, we present \rerl an implementation of our proposed approach and its evaluation in terms of (1) accuracy of avoiding bad states and, (2) compile and runtime efficiency. 
 \subsection{Implementation}
+\rerl is an implementation of our method with several modules. The implementation is available at \href{http://staff.aub.edu.lb/~mj54/rerl}{http://staff.aub.edu.lb/~mj54/rerl}. 
+
+\rerl~ is equipped with a command line interface that accepts a set of configuration options. 
+It takes the name of the input BIP file, a file containing the bad states (explicitly or symbolically) to be avoided,  and optional flags (e.g., discount factor, number of episodes, horizon length), and it automatically generates a C++ implementation of the input BIP system embedded with a policy to avoid bad states. 
+\begin{lstlisting}[language=Bash]
+> java -jar RERL.jar [options] input.bip output.cpp badStates.txt
+\end{lstlisting}
 
 \subsection{Evaluation}
 \paragraph{Dining philosophers.} Figure~\ref{fig:diningbench} shows an example of dining philosophers modeled in BIP that may deadlock. A deadlock will arise when philosopher $P_0$ allocates its right fork $F_0$, then philosopher $P_1$ allocates its right fork $F_1$. That is, a deadlock state is defined as the concatenation when all the philosophers allocate their right forks. We used \rerl to enforce deadlock freedom on this example. We vary the number of philosophers from $2$ to $47$ increasing by $5$. The total number of states is equal to $6^{n}$, where $n$ is the number of philosophers. 

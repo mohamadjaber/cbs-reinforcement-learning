@@ -2,10 +2,26 @@
 Building correct and efficient software systems in a timely manner is still a very challenging task despite the existence of plethora of techniques and methods. For instance, correctness can be ensured using static analysis such as model checking or dynamic analysis such as runtime verification. Static analysis mainly suffers from state-space explosion where as dynamic analysis suffers from its accuracy (reachability cover) and efficiency.  
 %
 On the other hand, software synthesis, correct-by-design, was introduced to automatically generation implementation from high-level designs. However, correct-by-design was proven to be NP-hard~\cite{PnueliR89} in some cases and undecidability~\cite{PnueliR90} in some main classical automatic synthesis problems. 
-
-Additionally, it is desirable to relax the developer task by giving the option introduce additional behaviors w.r.t. a given specification. Although,  this relaxation would drastically simplifies the development process, it may introduce errors. 
+%
+Additionally, it is desirable to relax the developer task by giving the option to introduce additional behaviors w.r.t. a given specification. Although, this relaxation would drastically simplifies the development process, it may introduce errors. 
 
 %
-In this paper, we introduce a new runtime enforcement technique that takes a software system with additional behaviors and uses machine machine learning and dynamic analysis to synthesis more accurate behaviors, i.e., remove the extra ones w.r.t. input specification. We apply our method to component-based systems with multi-party interactions modeled using BIP. Our technique frames runtime enforcement as a sequential decision making problem and presents two alternatives for learning optimal strategies that ensure fairness between correct traces. That is, the policy should not prioritize correct traces. We target both finite and infinite state-spaces. In the finite case, we guarantee that the system avoids bad-states by casting the learning process as a one of determining a fixed point solution that converges to the optimal strategy. Though successful, this technique fails to generalize to the infinite case due to need for building a dictionary, which quantifies the performance of each state-interaction pair. As such, we further contribute by generalizing our framework to support the infinite setting. Here, we adapt ideas from function approximators and machine learning to encode each state-interaction pairs' performance. In essence, we autonomously learn to abstract similar performing states in a relevant continuous space through the usage of deep learning. 
-We assess our method empirically by presenting a fully implemented version in RERL. Particularly, we use RERL to: 1) enforce deadlock freedom on a dining philosophers benchmark, and 2) allow for pair-wise synchronized robots to autonomously achieve a consensus within a cooperative multi-agent setting. 
+In this paper, we introduce a new runtime enforcement technique that takes a software system with additional behaviors and uses static and dynamic techniques with the help of machine learning to synthesis more accurate behaviors, i.e., remove the extra ones w.r.t. given specification. 
+%
+We apply our method to component-based systems with multi-party interactions modeled using BIP. 
+BIP (Behavior, Interaction and Priority) allows to build complex systems by coordinating the behavior of atomic components. BIP has a rigorous operational semantics: the behavior of a composite component is formally
+described as the composition of the behaviors of its atomic components. D-Finder~\cite{BensalemBNS09} is used to verify the correctness of BIP systems. While D-Finder uses compositional techniques, it is still suffer from state-space explosion. Dynamic analysis techniques~\cite{FalconeJNBB15,CharafeddineEFJ15} are also proposed for BIP systems. However, they only support a limited level of recovery. A detailed comparison is discussed in the related work. 
 
+
+Our technique frames runtime enforcement as a sequential decision making problem and presents two alternatives for learning optimal strategies that ensure fairness between correct traces. 
+%
+That is, the policy should not avoid correct traces from execution. 
+%
+We target both finite and infinite state-spaces. In the finite case, we guarantee that the system avoids bad-states by casting the learning process as a one of determining a fixed point solution that converges to the optimal strategy. Though successful, this technique fails to generalize to the infinite case due to need for building a dictionary, which quantifies the performance of each state-interaction pair. As such, we further contribute by generalizing our framework to support the infinite setting. Here, we adapt ideas from function approximators and machine learning to encode each state-interaction pairs' performance. In essence, we autonomously learn to abstract similar performing states in a relevant continuous space through the usage of deep learning. 
+%
+We assess our method empirically by presenting a fully implemented version in \rerl. Particularly, we use \rerl to: 1) enforce deadlock freedom on a dining philosophers benchmark, and 2) allow for pair-wise synchronized robots to autonomously achieve a consensus within a cooperative multi-agent setting. 
+
+
+The remainder of this paper is structured as follows. Section~\ref{sec:rw} discusses related work. Section~\ref{sec:bip} recall the necessary concepts of the BIP framework. Section~\ref{sec:rerl} presents our main contribution, a runtime enforcement framework for component-based systems (finite and infinite state-space) using machine learning. Section~\ref{sec:bench} describes \rerl, a full implementation
+of our framework and its evaluation using two benchmarks. Section~\ref{sec:conclusion} draws
+some conclusions and perspectives. 

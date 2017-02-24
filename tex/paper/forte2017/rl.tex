@@ -1,4 +1,5 @@
-\section{Problem Definition \& Methodology }
+\section{Problem Definition \& Methodology}
+\label{sec:rerl}
 We frame the problem of run time enforcement as a sequential decision making (SDM) one, by which the BIP engine has to be guided to select the set of interactions over an extended execution traces that maximize a cumulative return.  We formalize SDMs as the following five-tuple $\left \langle Q, \tilde{Q},\Gamma, \rightarrow, {R}_{+}, {R}_{-}, \gamma \right\rangle$.  Here, $Q$ represents the set of all possible states, $\tilde{Q} \subseteq Q$ the set of ``bad'' states that need to be avoided, $\Gamma$ the set of allowed interactions, and $\rightarrow$ representing the transition model. $R_{+}$ and ${R}_{-}$ are two positive and negative scalar parameter, which allow us to define the reward function quantifying the selection of the engine.
 Clearly, the engine gets rewarded when in a state $q \notin \tilde{Q}$, while penalized if $q \in \tilde{Q}$. Using this intuition, one can define a reward function of the states written as: 
 
@@ -116,22 +117,15 @@ To commence, we introduce a function approximator, encoded through a neural netw
 \end{algorithm}
 The details of the above process are described in Algorithm~\ref{Algo:VI2}. On a high-level, the algorithm operates in two loops. The first is episode-based, while the second runs for a horizon $T$. At each episode, the engine's goal is to collect relevant labeled data to improve its approximation (encoded through the neural network) of the performance measure, as summarized in lines 5-10 in the algorithm. First, the engine selects an interaction either randomly with a probability $\epsilon$ (i.e., exploration) or by exploiting the current estimate of the performance measure. Next, the engine executes the interaction and stores both the dynamical transition and its usefulness (i.e., reward) in a replay memory data set, $\mathcal{D}$. To ensure that the engine takes learning memory into account, we sample a set of size $N_{2}$ from $\mathcal{D}$ and label them in line~9  in preparation to retrain the original neural network. The process by which we generate these labels is in essence similar to finite value iterator. The main difference, however, is the usage of sample-based transitions to train a neural network.  
 
-
-
-
-
-
 %In other words, starting from randomly initialized weights, $\bm{\theta}$, the engine has to 1) gather relevant traces from the environment, and 2) improve its estimate of $\bm{\theta}$ to maximize its return. Having 
-
-
-
-
-
-
-
-
 
 %The goal of such a neural net is to enable continuous states by autonomously generalizing similar...
 
 
-
+\subsection{Fairness}
+Deep value iteration allows to compute $\bm{\theta}$, and hence $V(q_{t};\bm{\theta})$, for a given state $q_t$. As defined in Equation~\ref{Eq:Policy}, the policy can be defined using $V$. For this, as we are dealing with real numbers, the same trace would be selected by the policy all the time. As such, other correct traces will not be reachable in the obtained system. To remedy this, we define a fair policy that is allowed to deviate from the optimal policy with a degree of fairness.  The fair policy is defined as follows. 
+\begin{equation}
+\label{Eq:Policy}
+\pi(q) = \{a \mid q \goesto[a] q' \wedge V(q';\bm{\theta}) \geq \mathtt{max} - \mathtt{fair}\},
+\end{equation}
+where, $\mathtt{max} = \mathtt{maximum}\{V(q'') \mid q \goesto[a] q''\}$.  $\mathtt{fair}$ is the tolerance against the optimal policy. The value of $\mathtt{fair}$ depends on (1) the value of good and bad rewards, and (2) the  horizon used in deep value iteration algorithm. Clearly, the more fairness the more deviation from the optimal policy we get. 

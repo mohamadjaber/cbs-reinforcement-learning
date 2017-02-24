@@ -13,4 +13,33 @@
 \usepackage{xspace}
 \usepackage{tikz}
 \usepackage{ifthen}
+\usepackage{hyperref}
+
+
+
+\usepackage{listings}
+\lstset{ %
+language=C,                % choose the language of the code
+basicstyle=\tiny,       % the size of the fonts that are used for the code
+numberstyle=\tiny,      % the size of the fonts that are used for the line-numbers
+frame=Ltbr,
+rulesep=.4pt,
+mathescape, % Allows escaping to (La)TeX mode within $$,
+stringstyle=\color{redb},
+keywords=[1]{elseif, return, else, int, wire, bool, if, Boolean, do-together, foreach, endfor, endif, while, to, Let},
+keywords=[2]{decl-list, init-list,next-list, wiredef-list, var-st, loc-st, append, assignment},
+showstringspaces = false,
+escapeinside={/*@}{@*/},
+basicstyle=\scriptsize\ttfamily,
+keywordstyle=[2]\color{darkred}\bf,
+keywordstyle=[1]\color{darkblue}\bf,
+commentstyle=\color{darkgreen},
+alsoletter={-},
+captionpos=b, %
+breaklines=true
+}
+
+
+
+
 
