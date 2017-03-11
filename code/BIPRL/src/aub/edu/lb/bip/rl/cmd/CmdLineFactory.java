@@ -15,7 +15,7 @@ import jcmdline.VersionCmdLineHandler;
 public class CmdLineFactory {
 	private static final String defaultInputBIP = "input.bip";
 	private static final String helpInputBIPFile = "input BIP file name";
-	private static final String cmdLineTool = "java -jar BIPRL.jar";
+	private static final String cmdLineTool = "java -jar RERL.jar";
 	
 	private static final String defaultOutputFile = "output.cpp";
 	private static final String helpOutputFile = "output file to be automatically generated";

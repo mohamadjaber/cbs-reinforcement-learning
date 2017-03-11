@@ -2,7 +2,8 @@ package aub.edu.lb.benchmarks;
 
 public class TestGeneration {
 	public static void main(String[] args) {
-		generateRobots();
+		new DiningBadGeneration(5, "/Users/jaber/Sites/current/rerl/tool/dp5.bip", "/Users/jaber/Sites/current/rerl/tool/dp5.bad");
+		// generateRobots();
 	}
 	
 	public static void generateRobots() {

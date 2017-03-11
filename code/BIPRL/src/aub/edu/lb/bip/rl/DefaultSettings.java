@@ -15,7 +15,7 @@ public class DefaultSettings {
 	
 	// Default Settings for Deep Reinforcement Learning
 	public final static int defaultCapacityReplay = 100;
-	public final static int defaultNumberEpisodes = 50;
+	public final static int defaultNumberEpisodes = 10;
 	public final static double defaultProbabilityRandom = 0.2;
 	public final static int minimumTraceLengthIteration = 15;
 	public final static int defaultNumberOfNeuronsHidden = 100; 
@@ -25,5 +25,5 @@ public class DefaultSettings {
 	public final static ActivationFunction defaultActivationFunctionOuter = new ActivationLinear();
 
 	final public static double EPS = 1e-100;
-	final public static int EPOCH = 100; 
+	final public static int EPOCH = 10; 
 }
