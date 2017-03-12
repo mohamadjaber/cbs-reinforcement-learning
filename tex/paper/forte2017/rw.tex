@@ -1,6 +1,6 @@
 \section{Related work}
 \label{sec:rw}
-Runtime enforcement of component-based systems was introduced in~\cite{CharafeddineEFJ15} to ensure the correct runtime behavior (w.r.t. a formal specification) of a system. 
+Runtime enforcement of component-based systems has been introduced in~\cite{CharafeddineEFJ15} to ensure the correct runtime behavior (w.r.t. a formal specification) of a system. 
 The authors define series of transformations to instrument a component-based system described in the BIP framework. The instrumented system allows to observe and avoid any error in the behavior of the system. 
 The proposed method was fully implemented in RE-BIP. 
 Although, contrarily to our method, the proposed method is sound (i.e., it always avoids bad states), it mainly suffers from two limitations. First, it only considers a 1-step recovery. That is, if the system enters a correct state from which all the reachable states are bad states, the method fails.  Second, the instrumented system introduces a huge overhead w.r.t. original behavior. This overhead would be drastically increased to support more than 1-step recovery. 
