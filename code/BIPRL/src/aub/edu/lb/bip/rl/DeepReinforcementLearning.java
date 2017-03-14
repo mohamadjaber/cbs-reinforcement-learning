@@ -199,8 +199,7 @@ public class DeepReinforcementLearning extends TCompoundDeepReinforcementLearnin
 		for(int i = 0; i < miniBatchIndices.length; i++) {
 			miniBatch.add(memoryReplay.get(miniBatchIndices[i]));
 		}
-		return miniBatch;
-		
+		return miniBatch;	
 	}
 
 	private void fillBadStates() {
@@ -226,9 +225,12 @@ public class DeepReinforcementLearning extends TCompoundDeepReinforcementLearnin
 	 */
 	private BIPInteraction pickInteraction(GlobalState state) {
 		List<BIPInteraction> enabledInteractions = compound.getEnabledInteractions(state);
-		if (enabledInteractions == null || enabledInteractions.size() == 0)
-			return null; // deadlock state
-		if (!isExploit()) { // random Selection
+		if (enabledInteractions == null || enabledInteractions.size() == 0) {
+			// deadlock state
+			return null; 
+		}
+		if (!isExploit()) { 
+			// random Selection
 			int indexInteraction = Helper.random(0, enabledInteractions.size());
 			return enabledInteractions.get(indexInteraction);
 		} else {

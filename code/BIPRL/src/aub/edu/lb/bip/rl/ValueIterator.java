@@ -12,14 +12,14 @@ import aub.edu.lb.kripke.Transition;
 
 /**
  * 
- * @author Jaber
+ * @author Bou Ammar & Jaber & Nassar
  *
  */
 public class ValueIterator extends TCompoundReinforcementLearning {
 
 	private final static double EPS = DefaultSettings.EPS;
 
-	public double[][] qValue; // TODO hash map in case of sparse cases...
+	public double[][] qValue; // TODO hash map in case of sparse cases.
 	protected double[] utility;
 	protected double[] reward;
 
@@ -102,7 +102,10 @@ public class ValueIterator extends TCompoundReinforcementLearning {
 					continue;
 				}
 
-				if(badStates.isBadState(state)) continue;
+				if(badStates.isBadState(state)) {
+					// In the general case, this is not needed
+					continue;
+				}
 				
 				double maxUtility = Double.NEGATIVE_INFINITY;
 				for (Transition t : state.getTransitions()) {
