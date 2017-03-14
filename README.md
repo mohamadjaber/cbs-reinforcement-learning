@@ -54,6 +54,4 @@ unambiguous.  Option tags must be separated from their corresponding values by
 whitespace, or by an equal sign.  Boolean options (options that require no
 associated value) may be specified alone (=true), or as 'tag=value' where value
 is 'true' or 'false'.
-
-ERROR: Required argument <input.bip> has not been specified.
 ```
