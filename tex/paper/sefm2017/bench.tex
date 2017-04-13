@@ -3,7 +3,6 @@
 In this section, we present \rerl an implementation of our proposed approach and its evaluation in terms of (1) accuracy of avoiding bad states and, (2) compile and runtime efficiency. 
 \subsection{Implementation}
 \rerl is an implementation of our method with several modules. The implementation is available at \href{http://staff.aub.edu.lb/~mj54/rerl}{http://staff.aub.edu.lb/\~{}mj54/rerl}. 
-
 \rerl~ is equipped with a command line interface that accepts a set of configuration options. 
 It takes the name of the input BIP file, a file containing the bad states (explicitly or symbolically) to be avoided,  and optional flags (e.g., discount factor, number of episodes, horizon length), and it automatically generates a C++ implementation of the input BIP system embedded with a policy to avoid bad states. 
 \begin{lstlisting}[language=Bash]
@@ -28,9 +27,12 @@ As for the deep value iteration, we ran it with $50$ \texttt{epochs}, $50$ hidde
 %
 We also evaluated the runtime overhead induced by the policy, which at every computation step needs to do a forward propagation on the trained neural network to select the best next interactions. Moreover, we compare this overhead against RE-BIP, a tool-set to enforce properties in BIP systems, but which is limited to only a one-step recovery. In this example, one-step recovery is sufficient to avoid deadlock, however, as we will see later it fails in the second benchmark as a $k$ step recovery is needed. Table~\ref{tab:execution-times} summarizes the runtime execution times in case of infinite (while varying number of hidden neuron units), i.e., deep value iteration, finite, i.e., value iteration, and RE-BIP. Clearly, the infinite-based implementation drastically outperforms RE-BIP, when the number of hidden neuron units is less than $100$. Although the finite-based outperforms RE-BIP and guarantees to enforce correct execution, it fails when the size of the system becomes large.  
 
+
 \begin{table}
 \centering
-\caption{Execution times (in seconds)}
+\caption{Execution times (in seconds).}
+\vspace*{-0.3cm}
+{\scriptsize
 \begin{tabular}{|C{2cm}||C{0.85cm}|C{0.85cm}|C{0.85cm}|C{0.85cm}|C{0.85cm}||C{1.2cm}||C{1.5cm}||}
 \hline
 \multirow{2}{*}{\textbf{Nb of}} & \multicolumn{5}{c||}{\textbf{Infinite}} & \multirow{2}{*}{\textbf{Finite}} & \multirow{2}{*}{\textbf{RE-BIP}}  \\ \cline{2-6}
@@ -46,16 +48,21 @@ We also evaluated the runtime overhead induced by the policy, which at every com
 \cellcolor{black!10}$42$		& 7.7		& 28.2		&54.9&   325  &   648  &   NA    &  566 \\ \hline
 \cellcolor{black!10}$47$		&	 9.7			& 32.6		&60.5&    396   &  764  &   NA   &   652 \\ \hline
 \end{tabular}
+}
 \label{tab:execution-times}
 \end{table}
 
-\paragraph{Pair-wise synchronized robots.} In this benchmark, we model a set of robots placed on a map of size $n \times n$. Initially, all robots are placed at position $(0, 0)$. We consider that robots can only move up or to the right, that is, cannot go back after taking a move. Moreover, robot $i$ must synchronize with either robot $i-1$ or $i+1$ (modulo the number of robots) in order to move and both must move with the same direction. Clearly, this would require to create controllers to allow robots to follow that specification. The state of each robot can be modeled by two integers denoting the current position of the robot. We also assume the grid has mines (i.e., bad states) at the top row and the top half most left of the map (i.e., red places in Figure~\ref{fig:map-robots}). Bottom half most left places are considered safe. Also, we assume that the green location has an exit, which allows the robot to safely exit the map.   
+\paragraph{Pair-wise synchronized robots.} In this benchmark, we model a set of robots placed on a map of size $n \times n$. Initially, all robots are placed at position $(0, 0)$. We consider that robots can only move up or to the right, that is, cannot go back after taking a move. 
+Moreover, robot $i$ must synchronize with either robot $i-1$ or $i+1$ (modulo the number of robots) in order to move and both must move with the same direction. Clearly, this would require to create controllers to allow robots to follow that specification. The state of each robot can be modeled by two integers denoting the current position of the robot. We also assume the grid has mines (i.e., bad states) at the top row and the top half most left of the map (i.e., red places in Figure~\ref{fig:map-robots}). 
 %
-\begin{figure}[h]
+Bottom half most left places are considered safe. Also, we assume that the green location has an exit, which allows the robot to safely exit the map.   
+%
+\begin{wrapfigure}{r}{5.2cm}
+%\begin{figure}[h]
 \centering
 \begin{tikzpicture}
     [%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        box/.style={rectangle,draw=black,thick,inner sep=0pt,minimum size=0.5cm, },
+        box/.style={rectangle,draw=black,thick,inner sep=0pt,minimum size=0.5cm,scale=0.9 },
     ]%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \foreach \x in {0,0.5, ..., 4}{
@@ -95,7 +102,7 @@ We also evaluated the runtime overhead induced by the policy, which at every com
 \end{tikzpicture}
 \caption{Map of pair-wise synchronizing robots}
 \label{fig:map-robots}
-\end{figure}
+\end{wrapfigure}
 %
 We have modeled robots and their pair-wise synchronization using BIP by allowing them to move to any border locations. Then, we define bad states (i.e., red location) and the goal is to generate a policy that allows robots not go to a bad state. Notice that RE-BIP cannot be used to avoid states as if a robot enters a location on the top half of the map, then 1-step recovery would try all the possible next actions and then fail. For instance, the robot (black circle) on the top has two choices, either moves right or up. The two choices lead the robot to go to a correct state. However, if the robot would take the move up action, it will enter a region where 1-step recovery will fail. 
 %
@@ -104,7 +111,9 @@ We notice that the value iteration provides a success rate of $100\%$, however, 
 
 \begin{table}[t]
 \centering
-\caption{Evaluation of two robots with different grid sizes}
+\caption{Evaluation of two robots with different grid sizes.}
+\vspace*{-0.3cm}
+{\scriptsize
 \begin{tabular}{|C{2cm}||C{1.25cm}|C{1.35cm}||C{1.25cm}|C{1.5cm}|C{1.5cm}|}
 \hline
 \multirow{2}{*}{\textbf{Grid}} & \multicolumn{2}{c||}{\textbf{Infinite}} & \multicolumn{2}{c|}{\textbf{Finite}} & \textbf{Standard}  \\  \cline{2-6}
@@ -117,13 +126,16 @@ We notice that the value iteration provides a success rate of $100\%$, however, 
 \cellcolor{black!10}$25$ &  99.9 & 1.4 &100 & 50& 59.2\\ \hline
 \cellcolor{black!10}$29$  & 99.6 & 1.5 &100 & 58&  61.8\\ \hline
 \end{tabular}
+}
 \label{tab:robots-2}
 \end{table}
 
 
 \begin{table}[t]
 \centering
-\caption{Evaluation of four robots with different grid sizes}
+\caption{Evaluation of four robots with different grid sizes.}
+\vspace*{-0.3cm}
+{\scriptsize
 \begin{tabular}{|C{2cm}||C{1.25cm}|C{1.35cm}||C{1.25cm}|C{1.5cm}|C{1.5cm}|}
 \hline
 \multirow{2}{*}{\textbf{Grid}} & \multicolumn{2}{c||}{\textbf{Infinite}} & \multicolumn{2}{c|}{\textbf{Finite}} & \textbf{Standard}  \\  \cline{2-6}
@@ -136,12 +148,15 @@ We notice that the value iteration provides a success rate of $100\%$, however, 
 \cellcolor{black!10}$25$ &  98.1 & 2.2 &NA & NA& 30.1\\ \hline
 \cellcolor{black!10}$29$  & 97.8 & 2.5 &NA & NA&  30.1\\ \hline
 \end{tabular}
+}
 \label{tab:robots-4}
 \end{table}
 
 \begin{table}[t]
 \centering
-\caption{Evaluation of eight robots with different grid sizes}
+\caption{Evaluation of eight robots with different grid sizes.}
+\vspace*{-0.3cm}
+{\scriptsize
 \begin{tabular}{|C{2cm}||C{1.25cm}|C{1.35cm}||C{1.25cm}|C{1.5cm}|C{1.5cm}|}
 \hline
 \multirow{2}{*}{\textbf{Grid}} & \multicolumn{2}{c||}{\textbf{Infinite}} & \multicolumn{2}{c|}{\textbf{Finite}} & \textbf{Standard}  \\  \cline{2-6}
@@ -154,6 +169,8 @@ We notice that the value iteration provides a success rate of $100\%$, however, 
 \cellcolor{black!10}$25$ &  94.8 & 3.3 &NA & NA& 14.2\\ \hline
 \cellcolor{black!10}$29$  & 95.6 & 3.6 &NA & NA&  15.1\\ \hline
 \end{tabular}
+\vspace*{-0.7cm}
+}
 \label{tab:robots-8}
 \end{table}
 

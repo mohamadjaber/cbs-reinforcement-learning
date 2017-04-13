@@ -2,8 +2,7 @@
 \label{sec:rerl}
 We frame the problem of run time enforcement as a sequential decision making (SDM) one, by which the BIP engine has to be guided to select the set of interactions over an extended execution traces that maximize a cumulative return.  We formalize SDMs as the following five-tuple $\left \langle Q, \tilde{Q},\Gamma, \rightarrow, {R}_{+}, {R}_{-}, \gamma \right\rangle$.  Here, $Q$ represents the set of all possible states, $\tilde{Q} \subseteq Q$ the set of ``bad'' states that need to be avoided, $\Gamma$ the set of allowed interactions, and $\rightarrow$ represents the transition model. $R_{+}$ and ${R}_{-}$ are two positive and negative scalar parameters, which allow us to define the reward function quantifying the selection of the engine.
 Clearly, the engine gets rewarded when in a state $ \bm{q} \notin \tilde{Q}$, while penalized if $ \bm{q} \in \tilde{Q}$. Using this intuition, one can define a reward function of the states written as: 
-
-
+%
 \begin{displaymath}
    \mathcal{R}( \bm{q}) = \left\{
      \begin{array}{lr}
@@ -27,19 +26,16 @@ Consequently, the new behavior of the composite component, guided by the policy 
        \bm{q} \goesto[a]_\pi  \bm{q'}
     }
 \end{mathpar}
-
+%
 The goal now is to find an optimal policy $\pi^{\star}$ that maximizes the \emph{expected} total sum of the rewards it receives in the long run, while starting from an initial state $ \bm{q_{0}} \in Q$. We will evaluate the performance of a policy $\pi$ by:
-\begin{equation}
-\label{Eq:ValueOne}
-\texttt{eval}({\pi}| \bm{q_{0}})  = \mathbb{E}_{\bm{\rho}(C_\pi)} \left[\sum_{t=0}^{T} \gamma^{t}\mathcal{R}( \bm{q_{t+1}})\right],
-\end{equation}
+%\begin{equation}
+%\label{Eq:ValueOne}
+$\texttt{eval}({\pi}| \bm{q_{0}})  = \mathbb{E}_{\bm{\rho}(C_\pi)} \left[\sum_{t=0}^{T} \gamma^{t}\mathcal{R}( \bm{q_{t+1}})\right]$,
+%\end{equation}
 where  $\mathbb{E}_{\bm{\rho}(C_\pi)}$ denotes the expectation under all the set of all the allowed (by the policy $\pi$) possible traces, and $T$ is the length of the trace. 
-
-
+%
 Notice that we index the value of the state by the policy $\pi$ to explicitly reflect the dependency of the value on the policy being followed from a state $ \bm{q_{t}}$. Interestingly, the definition of the evaluator asserts that the value of a state $ \bm{q_{t}}$ is the expected instantaneous reward plus the expected discounted value of the next state. Clearly, we are interested in determining the optimal policy $\pi^{\star}$, which upon its usage yields maximized values for any $ \bm{q_{t}} \in Q$. As such our goal is to determine a policy $\pi$ that solves:
-\begin{equation*}
-\pi^{\star} \equiv \max_{\pi} \texttt{eval}({\pi}| \bm{q_{0}}). 
-\end{equation*}
+$\pi^{\star} \equiv \max_{\pi} \texttt{eval}({\pi}| \bm{q_{0}})$. 
 
 %In other words, rather than targeting the determination of $\pi^{\star}$ directly, we will seek the \emph{value} of a state $q \in Q$. %Clearly, one can recover the current iteration policy $\pi$ using:
 %$
@@ -78,9 +74,9 @@ Due to the number of possible policies at each time step, it is a challenge to c
 \end{algorithmic}
 \end{algorithm}
 
-In essence, Algorithm~\ref{Algo:VI} is iteratively updating the performance measures of all the state-interaction pairs (until either (1) we reach a predefined bound, i.e., $\mathtt{bound}$; or (2) the values are within a predefined $\epsilon$),  by choosing these actions that maximize the instantaneous rewards, as well as the future information encoded through $V(q^{\prime})$. 
+In essence, Algorithm~\ref{Algo:VI} is iteratively updating the performance measures of all the state-interaction pairs (until either (1) we reach a predefined bound, i.e., $\mathtt{bound}$; or (2) the values are within a predefined $\epsilon$),  by choosing these interactions that maximize the instantaneous rewards, as well as the future information encoded through $V(q^{\prime})$. 
 %Defining the operator $$\mathcal{T}^{\pi} = \max_{a} \left[\mathcal{R}(q) + \gamma \sum_{q \goesto[a]q^{\prime}}V_{k}(q^{\prime})\right],$$ one can easily see that the optimal value function is essentially  fixed-point of $V_{k+1} = \mathcal{T}^{\pi}  V_{k}$. 
-Contrary to state-space-exploration algorithms, our method remedies the need to construct the full labeled transition system as we only require the knowledge of the successor state from a given state and action pair with no regard to its reachability properties. Furthermore, notice that though line~4 in Algorithm~\ref{Algo:VI} requires a loop over all states computational time can be highly reduced by following a sampling-based procedure, where fractions of the state-space are considered. Notice, however, the successfulness of the attained policy comes hand-in-hand with the fraction of the state space sampled. In other words, the higher the fraction, the closer to optimality is the policy and vice versa. 
+Contrary to state-space-exploration algorithms, our method remedies the need to construct the full labeled transition system as we only require the knowledge of the successor state from a given state-interaction pair with no regard to its reachability properties. Notice also that though line~4 in Algorithm~\ref{Algo:VI} requires a loop over all states computational time can be highly reduced by following a sampling-based procedure, where fractions of the state-space are considered. Notice, however, the successfulness of the attained policy comes hand-in-hand with the fraction of the state space sampled. In other words, the higher the fraction, the closer to optimality is the policy and vice versa. 
 
 
 \subsection{Infinite State-Space - Deep Value Iteration}
@@ -146,6 +142,6 @@ Consequently, we form a data set $\mathcal{D}$  (line~8)  in preparation to retr
 Deep value iteration allows to compute $\bm{\Theta}$, and hence $\mathbb{P}_{\bm{\Theta}}$ for all state-interaction pairs. As defined in Equation~\ref{Eq:Policy}, the policy then can be defined using $\mathbb{P}$. For this, as we are dealing with real numbers, the same trace would be selected all the time by engine, which is running that policy. As such, other correct traces will not be reachable in the obtained system. For instance, given a global state, a policy would select the interaction leading to a state with maximum performance measure value, even though there exist other interactions leading to other correct traces. To remedy this, we define a fair policy that is allowed to deviate from the optimal policy with a degree of fairness.  The fair policy is defined as follows. 
 \begin{equation}
 \label{Eq:Policy-fair}
-\pi(\bm{q}) = \{a \mid q \goesto[a] q' \wedge \mathbb{P}_{\bm{\Theta}}(q, a) \geq \mathtt{max_q} - \mathtt{fair}\},
+\pi(\bm{q}) = \{a \mid \bm{q} \goesto[a] \bm{q'} \wedge \mathbb{P}_{\bm{\Theta}}(\bm{q}, a) \geq \mathtt{max_{\bm{q}}} - \mathtt{fair}\},
 \end{equation}
-where, $\mathtt{max_q} = \max_{a \in {\cal A}_q}\mathbb{P}_{\bm{\Theta}}(q, a)$.  $\mathtt{fair}$ is the tolerance against the optimal policy. The value of $\mathtt{fair}$ depends on (1) the value of good and bad rewards, and (2) the  horizon used in deep value iteration algorithm. Clearly, the more fairness the more deviation from the optimal policy we get. 
+where, $\mathtt{max_{\bm{q}}} = \max_{a \in {\cal A}_{\bm{q}}}\mathbb{P}_{\bm{\Theta}}(\bm{q}, a)$.  $\mathtt{fair}$ is the tolerance against the optimal policy. The value of $\mathtt{fair}$ depends on (1) the value of good and bad rewards, and (2) the  horizon used in deep value iteration algorithm. Clearly, the more fairness the more deviation from the optimal policy we get. 
