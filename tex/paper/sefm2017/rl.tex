@@ -71,13 +71,13 @@ Contrary to state-space-exploration algorithms, our method remedies the need to 
 \STATE \textbf{Input:} Initialization of $V( \bm{q})$ for all $ \bm{q}\in Q$, precision parameter $\epsilon$
 \STATE $\mathtt{error = \epsilon + 1} $
 \WHILE {$\mathtt{k} < \mathtt{bound} \, \wedge \, \mathtt{error} \geq \epsilon$}
-	\FOR {\textbf{each} $ \bm{q} \in Q$ }
-		\FOR {\textbf{each} $a \in \mathcal{A}_a$}
+	\FOR {\textbf{each} $\bm{q} \in Q$ }
+		\FOR {\textbf{each} $a \in \mathcal{A}_{\bm{q}}$}
 			\STATE $\mathtt{tmp} = \mathcal{R}( \bm{q^{\prime}}) + \gamma V( \bm{q^{\prime}})$, where $ \bm{q} \goesto[a] \bm{q^{\prime}}$
 		\STATE $\mathtt{error} =\max(\mathtt{error}\, , \, |\mathtt{tmp} - \mathbb{P}( \bm{q}, a)|)$
 			\STATE $\mathbb{P}( \bm{q}, a) = \mathtt{tmp}$
 		\ENDFOR
-	\STATE $V( \bm{q}) =  \max_{a \in {\cal A}} \mathbb{P}( \bm{q}, a)$
+	\STATE $V( \bm{q}) =  \max_{a \in {\cal A_{\bm{q}}}} \mathbb{P}(\bm{q}, a)$
 	\ENDFOR
 	\STATE $\mathtt{k = k + 1}$
 \ENDWHILE
@@ -111,15 +111,15 @@ In Algorithm~\ref{Algo:VI2}, we present a solution for approximating the perform
 \STATE Set initial state to $ \bm{q_{0}}$
 \FOR  {$t=1$ \ \ \text{to} \ \ T}
 \STATE With some probability $\epsilon$ select a random interaction $a_{t}$
-\STATE With a probability $1 - \epsilon$ select interaction $a_{t} = \arg\max_{a\in {\cal A}(q_t)}\mathbb{P}_{\bm{\Theta}}( \bm{q_t},a)$
+\STATE With a probability $1 - \epsilon$ select interaction $a_{t} = \arg\max_{a\in {\cal A}_{\bm{q_t}}}\mathbb{P}_{\bm{\Theta}}( \bm{q_t},a)$
 \STATE Execute interaction $a_{t}$ and observe reward, $r_{t+1}$, and successor state $ \bm{q_{t+1}}$
 \STATE Store transition $\left( \bm{q_{t}}, a_{t}, r_{t+1},  \bm{q_{t+1}}\right)$ on replay memory $\mathcal{D}$
 \STATE Sample random minibatch of transitions $\left( \bm{q_{j}}, a_{j}, r_{j+1},  \bm{q_{j+1}}\right)$ of size $N_{2}$ from $\mathcal{D}$ and create output label by 
 \begin{displaymath}
    y_{j} = \left\{
      \begin{array}{lr}
-       r_{j+1} & \text{if $q_{j+1}$ is a bad state}\\
-        r_{j+1} + \gamma \max_{a \in {\cal A}_{q_{j+1}}} \mathbb{P}_{\bm{\Theta^{-}}}(q_{j+1},a)  & \text{if $q_{j+1}$ is a correct state}
+       r_{j+1} & \text{if $\bm{q_{j+1}}$ is a bad state}\\
+        r_{j+1} + \gamma \max_{a \in {\cal A}_{\bm{q_{j+1}}}} \mathbb{P}_{\bm{\Theta^{-}}}(\bm{q_{j+1}},a)  & \text{\quad if $\bm{q_{j+1}}$ is a correct state}
      \end{array}
    \right.
 \end{displaymath} 
@@ -135,7 +135,7 @@ In particular, we use an NN that takes a BIP state as input, encoded as a vector
 
 On a high-level, the algorithm operates in two loops. The first is episode-based, while the second runs for a horizon $T$. At each episode, the goal is to collect relevant labeled data, encoding a trace of the system, to improve the approximation -- encoded through the NN -- of the performance measure, as summarized in lines 5-10 in the algorithm. 
 
-A trace is selected as follows. First, the algorithm selects an allowed interaction either randomly with a probability $\epsilon$ (i.e., exploration) or by exploiting the current estimate of the performance measure. In other words, given the current state $ \bm{q}$, forward propagation is first executed to produce  $\mathbb{P}_{\bm{\Theta}}( \bm{q},a_i)$. As such, the enabled interaction that has a maximum performance measure is selected, i.e., $\arg\max_{a\in {\cal A}_q} \mathbb{P}_{\bm{\Theta}}( \bm{q},a)$. 
+A trace is selected as follows. First, the algorithm selects an allowed interaction either randomly with a probability $\epsilon$ (i.e., exploration) or by exploiting the current estimate of the performance measure. In other words, given the current state $ \bm{q}$, forward propagation is first executed to produce  $\mathbb{P}_{\bm{\Theta}}( \bm{q},a_i)$. As such, the enabled interaction that has a maximum performance measure is selected, i.e., $\arg\max_{a\in {\cal A}_{\bm{q}}} \mathbb{P}_{\bm{\Theta}}(\bm{q},a)$. 
 Next, the engine executes the interaction and stores both the dynamical transition and its usefulness (i.e., reward) in a replay memory data set, $\mathcal{D}$. 
 
 To ensure that the learning algorithm takes learning memory into account, we sample a set of size $N_{2}$, with the help of alternative NN (with weight matrices $\bm{\Theta}^{-}$). This is due to the fact that the backward propagation (used for training) discussed previously operates successfully for relatively ``shallow'' networks, i.e., networks with low number of hidden layers. As the number of these layers increases (i.e., deep NN), propagating gradients backward becomes increasingly challenging leading to convergence to local minima. To circumvent the above problems, we adapt a solution by which gradient updates are not performed at each iteration of the training algorithm. In particular, we assume additional knowledge modelled via an alternative NN that encodes previously experienced traces. This NN is used as a reference that we update after a preset number of iterations. As such, old knowledge encountered by the agent is not hindered by novel observations. 
