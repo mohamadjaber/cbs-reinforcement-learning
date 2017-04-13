@@ -57,7 +57,7 @@ A {\em composite \linebreak component} (or simply {\em component}) is defined by
     \forall i\not\in I: q_i = q'_i\\
 }
 {
-    (q_1,\dots,q_n) \goesto[a] (q'_1,\dots,q'_n)
+    \bm{q} = (q_1,\dots,q_n) \goesto[a] \bm{q'} = (q'_1,\dots,q'_n)
 }
 \end{mathpar}
 \end{definition}
@@ -82,11 +82,11 @@ Notice that several distinct interactions can be enabled at the same time, thus 
 \begin{mathpar}
 \inferrule*
 	{
-      q \goesto[a] q' \and
-      \neg\big(\exists a'\in \Gamma,\exists q''\in Q: a \prec a' \wedge q \goesto[a'] q'' \big)
+      \bm{q} \goesto[a] \bm{q'} \and
+      \neg\big(\exists a'\in \Gamma,\exists \bm{q''}\in Q: a \prec a' \wedge \bm{q} \goesto[a'] \bm{q''} \big)
     }
     {
-      q \goesto[a]_\prio q'
+      \bm{q} \goesto[a]_\prio \bm{q'}
     }
 \end{mathpar}
 \end{definition}
@@ -115,24 +115,18 @@ can be simultaneously executed.
 
 \begin{definition}[BIP system]
 \label{def:bipsystem}
-A BIP system is a tuple $(B, q_0)$, where $q_0$ is the initial state with $q_0 \in \bigotimes_{i=1}^n Q_i$ being the tuple of initial states of atomic components.
+A BIP system is a tuple $(B,  \bm{q_0})$, where $ \bm{q_0}$ is the initial state with $ \bm{q_0} \in \bigotimes_{i=1}^n Q_i$ being the tuple of initial states of atomic components.
 \end{definition}
 
 
-For the rest of the paper, we fix an arbitrary BIP-system $(B, q_0)$, where  $B = \prio\big(\Gamma(\{B_1, \ldots, B_n\})\big)$ with semantics $C = (Q, \Gamma, \goesto)$.
+For the rest of the paper, we fix an arbitrary BIP-system $(B,  \bm{q_0})$, where  $B = \prio\big(\Gamma(\{B_1, \ldots, B_n\})\big)$ with semantics $C = (Q, \Gamma, \goesto)$.
 
 We abstract the execution of a BIP system as a trace.
 %
 \begin{definition}[BIP trace]
 \label{def:trace-global}
-A BIP trace $\rho = (q_0 \cdot a_0 \cdot q_1 \cdot a_1 \cdots q_{i-1} \cdot a_{i-1} \cdot q_i)$ is an alternating sequence of states of $Q$ and interactions in $\Gamma$; where $q_k \xrightarrow{a_k} q_{k+1} \in \rightarrow$, for $k \in [0, i-1]$.
+A BIP trace $\rho = ( \bm{q_0} \cdot a_0 \cdot  \bm{q_1} \cdot a_1 \cdots  \bm{q_{i-1}} \cdot a_{i-1} \cdot  \bm{q_i})$ is an alternating sequence of states of $Q$ and interactions in $\Gamma$; where $q_k \xrightarrow{a_k}  \bm{q_{k+1}} \in \rightarrow$, for $k \in [0, i-1]$.
 \end{definition}
 
-Given a trace $\rho = (q_0 \cdot a_0 \cdot q_1 \cdot a_1 \cdots q_{i-1} \cdot a_{i-1} \cdot q_i)$, 
-$\rho^q_i$ (resp. $\rho^a_i$) denotes the $i^\text{th}$ state (resp. interaction) of the trace, i.e., $q_i$ (resp. $a_i$). Also, $\bm{\rho}(C)$ denotes the set of all the traces of an LTS $C$. 
-
-
-
-
-
-
+Given a trace $\rho = ( \bm{q_0} \cdot a_0 \cdot  \bm{q_1} \cdot a_1 \cdots  \bm{q_{i-1}} \cdot a_{i-1} \cdot  \bm{q_i})$, 
+$\rho^{ \bm{q_i}}$ (resp. $\rho^a_i$) denotes the $i^\text{th}$ state (resp. interaction) of the trace, i.e., $ \bm{q_i}$ (resp. $a_i$). Also, $\bm{\rho}(C)$ denotes the set of all the traces of an LTS $C$. 
