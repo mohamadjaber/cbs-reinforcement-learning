@@ -96,18 +96,13 @@ An interaction $a$ is enabled in $\pi(C)$ whenever $a$ is enabled in $C$ and $a$
 
 BIP provides both centralized and distributed implementations. In the centralized implementation,
 a centralized engine guarantees to execute only one interaction at a time, and thus conforms to the operational semantics of the BIP.  The main loop of the BIP engine consists of the following steps:
-\begin{enumerate}
-\item Each atomic component sends to the engine its current
-location.
-\item The engine enumerates the list of interactions in the system,
+(1) Each atomic component sends to the engine its current
+location; (2) The engine enumerates the list of interactions in the system,
 selects the enabled ones based on the current location
 of the atomic components and eliminates the ones
-with low priority.
-\item The engine non-deterministically selects an interaction
-out of the enabled interactions.
-\item Finally, the engine notifies the corresponding components
+with low priority; (3) The engine non-deterministically selects an interaction
+out of the enabled interactions; (4) Finally, the engine notifies the corresponding components
 and schedules their transitions for execution.
-\end{enumerate}
 
 Alternatively, BIP allows the generation of distributed
 implementations~\cite{bip-distributed} where non-conflicting interactions
