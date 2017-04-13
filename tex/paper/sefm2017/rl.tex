@@ -148,6 +148,6 @@ Deep value iteration allows to compute $\bm{\Theta}$, and hence $\mathbb{P}_{\bm
 \vspace*{-0.2cm}
 \begin{equation}
 \label{Eq:Policy-fair}
-\pi(\bm{q}) = \{a \mid \bm{q} \goesto[a] \bm{q'} \wedge \mathbb{P}_{\bm{\Theta}}(\bm{q}, a) \geq \mathtt{max_{\bm{q}}} - \mathtt{fair}\},
+\pi(\bm{q}) = \{a \mid a \in {\cal A}_{\bm{q}} \wedge \mathbb{P}_{\bm{\Theta}}(\bm{q}, a) \geq \mathtt{max_{\bm{q}}} - \mathtt{fair}\},
 \end{equation}
 where, $\mathtt{max_{\bm{q}}} = \max_{a \in {\cal A}_{\bm{q}}}\mathbb{P}_{\bm{\Theta}}(\bm{q}, a)$.  $\mathtt{fair}$ is the tolerance against the optimal policy. The value of $\mathtt{fair}$ depends on (1) the value of good and bad rewards, and (2) the  horizon used in deep value iteration algorithm. Clearly, the more fairness the more deviation from the optimal policy we get. 
