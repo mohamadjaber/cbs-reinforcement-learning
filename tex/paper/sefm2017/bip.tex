@@ -34,21 +34,23 @@ and a transfer function to each of them. Both the guard and the function are def
 the variables that are bound to the ports of the interaction. The guard must be
 true to allow the interaction. When the interaction takes place, the
 associated transfer function is called and modifies the variables.
-
+%
 \begin{figure}[t]
   \begin{center}
     \mbox{
       \subfigure[Philosopher $P$ and fork $F$ atomic components.]{\label{fig:philo-fork}\scalebox{0.35}{\input{figs/philAndFork.pdf_t}}} \quad
       \subfigure[Dining philosophers composite component with four philosophers.]{\label{fig:diningbip}\scalebox{0.3}{\input{figs/diningbip.pdf_t}}}
       }
+      \vspace*{-0.5cm}
     \caption{Dining philosophers.}
+          \vspace*{-0.5cm}
     \label{fig:diningSpectrum}
   \end{center}
 \end{figure}
-
+%
 \begin{definition}[Composite Component]\label{def.bip.composition}
-A {\em composite \linebreak component} (or simply {\em component}) is defined by a composition operator parameterized by a set of interactions $\Gamma \subseteq 2^P$.  $B \stackrel{\mathit{def}}{=} \Gamma(B_1,\dots,B_n)$, is a transition system $(Q,\Gamma, \goesto)$, where $Q=\bigotimes_{i=1}^n Q_i$ and $\goesto$ is the least set of transitions satisfying the rule
-
+A {\em composite \linebreak component} (or simply {\em component}) is defined by a composition operator parameterized by a set of interactions $\Gamma \subseteq 2^P$.  $B \stackrel{\mathit{def}}{=} \Gamma(B_1,\dots,B_n)$, is a transition system $(Q,\Gamma, \goesto)$, where $Q=\bigotimes_{i=1}^n Q_i$ and $\goesto$ is the least set of transitions satisfying the following rule:
+      \vspace*{-0.35cm}
 \begin{mathpar}
 \inferrule
 {
@@ -79,6 +81,7 @@ Notice that several distinct interactions can be enabled at the same time, thus 
   Let $C = (Q,\Gamma,\goesto)$ be the behavior of the composite component $\Gamma(\{B_1, \ldots, B_n\})$.  A {\em priority model} $\prio$ is a
   strict partial order on the set of interactions $\Gamma$. Given a priority model $\prio$, we
   abbreviate $(a,a')\in \prio$ by $a \prec a'$. Adding the priority model $\prio$ over $\Gamma(\{B_1, \ldots, B_n\})$ defines a new composite component $B = \prio\big(\Gamma(\{B_1, \ldots, B_n\})\big)$ noted $\pi(C)$ and whose behavior is defined by $(Q, \Gamma, \goesto_\prio)$, where $\goesto_\prio$ is the least set of transitions satisfying the following rule:
+        \vspace*{-0.5cm}
 \begin{mathpar}
 \inferrule*
 	{
@@ -89,6 +92,7 @@ Notice that several distinct interactions can be enabled at the same time, thus 
       \bm{q} \goesto[a]_\prio \bm{q'}
     }
 \end{mathpar}
+      \vspace*{-1cm}
 \end{definition}
 %
 An interaction $a$ is enabled in $\pi(C)$ whenever $a$ is enabled in $C$ and $a$ is maximal according to $\pi$ among the active interactions in $C$.

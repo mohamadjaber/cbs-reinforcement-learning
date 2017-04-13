@@ -2,6 +2,7 @@
 \label{sec:rerl}
 We frame the problem of run time enforcement as a sequential decision making (SDM) one, by which the BIP engine has to be guided to select the set of interactions over an extended execution traces that maximize a cumulative return.  We formalize SDMs as the following five-tuple $\left \langle Q, \tilde{Q},\Gamma, \rightarrow, {R}_{+}, {R}_{-}, \gamma \right\rangle$.  Here, $Q$ represents the set of all possible states, $\tilde{Q} \subseteq Q$ the set of ``bad'' states that need to be avoided, $\Gamma$ the set of allowed interactions, and $\rightarrow$ represents the transition model. $R_{+}$ and ${R}_{-}$ are two positive and negative scalar parameters, which allow us to define the reward function quantifying the selection of the engine.
 Clearly, the engine gets rewarded when in a state $ \bm{q} \notin \tilde{Q}$, while penalized if $ \bm{q} \in \tilde{Q}$. Using this intuition, one can define a reward function of the states written as: 
+\vspace*{-0.4cm}
 %
 \begin{displaymath}
    \mathcal{R}( \bm{q}) = \left\{
@@ -10,12 +11,14 @@ Clearly, the engine gets rewarded when in a state $ \bm{q} \notin \tilde{Q}$, wh
        R_{-} & :  \bm{q} \in \tilde{Q}.
      \end{array}
    \right.
+   \vspace*{-0.4cm}
 \end{displaymath} 
 Given the above reward definition, we finally introduce $\gamma \in [0,1)$ to denote the discount factor specifying the degree to which rewards are discounted over time as the engine interacts with each of the components. 
 
 At each time step $t$, the engine observes a state $ \bm{q_{t}} \in Q$ and must choose an interaction $a_{t} \in \mathcal{A}_{ \bm{q_t}} \subseteq \Gamma$, transitioning it to a new state $ \bm{q_{t}} \goesto[a_{t}] \bm{q_{t+1}}$ as given by $\rightarrow$ and yielding a reward $\mathcal{R}\left( \bm{q_{t+1}}\right)$, where $\mathcal{A}_{q_t}$ denotes all enabled interactions from state  $q_{t}$, i.e., $\mathcal{A}_{ \bm{q_t}} = \{a \mid \exists  \bm{q'}:  \bm{q_{t}} \goesto[a]  \bm{q'} \in \rightarrow\}$. 
 We filter the choice of the allowed interactions, i.e., $\mathcal{A}_{ \bm{q_t}}$, at each time-step by an interaction-selection rule, which we refer to as the policy $\pi$. We extend the sequential decision making literature by defining policies that map between the set of states, $Q$, and any combination of the allowed interactions, i.e., $\pi: Q \rightarrow 2^{\Gamma}$, where for all $ \bm{q} \in Q: \pi( \bm{q}) \subseteq\mathcal{A}_{ \bm{q}}$.
 Consequently, the new behavior of the composite component, guided by the policy $\pi$, is defined by $C_\pi = (Q, \Gamma, \goesto_\pi)$, where $\goesto_\pi$ is the least set of transitions satisfying the following rule:
+\vspace*{-0.4cm}
 \begin{mathpar}
 \inferrule*
 	{
@@ -25,6 +28,7 @@ Consequently, the new behavior of the composite component, guided by the policy 
     {
        \bm{q} \goesto[a]_\pi  \bm{q'}
     }
+    \vspace*{-0.4cm}
 \end{mathpar}
 %
 The goal now is to find an optimal policy $\pi^{\star}$ that maximizes the \emph{expected} total sum of the rewards it receives in the long run, while starting from an initial state $ \bm{q_{0}} \in Q$. We will evaluate the performance of a policy $\pi$ by:
@@ -43,9 +47,11 @@ $\pi^{\star} \equiv \max_{\pi} \texttt{eval}({\pi}| \bm{q_{0}})$.
 %$.
 
 Finally, being in a state $ \bm{q}$, we quantify the performance of the state-interaction pairs using the function $\mathbb{P}: Q \times \Gamma \rightarrow \mathbb{R}$. Given such a performance measure $\mathbb{P}$, the engine can follow the policy $\pi$, defined as follows: 
+\vspace*{-0.3cm}
 \begin{equation}
 \label{Eq:Policy}
 \pi( \bm{q}) = \arg\max_{a} \{\mathbb{P}( \bm{q},a) \mid a \in {\cal A}( \bm{q})\}.
+\vspace*{-0.3cm}
 \end{equation}
 In other words, given a state $ \bm{q}$, policy $\pi$ selects the enabled interaction that has maximum evaluation from that state. Clearly, an interaction must have a maximum evaluation when it is guaranteed that its execution will not lead to a bad state. 
 
@@ -53,8 +59,12 @@ In what comes next, we define two methods capable of computing such performance 
 
 \subsection{Finite State-Space - Value Iteration}
 Due to the number of possible policies at each time step, it is a challenge to compute the value for all possible options. Instead, we propose the application of a dynamic programming algorithm known as value iteration, summarized in Algorithm~\ref{Algo:VI} to find the optimal policy efficiently. 
-\vspace*{-0.4cm}
-\begin{algorithm}[h!]
+
+In essence, Algorithm~\ref{Algo:VI} is iteratively updating the performance measures of all the state-interaction pairs (until either (1) we reach a predefined bound, i.e., $\mathtt{bound}$; or (2) the values are within a predefined $\epsilon$),  by choosing these interactions that maximize the instantaneous rewards, as well as the future information encoded through $V(q^{\prime})$. 
+%Defining the operator $$\mathcal{T}^{\pi} = \max_{a} \left[\mathcal{R}(q) + \gamma \sum_{q \goesto[a]q^{\prime}}V_{k}(q^{\prime})\right],$$ one can easily see that the optimal value function is essentially  fixed-point of $V_{k+1} = \mathcal{T}^{\pi}  V_{k}$. 
+Contrary to state-space-exploration algorithms, our method remedies the need to construct the full labeled transition system as we only require the knowledge of the successor state from a given state-interaction pair with no regard to its reachability properties. Notice also that though line~4 in Algorithm~\ref{Algo:VI} requires a loop over all states computational time can be highly reduced by following a sampling-based procedure, where fractions of the state-space are considered. Notice, however, the successfulness of the attained policy comes hand-in-hand with the fraction of the state space sampled. In other words, the higher the fraction, the closer to optimality is the policy and vice versa. 
+\vspace*{-0.5cm}
+\begin{algorithm}[h]
 \caption{Value Iteration Finite State Space}
 \label{Algo:VI}
 \begin{algorithmic}[1]
@@ -73,11 +83,7 @@ Due to the number of possible policies at each time step, it is a challenge to c
 \ENDWHILE
 \end{algorithmic}
 \end{algorithm}
-
-In essence, Algorithm~\ref{Algo:VI} is iteratively updating the performance measures of all the state-interaction pairs (until either (1) we reach a predefined bound, i.e., $\mathtt{bound}$; or (2) the values are within a predefined $\epsilon$),  by choosing these interactions that maximize the instantaneous rewards, as well as the future information encoded through $V(q^{\prime})$. 
-%Defining the operator $$\mathcal{T}^{\pi} = \max_{a} \left[\mathcal{R}(q) + \gamma \sum_{q \goesto[a]q^{\prime}}V_{k}(q^{\prime})\right],$$ one can easily see that the optimal value function is essentially  fixed-point of $V_{k+1} = \mathcal{T}^{\pi}  V_{k}$. 
-Contrary to state-space-exploration algorithms, our method remedies the need to construct the full labeled transition system as we only require the knowledge of the successor state from a given state-interaction pair with no regard to its reachability properties. Notice also that though line~4 in Algorithm~\ref{Algo:VI} requires a loop over all states computational time can be highly reduced by following a sampling-based procedure, where fractions of the state-space are considered. Notice, however, the successfulness of the attained policy comes hand-in-hand with the fraction of the state space sampled. In other words, the higher the fraction, the closer to optimality is the policy and vice versa. 
-
+\vspace*{-0.8cm}
 
 \subsection{Infinite State-Space - Deep Value Iteration}
 The methodology detailed so-far suffers when considering infinite state-spaces as it requires exact representation of performance measures and policies. In general, an exact representation can only be achieved by storing distinct estimates of the return for every state-interaction pair. When states are continuous, such exact representations are no longer possible and performance measures need to be represented approximately. 
@@ -95,17 +101,7 @@ Unfortunately, the direct application of NNs in our context is challenging since
 \subsection{Deep Value Iteration -- Infinite State Space}
 In Algorithm~\ref{Algo:VI2}, we present a solution for approximating the performance measures $\mathbb{P}_{\bm{\Theta}}$\footnote{Note that $\mathbb{P}$ is indexed by ${\bm{\Theta}}$ as its output depends on ${\bm{\Theta}}$.} of all the state-interaction pairs in case of infinite state-space.
 %
-In particular, we use an NN that takes a BIP state as input, encoded as a vector of size $n$, where $n$ is the number of atomic components (i.e., the $i^{\text{th}}$ input encodes the local state of atomic component $B_i$). The output of the NN encodes the performance measures $\mathbb{P}$ for each interaction. As such, the $i^{\text{th}}$ output of the NN encodes the safety of executing interaction $a_i$.  
-
-On a high-level, the algorithm operates in two loops. The first is episode-based, while the second runs for a horizon $T$. At each episode, the goal is to collect relevant labeled data, encoding a trace of the system, to improve the approximation -- encoded through the NN -- of the performance measure, as summarized in lines 5-10 in the algorithm. 
-
-A trace is selected as follows. First, the algorithm selects an allowed interaction either randomly with a probability $\epsilon$ (i.e., exploration) or by exploiting the current estimate of the performance measure. In other words, given the current state $ \bm{q}$, forward propagation is first executed to produce  $\mathbb{P}_{\bm{\Theta}}( \bm{q},a_i)$. As such, the enabled interaction that has a maximum performance measure is selected, i.e., $\arg\max_{a\in {\cal A}_q} \mathbb{P}_{\bm{\Theta}}( \bm{q},a)$. 
-Next, the engine executes the interaction and stores both the dynamical transition and its usefulness (i.e., reward) in a replay memory data set, $\mathcal{D}$. 
-
-To ensure that the learning algorithm takes learning memory into account, we sample a set of size $N_{2}$, with the help of alternative NN (with weight matrices $\bm{\Theta}^{-}$). This is due to the fact that the backward propagation (used for training) discussed previously operates successfully for relatively ``shallow'' networks, i.e., networks with low number of hidden layers. As the number of these layers increases (i.e., deep NN), propagating gradients backward becomes increasingly challenging leading to convergence to local minima. To circumvent the above problems, we adapt a solution by which gradient updates are not performed at each iteration of the training algorithm. In particular, we assume additional knowledge modelled via an alternative NN that encodes previously experienced traces. This NN is used as a reference that we update after a preset number of iterations. As such, old knowledge encountered by the agent is not hindered by novel observations. 
-
-Consequently, we form a data set $\mathcal{D}$  (line~8)  in preparation to retrain the original NN, while taking the history of traces into account. The process by which we generate these labels is in essence similar to finite value iterator. The main difference, however, is the usage of sample-based transitions to train a NN.  
-\vspace*{-1cm}
+\vspace*{-0.3cm}
 \begin{algorithm}[h!]
 \caption{Deep-Value Iteration Infinite State Space}
 \label{Algo:VI2}
@@ -133,7 +129,19 @@ Consequently, we form a data set $\mathcal{D}$  (line~8)  in preparation to retr
 \ENDFOR
 \end{algorithmic}
 \end{algorithm}
-\vspace*{-1cm}
+\vspace*{-0.7cm}
+
+In particular, we use an NN that takes a BIP state as input, encoded as a vector of size $n$, where $n$ is the number of atomic components (i.e., the $i^{\text{th}}$ input encodes the local state of atomic component $B_i$). The output of the NN encodes the performance measures $\mathbb{P}$ for each interaction. As such, the $i^{\text{th}}$ output of the NN encodes the safety of executing interaction $a_i$.  
+
+On a high-level, the algorithm operates in two loops. The first is episode-based, while the second runs for a horizon $T$. At each episode, the goal is to collect relevant labeled data, encoding a trace of the system, to improve the approximation -- encoded through the NN -- of the performance measure, as summarized in lines 5-10 in the algorithm. 
+
+A trace is selected as follows. First, the algorithm selects an allowed interaction either randomly with a probability $\epsilon$ (i.e., exploration) or by exploiting the current estimate of the performance measure. In other words, given the current state $ \bm{q}$, forward propagation is first executed to produce  $\mathbb{P}_{\bm{\Theta}}( \bm{q},a_i)$. As such, the enabled interaction that has a maximum performance measure is selected, i.e., $\arg\max_{a\in {\cal A}_q} \mathbb{P}_{\bm{\Theta}}( \bm{q},a)$. 
+Next, the engine executes the interaction and stores both the dynamical transition and its usefulness (i.e., reward) in a replay memory data set, $\mathcal{D}$. 
+
+To ensure that the learning algorithm takes learning memory into account, we sample a set of size $N_{2}$, with the help of alternative NN (with weight matrices $\bm{\Theta}^{-}$). This is due to the fact that the backward propagation (used for training) discussed previously operates successfully for relatively ``shallow'' networks, i.e., networks with low number of hidden layers. As the number of these layers increases (i.e., deep NN), propagating gradients backward becomes increasingly challenging leading to convergence to local minima. To circumvent the above problems, we adapt a solution by which gradient updates are not performed at each iteration of the training algorithm. In particular, we assume additional knowledge modelled via an alternative NN that encodes previously experienced traces. This NN is used as a reference that we update after a preset number of iterations. As such, old knowledge encountered by the agent is not hindered by novel observations. 
+
+Consequently, we form a data set $\mathcal{D}$  (line~8)  in preparation to retrain the original NN, while taking the history of traces into account. The process by which we generate these labels is in essence similar to finite value iterator. The main difference, however, is the usage of sample-based transitions to train a NN.  
+
 
 \subsection{Fairness}
 Deep value iteration allows to compute $\bm{\Theta}$, and hence $\mathbb{P}_{\bm{\Theta}}$ for all state-interaction pairs. As defined in Equation~\ref{Eq:Policy}, the policy then can be defined using $\mathbb{P}$. For this, as we are dealing with real numbers, the same trace would be selected all the time by engine, which is running that policy. As such, other correct traces will not be reachable in the obtained system. For instance, given a global state, a policy would select the interaction leading to a state with maximum performance measure value, even though there exist other interactions leading to other correct traces. To remedy this, we define a fair policy that is allowed to deviate from the optimal policy with a degree of fairness.  The fair policy is defined as follows. 
