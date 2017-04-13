@@ -77,7 +77,7 @@ Contrary to state-space-exploration algorithms, our method remedies the need to 
 		\STATE $\mathtt{error} =\max(\mathtt{error}\, , \, |\mathtt{tmp} - \mathbb{P}( \bm{q}, a)|)$
 			\STATE $\mathbb{P}( \bm{q}, a) = \mathtt{tmp}$
 		\ENDFOR
-	\STATE $V( \bm{q}) =  \max_{a \in {\cal A_{\bm{q}}}} \mathbb{P}(\bm{q}, a)$
+	\STATE $V( \bm{q}) =  \max_{a \in {\cal A}_{\bm{q}}} \mathbb{P}(\bm{q}, a)$
 	\ENDFOR
 	\STATE $\mathtt{k = k + 1}$
 \ENDWHILE
