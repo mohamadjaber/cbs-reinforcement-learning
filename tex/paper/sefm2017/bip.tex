@@ -1,0 +1,138 @@
+\section{Behavior, Interaction and Priority (BIP)}
+\label{sec:bip}
+We recall the necessary concepts of the BIP framework~\cite{bip2}.
+BIP allows to construct systems by superposing three layers of design: Behavior, Interaction, and Priority.
+The \emph{behavior} layer consists of a set of atomic components represented by transition systems. 
+The \emph{interaction} layer provides the collaboration between components. 
+Interactions are described using sets of ports. 
+The \emph{priority} layer is used to specify scheduling policies applied to the interaction layer, given by a strict partial order on interactions.
+
+\subsection{Atomic Components}
+We define \emph{atomic components} as transition systems with a set of ports labeling individual transitions. These ports are used for communication between different components.
+
+\begin{definition}[Atomic Component]
+An  {\em atomic component} $B$ is a labeled transition system represented by a triple $(Q,P,\goesto)$ where $Q$ is a set of {\em states}, $P$ is a set of {\em communication ports}, $\goesto\, \subseteq Q\times P\times Q$ is a set of {\em possible transitions}, each labeled by some port.
+\end{definition}
+
+For any pair of states $q,q'\in Q$ and a port $p\in P$, we write $q \goesto[p] q'$, iff $(q,p,q')\in\,\goesto$. When the communication port is irrelevant, we simply write $q \goesto q'$. Similarly, $q \goesto[p]$ means that there exists $q'\in Q$ such that $q \goesto[p] q'$. In this case, we say that $p$ is \emph{enabled} in state $q$.
+
+In practice, atomic components are extended with variables. Each variable may be
+bound to a port and modified through interactions involving this port. We also
+associate a guard and an update function (i.e., action) to each transition. A guard is a
+predicate on variables that must be true to allow the execution of the
+transition. An update function is a local computation triggered by the
+transition that modifies the variables. 
+
+Figure \ref{fig:philo-fork} shows an atomic component $P$ that corresponds to the behavior of a philosopher in the dining-philosopher problem, where $Q = \{e,h\}$ denotes eating and hungry, $P = \{\release, \get\}$ denotes releasing and getting of forks, and $\goesto = \{e \goesto[\release] h, h \goesto[\get] e\}$.
+
+
+\subsection{Composition Component}
+For a given system built from a set of $n$ atomic components $\{B_i = (Q_i, P_i, \goesto_i)\}_{i=1}^n$, we assume that their respective sets of ports are pairwise disjoint, i.e., for any two $i\not= j$ from $\set{1..n}$, we have $P_i \cap P_j = \emptyset$. We can therefore define the set $P = \bigcup_{i=1}^n P_i$ of all ports in the system. An {\em interaction} is a set $a \subseteq P$ of ports. When we write $a = \{p_i\}_{i\in I}$, we suppose that for $i \in I$, $p_i \in P_i$, where $I \subseteq \set{1..n}$.
+
+Similar to atomic components, BIP extends interactions by associating a guard
+and a transfer function to each of them. Both the guard and the function are defined over
+the variables that are bound to the ports of the interaction. The guard must be
+true to allow the interaction. When the interaction takes place, the
+associated transfer function is called and modifies the variables.
+
+\begin{figure}[t]
+  \begin{center}
+    \mbox{
+      \subfigure[Philosopher $P$ and fork $F$ atomic components.]{\label{fig:philo-fork}\scalebox{0.35}{\input{figs/philAndFork.pdf_t}}} \quad
+      \subfigure[Dining philosophers composite component with four philosophers.]{\label{fig:diningbip}\scalebox{0.3}{\input{figs/diningbip.pdf_t}}}
+      }
+    \caption{Dining philosophers.}
+    \label{fig:diningSpectrum}
+  \end{center}
+\end{figure}
+
+\begin{definition}[Composite Component]\label{def.bip.composition}
+A {\em composite \linebreak component} (or simply {\em component}) is defined by a composition operator parameterized by a set of interactions $\Gamma \subseteq 2^P$.  $B \stackrel{\mathit{def}}{=} \Gamma(B_1,\dots,B_n)$, is a transition system $(Q,\Gamma, \goesto)$, where $Q=\bigotimes_{i=1}^n Q_i$ and $\goesto$ is the least set of transitions satisfying the rule
+
+\begin{mathpar}
+\inferrule
+{
+    a = \{p_i\}_{i\in I}\in \Gamma\\
+    \forall i\in I: q_i \goesto[p_i]_i q'_i\\
+    \forall i\not\in I: q_i = q'_i\\
+}
+{
+    (q_1,\dots,q_n) \goesto[a] (q'_1,\dots,q'_n)
+}
+\end{mathpar}
+\end{definition}
+
+The inference rule says that a composite component $B=\Gamma(B_1,\dots,B_n)$ can
+execute an interaction $a\in \Gamma$, iff for each port $p_i\in a$, the
+corresponding atomic component $B_i$ can execute a transition labeled with
+$p_i$; the states of components that do not participate in the interaction stay
+unchanged. 
+
+Figure~\ref{fig:diningbip} illustrates a composite component $\Gamma(P_0, P_1, P_2, P_3, F_0, F_1, F_2, F_3)$, where each $P_i$ (resp. $F_i$)  is identical to component $P$ (resp. $F$) in Figure
+\ref{fig:philo-fork} and $\Gamma = \Gamma_\get \, \cup \, \Gamma_\release$, where $\Gamma_\get = \bigcup_{i=0}^{3} \{P_i.\get, F_i.\use_l, F_{(i+1) \% 4}.use_r\}$ and $\Gamma_\release = \bigcup_{i=0}^{3}\{P_i.\release, F_i.\free_l, F_{(i+1)\%4}.free_r\}$. 
+
+
+Notice that several distinct interactions can be enabled at the same time, thus introducing non-determinism in the product behavior. One can add priorities to reduce non-determinism. In this case, one of the interactions with the highest priority is chosen non-deterministically.
+
+\begin{definition}[Priority]
+  \label{defn:priority}
+  Let $C = (Q,\Gamma,\goesto)$ be the behavior of the composite component $\Gamma(\{B_1, \ldots, B_n\})$.  A {\em priority model} $\prio$ is a
+  strict partial order on the set of interactions $\Gamma$. Given a priority model $\prio$, we
+  abbreviate $(a,a')\in \prio$ by $a \prec a'$. Adding the priority model $\prio$ over $\Gamma(\{B_1, \ldots, B_n\})$ defines a new composite component $B = \prio\big(\Gamma(\{B_1, \ldots, B_n\})\big)$ noted $\pi(C)$ and whose behavior is defined by $(Q, \Gamma, \goesto_\prio)$, where $\goesto_\prio$ is the least set of transitions satisfying the following rule:
+\begin{mathpar}
+\inferrule*
+	{
+      q \goesto[a] q' \and
+      \neg\big(\exists a'\in \Gamma,\exists q''\in Q: a \prec a' \wedge q \goesto[a'] q'' \big)
+    }
+    {
+      q \goesto[a]_\prio q'
+    }
+\end{mathpar}
+\end{definition}
+%
+An interaction $a$ is enabled in $\pi(C)$ whenever $a$ is enabled in $C$ and $a$ is maximal according to $\pi$ among the active interactions in $C$.
+
+
+BIP provides both centralized and distributed implementations. In the centralized implementation,
+a centralized engine guarantees to execute only one interaction at a time, and thus conforms to the operational semantics of the BIP.  The main loop of the BIP engine consists of the following steps:
+\begin{enumerate}
+\item Each atomic component sends to the engine its current
+location.
+\item The engine enumerates the list of interactions in the system,
+selects the enabled ones based on the current location
+of the atomic components and eliminates the ones
+with low priority.
+\item The engine non-deterministically selects an interaction
+out of the enabled interactions.
+\item Finally, the engine notifies the corresponding components
+and schedules their transitions for execution.
+\end{enumerate}
+
+Alternatively, BIP allows the generation of distributed
+implementations~\cite{bip-distributed} where non-conflicting interactions
+can be simultaneously executed.
+
+\begin{definition}[BIP system]
+\label{def:bipsystem}
+A BIP system is a tuple $(B, q_0)$, where $q_0$ is the initial state with $q_0 \in \bigotimes_{i=1}^n Q_i$ being the tuple of initial states of atomic components.
+\end{definition}
+
+
+For the rest of the paper, we fix an arbitrary BIP-system $(B, q_0)$, where  $B = \prio\big(\Gamma(\{B_1, \ldots, B_n\})\big)$ with semantics $C = (Q, \Gamma, \goesto)$.
+
+We abstract the execution of a BIP system as a trace.
+%
+\begin{definition}[BIP trace]
+\label{def:trace-global}
+A BIP trace $\rho = (q_0 \cdot a_0 \cdot q_1 \cdot a_1 \cdots q_{i-1} \cdot a_{i-1} \cdot q_i)$ is an alternating sequence of states of $Q$ and interactions in $\Gamma$; where $q_k \xrightarrow{a_k} q_{k+1} \in \rightarrow$, for $k \in [0, i-1]$.
+\end{definition}
+
+Given a trace $\rho = (q_0 \cdot a_0 \cdot q_1 \cdot a_1 \cdots q_{i-1} \cdot a_{i-1} \cdot q_i)$, 
+$\rho^q_i$ (resp. $\rho^a_i$) denotes the $i^\text{th}$ state (resp. interaction) of the trace, i.e., $q_i$ (resp. $a_i$). Also, $\bm{\rho}(C)$ denotes the set of all the traces of an LTS $C$. 
+
+
+
+
+
+
