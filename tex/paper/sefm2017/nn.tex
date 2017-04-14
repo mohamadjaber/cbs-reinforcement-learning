@@ -2,7 +2,6 @@
 In an artificial NN, a neuron is a logistic unit, which is fed inputs through input wires. This unit can perform computations resulting in outputs that are transmitted through the output wires. 
 \begin{wrapfigure}{r}{7cm}
 \vspace*{-0.6cm}
-\label{Fig:FigTwo}
 \centering 
 \begin{tikzpicture}[x=1.2cm, y=1.2cm, >=stealth]
 \tikzset{%
@@ -55,6 +54,7 @@ In an artificial NN, a neuron is a logistic unit, which is fed inputs through in
 \vspace*{-0.3cm}
 \caption{A high-level depiction of an artificial NN.}
 \vspace*{-0.3cm}
+\label{Fig:FigTwo}
 \end{wrapfigure}
 An artificial NN is simply a set of these logistic units strung together as shown in Figure~\ref{Fig:FigTwo}. Each two layers are connected together using weight parameters. As such, the NN in Figure~\ref{Fig:FigTwo} possesses two weighting matrices, $\bm{\Theta}^{(1)}$ and $\bm{\Theta}^{(2)}$. Here, we used $\bm{\Theta}^{(l)}$ to denote the weights connecting layers $l$ and $l+1$. Definitely, the dimensionality of $\bm{\Theta}^{(l)}$ depends on the number of units in each of the two layers\footnote{
 In practice, a bias term is added to increase the expressiveness of the functions learnt by the NN.}. 
@@ -67,4 +67,4 @@ For example, in our case, the dimension of the input layer is equal to the numbe
 Given the notation introduced above, we are now ready to discuss the computations that are performed by a NN. Intuitively, between every two layers the inputs from the previous layer are, first, linearly (through the weight matrices) propagated forward and then nonlinearly transformed (through the sigmoids) to produce an output on the successor layer. Recursing this process, which we refer to as forward propagation, over the total layers of the network will produce an output on the final layer $L$. 
 %
 \vspace*{-0.3cm}
-\paragraph{Training \& Backward Propagation.} Having described feed forward propagation, the next step is to detail the strategy by which NNs determine the model parameters (i.e., the $\bm{\Theta}^{(l)}$ matrices -- denoted by $\bm{\Theta}$, i.e., $\bm{\Theta} = \{\bm{\Theta^{(1)}}, \dots, \bm{\Theta^{(l)}}\}$). In standard regression or classification problems, back-propagation is the algorithm adopted. Given an input data point, back-propagation commences as follows. First, forward propagation is executed and the network is made to output a value. This value is then compared to the real output from the data set producing an error. This error is then propagated backwards to every other layer and used to update connecting weights. Such updates typically involve gradient-based methods (e.g., stochastic gradients). 
+\paragraph{Training \& Backward Propagation.} Having described feed forward propagation, the next step is to detail the strategy by which NNs determine the model parameters (i.e., the $\bm{\Theta}^{(l)}$ matrices -- denoted by $\bm{\Theta}$, i.e., $\bm{\Theta} = \{\bm{\Theta^{(1)}}, \dots, \bm{\Theta^{(L)}}\}$). In standard regression or classification problems, back-propagation is the algorithm adopted. Given an input data point, back-propagation commences as follows. First, forward propagation is executed and the network is made to output a value. This value is then compared to the real output from the data set producing an error. This error is then propagated backwards to every other layer and used to update connecting weights. Such updates typically involve gradient-based methods (e.g., stochastic gradients). 
