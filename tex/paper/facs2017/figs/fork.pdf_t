@@ -1,0 +1,25 @@
+\begin{picture}(0,0)%
+\includegraphics{fork.pdf}%
+\end{picture}%
+\setlength{\unitlength}{3947sp}%
+%
+\begingroup\makeatletter\ifx\SetFigFont\undefined%
+\gdef\SetFigFont#1#2#3#4#5{%
+  \reset@font\fontsize{#1}{#2pt}%
+  \fontfamily{#3}\fontseries{#4}\fontshape{#5}%
+  \selectfont}%
+\fi\endgroup%
+\begin{picture}(1974,1625)(4714,-5698)
+\put(6301,-4486){\makebox(0,0)[b]{\smash{{\SetFigFont{14}{16.8}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}${\it release}$}%
+}}}}
+\put(5551,-4711){\makebox(0,0)[lb]{\smash{{\SetFigFont{14}{16.8}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}${\it get}$}%
+}}}}
+\put(5101,-5011){\makebox(0,0)[b]{\smash{{\SetFigFont{14}{16.8}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$init$}%
+}}}}
+\put(6301,-5011){\makebox(0,0)[b]{\smash{{\SetFigFont{14}{16.8}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$busy$}%
+}}}}
+\put(5401,-5611){\makebox(0,0)[lb]{\smash{{\SetFigFont{14}{16.8}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}${\it release}$}%
+}}}}
+\put(5026,-4486){\makebox(0,0)[b]{\smash{{\SetFigFont{14}{16.8}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}${\it get}$}%
+}}}}
+\end{picture}%
