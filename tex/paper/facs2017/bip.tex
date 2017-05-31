@@ -78,7 +78,7 @@ Notice that several distinct interactions can be enabled at the same time, thus 
   \label{defn:priority}
   Let $C = (Q,\Gamma,\goesto)$ be the behavior of the composite component $\Gamma(\{B_1, \ldots, B_n\})$.  A {\em priority model} $\prio$ is a
   strict partial order on the set of interactions $\Gamma$. Given a priority model $\prio$, we
-  abbreviate $(a,a')\in \prio$ by $a \prec a'$. Adding the priority model $\prio$ over $\Gamma(\{B_1, \ldots, B_n\})$ defines a new composite component $B = \prio\big(\Gamma(\{B_1, \ldots, B_n\})\big)$ noted $\pi(C)$ and whose behavior is defined by $(Q, \Gamma, \goesto_\prio)$, where $\goesto_\prio$ is the least set of transitions satisfying the following rule:
+  abbreviate $(a,a')\in \prio$ by $a \prec a'$. Adding the priority model $\prio$ over $\Gamma(\{B_1, \ldots, B_n\})$ defines a new composite component $B = \prio\big(\Gamma(\{B_1, \ldots, B_n\})\big)$ noted $\mathtt{prio}(C)$ and whose behavior is defined by $(Q, \Gamma, \goesto_\prio)$, where $\goesto_\prio$ is the least set of transitions satisfying the following rule:
 
 \begin{mathpar}
 \inferrule*
@@ -92,7 +92,7 @@ Notice that several distinct interactions can be enabled at the same time, thus 
 \end{mathpar}
 \end{definition}
 %
-An interaction $a$ is enabled in $\pi(C)$ whenever $a$ is enabled in $C$ and $a$ is maximal according to $\pi$ among the active interactions in $C$.
+An interaction $a$ is enabled in $\mathtt{prio}(C)$ whenever $a$ is enabled in $C$ and $a$ is maximal according to $\mathtt{prio}$ among the active interactions in $C$.
 
 
 BIP provides both centralized and distributed implementations. In the centralized implementation,

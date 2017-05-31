@@ -58,7 +58,8 @@ In an artificial NN, a neuron is a logistic unit, which is fed inputs through in
 An artificial NN is simply a set of these logistic units strung together as shown in Figure~\ref{Fig:FigTwo}. Each two layers are connected together using weight parameters. As such, the NN in Figure~\ref{Fig:FigTwo} possesses two weighting matrices, $\bm{\Theta}^{(1)}$ and $\bm{\Theta}^{(2)}$. Here, we used $\bm{\Theta}^{(l)}$ to denote the weights connecting layers $l$ and $l+1$. Definitely, the dimensionality of $\bm{\Theta}^{(l)}$ depends on the number of units in each of the two layers\footnote{
 In practice, a bias term is added to increase the expressiveness of the functions learnt by the NN.}. 
 
-For example, in our case, the dimension of the input layer is equal to the number of components, and the dimension of the output layer is equal to number of interactions. The number of hidden layers and the number of neurons per hidden layer can be configured depending on the functions to be learnt. 
+For example, in our case, the dimension of the input layer is equal to the number of components (each input receives the current state of a component), and the dimension of the output layer is equal to the number of interactions. 
+The number of hidden layers and the number of neurons per hidden layer can be configured depending on the functions to be learnt. 
 %For example, if layer $l$ consists of $s_{l}$ units and layer $l+1$ of $s_{l+1}$, $\bm{\Theta}^{(l)}$ has a dimensionality of $s_{l+1} \times s_{l} +1$, where we have added another dimension to incorporate the bias term (incorporated to increase the expressiveness of the functions learnt by the neural network). 
 %
 
